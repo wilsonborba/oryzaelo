@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:farmer_app/app.dart';
+import 'package:local/app.dart';
 
 void main() {
   testWidgets('FarmerApp smoke test and counter increment', (WidgetTester tester) async {

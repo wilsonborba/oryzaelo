@@ -1,6 +1,6 @@
 {
-    "name": "farmer_app",
-    "short_name": "farmer_app",
+    "name": "Oryza-Elo Local",
+    "short_name": "local",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

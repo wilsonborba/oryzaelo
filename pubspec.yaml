@@ -4,4 +4,4 @@ environment:
 
 workspace:
   - common/oryzaelo_ui
-  - apps/farmer_app
+  - apps/local

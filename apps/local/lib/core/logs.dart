@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:farmer_app/core/settings.dart';
+import 'package:local/core/settings.dart';
 
 /// Centralized logger following all_structure_project.md specifications.
 void logDebug(String message, [Object? error, StackTrace? stackTrace]) {

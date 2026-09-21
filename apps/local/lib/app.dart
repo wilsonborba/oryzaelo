@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:farmer_app/core/settings.dart';
+import 'package:local/core/settings.dart';
 
 class FarmerApp extends StatelessWidget {
   const FarmerApp({super.key});

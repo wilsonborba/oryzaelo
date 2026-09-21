@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:farmer_app/app.dart';
-import 'package:farmer_app/core/logs.dart';
+import 'package:local/app.dart';
+import 'package:local/core/logs.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -9,8 +9,8 @@ Multi-App Flutter frontend for precision agriculture phenological monitoring and
 ```
 oryzaelo/
 ├── apps/
-│   ├── farmer_app/            # Offline-first responsive web app for rural growers (served by edge engine)
-│   └── cloud_portal/          # (Stage 2) Executive multi-farm portal & academic research showcase
+│   ├── local/                 # Offline-first responsive web app for rural growers (served by edge engine)
+│   └── cloud/                 # (Stage 2) Executive multi-farm portal & academic research showcase
 ├── common/
 │   └── oryzaelo_ui/           # Shared Design System, BBCH scales, telemetry charts, trilingual i18n
 ├── cliff.toml                 # Conventional Commits changelog configuration
@@ -19,7 +19,8 @@ oryzaelo/
 ```
 
 ### IP Protection & Separation of Concerns
-- **`apps/farmer_app`**: Distributable offline on edge hardware (port 8005 via `ServeDir` in `oryzaelo_engine`). Zero cloud SaaS logic or proprietary endpoints compiled in the bundle.
+- **`apps/local`**: Distributable offline on edge hardware (port 8005 via `ServeDir` in `oryzaelo_engine`). Zero cloud SaaS logic or proprietary endpoints compiled in the bundle.
+- **`apps/cloud`**: Cloud multi-tenant portal and public thesis benchmark dashboard.
 - **`common/oryzaelo_ui`**: Shared UI primitives, typed domain models, and trilingual translation dictionaries (`pt-BR`, `en`, `th`).
 
 ---
@@ -36,7 +37,7 @@ flutter pub get
 flutter analyze
 
 # Run tests
-flutter test apps/farmer_app/test common/oryzaelo_ui/test
+flutter test apps/local/test common/oryzaelo_ui/test
 ```
 
 ---
@@ -44,8 +45,8 @@ flutter test apps/farmer_app/test common/oryzaelo_ui/test
 ## 3. Building for Edge Deployment
 
 ```bash
-cd apps/farmer_app
+cd apps/local
 flutter build web --release
 ```
 
-Point `STATIC_DIR` in `oryzaelo_engine/.env` to `oryzaelo/apps/farmer_app/build/web` to serve the application offline on the Raspberry Pi.
+Point `STATIC_DIR` in `oryzaelo_engine/.env` to `oryzaelo/apps/local/build/web` to serve the application offline on the Raspberry Pi.
