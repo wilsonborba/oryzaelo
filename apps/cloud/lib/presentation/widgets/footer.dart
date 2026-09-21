@@ -77,7 +77,7 @@ class OryzaFooter extends StatelessWidget {
               ),
               const SizedBox(height: 14),
               Text(
-                "Deploy: $_kBuildTimestamp  •  Bangkok (ICT UTC+7)  —  Piracicaba e Brasília (BRT UTC-3)",
+                "$_kBuildTimestamp  •  Bangkok (ICT UTC+7)  —  Piracicaba e Brasília (BRT UTC-3)",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: OryzaTypography.monoFontFamily,

@@ -119,8 +119,6 @@ class OryzaHeader extends StatelessWidget {
               const SizedBox(width: 8),
               const ThemeToggle(),
               const SizedBox(width: 8),
-              const BackgroundStyleSelector(),
-              const SizedBox(width: 8),
 
               // Login Button (Hidden or compact on very small screens)
               if (!isCompact) ...[

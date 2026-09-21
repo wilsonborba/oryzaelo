@@ -108,11 +108,10 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Atmospheric Spatial Background (Responsive to active style & scroll)
+          // Immersive Rice Paddy Topographic Background (Várzea de Arroz)
           Positioned.fill(
             child: OryzaAtmosphericBackground(
               isDark: isDark,
-              style: controller.backgroundStyle,
               scrollController: _scrollController,
               child: const SizedBox.expand(),
             ),
