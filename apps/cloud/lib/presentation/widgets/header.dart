@@ -123,10 +123,12 @@ class OryzaHeader extends StatelessWidget {
 
               const Spacer(),
 
-              // Right controls: Language, Theme, Auth buttons
+              // Right controls: Language, Theme, Background Style, Auth buttons
               const LanguageSelector(),
               const SizedBox(width: 8),
               const ThemeToggle(),
+              const SizedBox(width: 8),
+              const BackgroundStyleSelector(),
               const SizedBox(width: 8),
 
               // Login Button (Hidden or compact on very small screens)

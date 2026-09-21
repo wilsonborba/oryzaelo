@@ -106,10 +106,12 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Graph Paper Grid
+          // Atmospheric Spatial Background (Responsive to active style & scroll)
           Positioned.fill(
-            child: GraphPaperBackground(
+            child: OryzaAtmosphericBackground(
               isDark: isDark,
+              style: controller.backgroundStyle,
+              scrollController: _scrollController,
               child: const SizedBox.expand(),
             ),
           ),
