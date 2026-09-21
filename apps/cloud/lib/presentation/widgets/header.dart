@@ -47,20 +47,11 @@ class OryzaHeader extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
+                      Image.asset(
+                        "assets/img/logo.png",
                         width: 28,
                         height: 28,
-                        decoration: BoxDecoration(
-                          color: OryzaColors.burntOrange,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.grass,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                        ),
+                        fit: BoxFit.contain,
                       ),
                       const SizedBox(width: 8),
                       Text(

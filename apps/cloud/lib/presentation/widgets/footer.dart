@@ -28,7 +28,7 @@ class OryzaFooter extends StatelessWidget {
       ),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1120),
+          constraints: const BoxConstraints(maxWidth: 1600),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -42,14 +42,11 @@ class OryzaFooter extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
+                      Image.asset(
+                        "assets/img/logo.png",
                         width: 22,
                         height: 22,
-                        decoration: BoxDecoration(
-                          color: OryzaColors.burntOrange,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Icon(Icons.grass, color: Colors.white, size: 14),
+                        fit: BoxFit.contain,
                       ),
                       const SizedBox(width: 8),
                       Flexible(
@@ -80,7 +77,7 @@ class OryzaFooter extends StatelessWidget {
               ),
               const SizedBox(height: 14),
               Text(
-                "Deploy: $_kBuildTimestamp  •  Bangkok (ICT UTC+7)  ⇋  Piracicaba / Brasília (BRT UTC-3)",
+                "Deploy: $_kBuildTimestamp  •  Bangkok (ICT UTC+7)  —  Piracicaba e Brasília (BRT UTC-3)",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: OryzaTypography.monoFontFamily,

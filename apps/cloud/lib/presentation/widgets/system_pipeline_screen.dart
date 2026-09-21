@@ -18,50 +18,52 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
     final s = OryzaI18n.of(context);
     final textPrimary = widget.isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
     final textSecondary = widget.isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isDesktop = screenWidth >= 1080;
 
     final steps = [
       (
         title: s.pipe01Title,
         desc: s.pipe01Desc,
-        badge: "PARAMETRIZAÇÃO GENÉTICA",
-        equation: "T_base = 10.0 °C  |  T_opt = 30.0 °C  |  T_ceil = 40.0 °C",
+        badge: s.pipe01Badge,
+        equation: s.pipe01Eq,
         sensorIcon: Icons.tune,
       ),
       (
         title: s.pipe02Title,
         desc: s.pipe02Desc,
-        badge: "MODBUS RTU & NASA POWER",
-        equation: "RS-485 7-in-1 Soil + Hydrostatic Pressure Transducer (Vented PUR)",
+        badge: s.pipe02Badge,
+        equation: s.pipe02Eq,
         sensorIcon: Icons.sensors,
       ),
       (
         title: s.pipe03Title,
         desc: s.pipe03Desc,
-        badge: "INTEGRAÇÃO TÉRMICA DIÁRIA",
-        equation: "GDD = max( 0, (T_max + T_min)/2 - T_base )",
+        badge: s.pipe03Badge,
+        equation: s.pipe03Eq,
         sensorIcon: Icons.calculate_outlined,
       ),
       (
         title: s.pipe04Title,
         desc: s.pipe04Desc,
-        badge: "TRACT ONNX RUNTIME",
-        equation: "Tensor Input: Float32[1, 5] -> Output: Softmax(BBCH_00..99) in 22.4 µs",
+        badge: s.pipe04Badge,
+        equation: s.pipe04Eq,
         sensorIcon: Icons.memory,
       ),
       (
         title: s.pipe05Title,
         desc: s.pipe05Desc,
-        badge: "MANEJO DE CAMPO OFFLINE",
-        equation: "Lâmina: 5–10 cm  |  Adubação N: BBCH 25 & 32  |  Drenagem: BBCH 87",
+        badge: s.pipe05Badge,
+        equation: s.pipe05Eq,
         sensorIcon: Icons.eco_outlined,
       ),
     ];
 
-    final current = steps[_selectedStep];
+    final current = steps[_selectedStep.clamp(0, steps.length - 1)];
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-      constraints: const BoxConstraints(maxWidth: 1120),
+      constraints: const BoxConstraints(maxWidth: 1600),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -78,7 +80,7 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
               ),
               const SizedBox(width: 10),
               Text(
-                "ARQUITETURA DE SISTEMAS",
+                s.sysSectionTag,
                 style: TextStyle(
                   fontFamily: OryzaTypography.monoFontFamily,
                   package: 'oryzaelo_ui',
@@ -96,7 +98,7 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
             style: TextStyle(
               fontFamily: OryzaTypography.fontFamily,
               package: 'oryzaelo_ui',
-              fontSize: 32,
+              fontSize: isDesktop ? 34 : 26,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.8,
               color: textPrimary,
@@ -114,10 +116,10 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
           ),
           const SizedBox(height: 32),
 
-          // Dual Column Architecture
+          // Dual Column Architecture (Full-width side by side on desktop)
           LayoutBuilder(
             builder: (context, constraints) {
-              final isNarrow = constraints.maxWidth < 780;
+              final isNarrow = constraints.maxWidth < 840;
               return Flex(
                 direction: isNarrow ? Axis.vertical : Axis.horizontal,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +129,7 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
                     flex: isNarrow ? 0 : 1,
                     child: ScrapbookCard(
                       isDark: widget.isDark,
-                      tag: "BORDA LOCAL • RUST DDD",
+                      tag: s.sysEdgeTag,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -204,14 +206,14 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(width: isNarrow ? 0 : 20, height: isNarrow ? 20 : 0),
+                  SizedBox(width: isNarrow ? 0 : 24, height: isNarrow ? 20 : 0),
 
                   // Column 2: Client Interface (Flutter Web)
                   Expanded(
                     flex: isNarrow ? 0 : 1,
                     child: ScrapbookCard(
                       isDark: widget.isDark,
-                      tag: "INTERFACE PWA • FLUTTER",
+                      tag: s.sysClientTag,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -223,7 +225,11 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
                                   color: OryzaColors.militaryGreen.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Icon(Icons.devices_outlined, color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen, size: 20),
+                                child: Icon(
+                                  Icons.devices_outlined,
+                                  color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+                                  size: 20,
+                                ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -292,72 +298,142 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
               );
             },
           ),
-          const SizedBox(height: 36),
+          const SizedBox(height: 40),
 
           // 5-Stage Interactive Pipeline Header
           Text(
-            "Pipeline Biofísico em 5 Etapas (Da Terra à Decisão)",
+            s.sysPipelineHeading,
             style: TextStyle(
               fontFamily: OryzaTypography.fontFamily,
               package: 'oryzaelo_ui',
-              fontSize: 20,
+              fontSize: isDesktop ? 22 : 18,
               fontWeight: FontWeight.w700,
               color: textPrimary,
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
 
-          // Interactive Step Chips
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
+          // Desktop Widescreen Layout: Multi-Stage Horizontal Flow + Detailed Step Card
+          if (isDesktop) ...[
+            // Horizontal 5-Step Bar
+            Row(
               children: List.generate(steps.length, (idx) {
                 final isSelected = idx == _selectedStep;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text("${steps[idx].title.split('.')[0]} ${steps[idx].title.split('.')[1].trim().split(' ')[0]}"),
-                    selected: isSelected,
-                    onSelected: (_) => setState(() => _selectedStep = idx),
-                    selectedColor: OryzaColors.burntOrange,
-                    backgroundColor: widget.isDark ? const Color(0xFF1B231B) : const Color(0xFFEDEAE0),
-                    labelStyle: TextStyle(
-                      fontFamily: OryzaTypography.monoFontFamily,
-                      package: 'oryzaelo_ui',
-                      fontSize: 12,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                      color: isSelected ? Colors.white : textPrimary,
-                    ),
-                    side: BorderSide(
-                      color: isSelected
-                          ? OryzaColors.burntOrange
-                          : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
+                final step = steps[idx];
+                return Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: idx < steps.length - 1 ? 12 : 0),
+                    child: InkWell(
+                      onTap: () => setState(() => _selectedStep = idx),
+                      borderRadius: BorderRadius.circular(8),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? (widget.isDark ? const Color(0xFF261D15) : const Color(0xFFECE4D6))
+                              : (widget.isDark ? const Color(0xFF131813) : const Color(0xFFEDE8DD)),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isSelected
+                                ? OryzaColors.burntOrange
+                                : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
+                            width: isSelected ? 1.5 : 1.0,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isSelected
+                                    ? OryzaColors.burntOrange
+                                    : (widget.isDark ? const Color(0xFF1C241C) : const Color(0xFFDFDACB)),
+                              ),
+                              child: Icon(
+                                step.sensorIcon,
+                                size: 14,
+                                color: isSelected ? Colors.white : textSecondary,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                step.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily: OryzaTypography.fontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 12.5,
+                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                  color: isSelected ? textPrimary : textSecondary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 );
               }),
             ),
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 18),
+          ] else ...[
+            // Mobile / Tablet Step Chips
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(steps.length, (idx) {
+                  final isSelected = idx == _selectedStep;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      label: Text(steps[idx].title),
+                      selected: isSelected,
+                      onSelected: (_) => setState(() => _selectedStep = idx),
+                      selectedColor: OryzaColors.burntOrange,
+                      backgroundColor: widget.isDark ? const Color(0xFF1B231B) : const Color(0xFFEDEAE0),
+                      labelStyle: TextStyle(
+                        fontFamily: OryzaTypography.monoFontFamily,
+                        package: 'oryzaelo_ui',
+                        fontSize: 12,
+                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        color: isSelected ? Colors.white : textPrimary,
+                      ),
+                      side: BorderSide(
+                        color: isSelected
+                            ? OryzaColors.burntOrange
+                            : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
 
           // Active Step Card
           ScrapbookCard(
             isDark: widget.isDark,
             tag: current.badge,
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(26),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: widget.isDark ? const Color(0xFF141914) : const Color(0xFFEBE7DC),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
                   ),
-                  child: Icon(current.sensorIcon, size: 28, color: OryzaColors.burntOrange),
+                  child: Icon(current.sensorIcon, size: 32, color: OryzaColors.burntOrange),
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 22),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -367,7 +443,7 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
                         style: TextStyle(
                           fontFamily: OryzaTypography.fontFamily,
                           package: 'oryzaelo_ui',
-                          fontSize: 18,
+                          fontSize: 19,
                           fontWeight: FontWeight.w700,
                           color: textPrimary,
                         ),
@@ -378,15 +454,15 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
                         style: TextStyle(
                           fontFamily: OryzaTypography.fontFamily,
                           package: 'oryzaelo_ui',
-                          fontSize: 14,
+                          fontSize: 14.5,
                           height: 1.5,
                           color: textSecondary,
                         ),
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
                           color: widget.isDark ? const Color(0xFF0F140F) : const Color(0xFFF3F1E8),
                           borderRadius: BorderRadius.circular(6),
@@ -397,7 +473,7 @@ class _SystemPipelineScreenState extends State<SystemPipelineScreen> {
                           style: TextStyle(
                             fontFamily: OryzaTypography.monoFontFamily,
                             package: 'oryzaelo_ui',
-                            fontSize: 12,
+                            fontSize: 12.5,
                             fontWeight: FontWeight.w600,
                             color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
                           ),

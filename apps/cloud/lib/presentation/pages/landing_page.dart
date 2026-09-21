@@ -59,6 +59,8 @@ class _LandingPageState extends State<LandingPage> {
       'assets/plants/Jungle_Plant_2.png',
       'assets/plants/Jungle_Plant_3.png',
       'assets/plants/Jungle_Plant_4.png',
+      // Asodya Brand Logo
+      'assets/img/logo.png',
     ];
 
     for (final path in assets) {
@@ -182,7 +184,7 @@ class _LandingPageState extends State<LandingPage> {
   Widget _buildSectionDivider(bool isDark) {
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(maxWidth: 1120),
+      constraints: const BoxConstraints(maxWidth: 1600),
       margin: const EdgeInsets.symmetric(vertical: 8),
       height: 1,
       color: isDark ? OryzaColors.darkBorder.withValues(alpha: 0.5) : OryzaColors.lightBorder.withValues(alpha: 0.2),

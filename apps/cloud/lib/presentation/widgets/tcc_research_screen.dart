@@ -11,37 +11,39 @@ class TccResearchScreen extends StatelessWidget {
     final s = OryzaI18n.of(context);
     final textPrimary = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
     final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isDesktop = screenWidth >= 1080;
 
     final cards = [
       (
         img: 'assets/student/_0028.png',
-        title: 'Hipótese Central da Tese',
-        tag: 'PERGUNTA DE PESQUISA',
+        title: s.tccCard1Title,
+        tag: s.tccCard1Tag,
         desc: s.tccHypothesisText,
       ),
       (
         img: 'assets/student/_0017.png',
-        title: 'Modelagem Agrometeorológica',
-        tag: 'METODOLOGIA BIOFÍSICA',
-        desc: 'Integração de variáveis microclimáticas in situ com tempo térmico cumulativo (GDD base 10°C) e modelo agrometeorológico calibrado contra 2.398 observações forenses de arroz.',
+        title: s.tccCard2Title,
+        tag: s.tccCard2Tag,
+        desc: s.tccCard2Desc,
       ),
       (
         img: 'assets/student/_0040.png',
-        title: 'Validação no Campo com Produtores',
-        tag: 'APLICAÇÃO DE BORDA',
-        desc: 'Avaliação da interface offline (apps/local) em condições reais de lavoura no sul do Brasil e Tailândia, garantindo usabilidade intuitiva sem sinal de celular.',
+        title: s.tccCard3Title,
+        tag: s.tccCard3Tag,
+        desc: s.tccCard3Desc,
       ),
       (
         img: 'assets/student/_0005.png',
-        title: 'Autoria & Orientação Acadêmica',
-        tag: 'CRÉDITOS ESALQ/USP',
+        title: s.tccCard4Title,
+        tag: s.tccCard4Tag,
         desc: s.tccAuthor,
       ),
     ];
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-      constraints: const BoxConstraints(maxWidth: 1120),
+      constraints: const BoxConstraints(maxWidth: 1600),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -58,7 +60,7 @@ class TccResearchScreen extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Text(
-                "RIGOR ACADÊMICO & CIENTÍFICO",
+                s.tccSectionTag,
                 style: TextStyle(
                   fontFamily: OryzaTypography.monoFontFamily,
                   package: 'oryzaelo_ui',
@@ -76,7 +78,7 @@ class TccResearchScreen extends StatelessWidget {
             style: TextStyle(
               fontFamily: OryzaTypography.fontFamily,
               package: 'oryzaelo_ui',
-              fontSize: 32,
+              fontSize: isDesktop ? 34 : 26,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.8,
               color: textPrimary,
@@ -94,119 +96,70 @@ class TccResearchScreen extends StatelessWidget {
           ),
           const SizedBox(height: 32),
 
-          // 4 Student 3D Illustration Cards Grid
+          // 4 Student 3D Illustration Cards Grid (Widescreen 4-column or 2-column)
           LayoutBuilder(
             builder: (context, constraints) {
-              final isNarrow = constraints.maxWidth < 840;
-              final cardWidth = isNarrow
-                  ? constraints.maxWidth
-                  : (constraints.maxWidth - 20) / 2;
+              final isFourCols = constraints.maxWidth >= 1200;
+              final isTwoCols = constraints.maxWidth >= 720;
 
-              return Wrap(
-                spacing: 20,
-                runSpacing: 20,
-                children: cards.map((c) {
-                  return SizedBox(
-                    width: cardWidth,
-                    child: ScrapbookCard(
-                      isDark: isDark,
-                      tag: c.tag,
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF141914) : const Color(0xFFEBE7DC),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                c.img,
-                                fit: BoxFit.contain,
-                                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                                  if (wasSynchronouslyLoaded || frame != null) return child;
-                                  return Center(
-                                    child: SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                errorBuilder: (_, _, _) => Icon(
-                                  Icons.school_outlined,
-                                  size: 36,
-                                  color: isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  c.title,
-                                  style: TextStyle(
-                                    fontFamily: OryzaTypography.fontFamily,
-                                    package: 'oryzaelo_ui',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    color: textPrimary,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  c.desc,
-                                  style: TextStyle(
-                                    fontFamily: OryzaTypography.fontFamily,
-                                    package: 'oryzaelo_ui',
-                                    fontSize: 13,
-                                    height: 1.45,
-                                    color: textSecondary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+              if (isFourCols) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(cards.length, (idx) {
+                    final c = cards[idx];
+                    return Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: idx < cards.length - 1 ? 16 : 0),
+                        child: _buildStudentCard(c, textPrimary, textSecondary),
                       ),
-                    ),
+                    );
+                  }),
+                );
+              }
+
+              if (isTwoCols) {
+                final cardWidth = (constraints.maxWidth - 20) / 2;
+                return Wrap(
+                  spacing: 20,
+                  runSpacing: 20,
+                  children: cards.map((c) {
+                    return SizedBox(
+                      width: cardWidth,
+                      child: _buildStudentCard(c, textPrimary, textSecondary),
+                    );
+                  }).toList(),
+                );
+              }
+
+              return Column(
+                children: cards.map((c) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: _buildStudentCard(c, textPrimary, textSecondary),
                   );
                 }).toList(),
               );
             },
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 32),
 
-          // Monograph & Validation Banner
+          // Monograph & Validation Banner (Full Width)
           ScrapbookCard(
             isDark: isDark,
-            tag: "DOCUMENTO ACADÊMICO",
+            tag: s.tccPaperBannerTag,
             accentColor: OryzaColors.burntOrange,
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 22),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 26),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final isStacked = constraints.maxWidth < 700;
+                final isStacked = constraints.maxWidth < 780;
                 return Flex(
                   direction: isStacked ? Axis.vertical : Axis.horizontal,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
                       'assets/icons3d/file-text-dynamic-color.png',
-                      width: 48,
-                      height: 48,
+                      width: 52,
+                      height: 52,
                       fit: BoxFit.contain,
                       frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                         if (wasSynchronouslyLoaded || frame != null) return child;
@@ -223,40 +176,40 @@ class TccResearchScreen extends StatelessWidget {
                       },
                       errorBuilder: (_, _, _) => Icon(
                         Icons.description_outlined,
-                        size: 40,
+                        size: 44,
                         color: isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange,
                       ),
                     ),
-                    SizedBox(width: isStacked ? 0 : 20, height: isStacked ? 14 : 0),
+                    SizedBox(width: isStacked ? 0 : 24, height: isStacked ? 16 : 0),
                     Expanded(
                       flex: isStacked ? 0 : 1,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Monografia & Artigo Científico Completo do TCC",
+                            s.tccPaperBannerTitle,
                             style: TextStyle(
                               fontFamily: OryzaTypography.fontFamily,
                               package: 'oryzaelo_ui',
-                              fontSize: 17,
+                              fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: textPrimary,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 6),
                           Text(
-                            "Acesse a formulação agrometeorológica detalhada, matriz de confusão dos estádios BBCH e o código fonte auditado do motor de borda.",
+                            s.tccPaperBannerDesc,
                             style: TextStyle(
                               fontFamily: OryzaTypography.fontFamily,
                               package: 'oryzaelo_ui',
-                              fontSize: 13,
+                              fontSize: 13.5,
                               color: textSecondary,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(width: isStacked ? 0 : 20, height: isStacked ? 16 : 0),
+                    SizedBox(width: isStacked ? 0 : 24, height: isStacked ? 18 : 0),
                     ElevatedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
@@ -272,7 +225,7 @@ class TccResearchScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: OryzaColors.burntOrange,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 15),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         elevation: 0,
                       ),
@@ -280,6 +233,87 @@ class TccResearchScreen extends StatelessWidget {
                   ],
                 );
               },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStudentCard(
+    ({String desc, String img, String tag, String title}) c,
+    Color textPrimary,
+    Color textSecondary,
+  ) {
+    return ScrapbookCard(
+      isDark: isDark,
+      tag: c.tag,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF141914) : const Color(0xFFEBE7DC),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    c.img,
+                    fit: BoxFit.contain,
+                    frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                      if (wasSynchronouslyLoaded || frame != null) return child;
+                      return Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange,
+                          ),
+                        ),
+                      );
+                    },
+                    errorBuilder: (_, _, _) => Icon(
+                      Icons.school_outlined,
+                      size: 32,
+                      color: isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  c.title,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.fontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w700,
+                    color: textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            c.desc,
+            style: TextStyle(
+              fontFamily: OryzaTypography.fontFamily,
+              package: 'oryzaelo_ui',
+              fontSize: 13,
+              height: 1.45,
+              color: textSecondary,
             ),
           ),
         ],

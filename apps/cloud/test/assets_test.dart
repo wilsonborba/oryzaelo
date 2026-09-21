@@ -31,6 +31,7 @@ void main() {
     "assets/plants/Jungle_Plant_2.png",
     "assets/plants/Jungle_Plant_3.png",
     "assets/plants/Jungle_Plant_4.png",
+    "assets/img/logo.png",
   ];
 
   for (final path in assets) {
