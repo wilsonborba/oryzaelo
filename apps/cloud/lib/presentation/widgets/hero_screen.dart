@@ -108,11 +108,11 @@ class _HeroScreenState extends State<HeroScreen> {
           ),
           const SizedBox(height: 32),
 
-          // Botanical Scrapbook Quote Card (Historical Jingle)
+          // 1. Scientific Manifesto Banner ("A Ciência Colhe")
           ScrapbookCard(
             isDark: widget.isDark,
-            tag: "ESPÉCIME #01 • ORYZA SATIVA L.",
-            accentColor: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+            tag: "MANIFESTO CIENTÍFICO • A CIÊNCIA COLHE",
+            accentColor: OryzaColors.burntOrange,
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 22),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 820),
@@ -127,57 +127,142 @@ class _HeroScreenState extends State<HeroScreen> {
                         opacity: widget.isDark ? 0.08 : 0.12,
                         child: Image.asset(
                           'assets/plants/Jungle_Plant_1.png',
-                          width: 130,
-                          height: 130,
+                          width: 140,
+                          height: 140,
                           fit: BoxFit.contain,
                           errorBuilder: (_, _, _) => const SizedBox.shrink(),
                         ),
                       ),
                     ),
                   ),
-                  Row(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.format_quote,
-                        size: 32,
-                        color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.format_quote,
+                            size: 26,
+                            color: OryzaColors.burntOrange,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            s.heroManifestoPrefix,
+                            style: TextStyle(
+                              fontFamily: OryzaTypography.monoFontFamily,
+                              package: 'oryzaelo_ui',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.8,
+                              color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              s.heroJingle,
-                              style: TextStyle(
-                                fontFamily: OryzaTypography.fontFamily,
-                                package: 'oryzaelo_ui',
-                                fontStyle: FontStyle.italic,
-                                fontSize: 14.5,
-                                height: 1.6,
-                                fontWeight: FontWeight.w500,
-                                color: textPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Ponte Transcontinental: Sukhothai (Tailândia, 1292) ⇋ Piracicaba (Brasil, 1500) • USP / ESALQ",
-                              style: TextStyle(
-                                fontFamily: OryzaTypography.monoFontFamily,
-                                package: 'oryzaelo_ui',
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
-                              ),
-                            ),
-                          ],
+                      const SizedBox(height: 10),
+                      Text(
+                        s.heroManifestoLine1,
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.fontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          height: 1.3,
+                          color: textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        s.heroManifestoLine2,
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.fontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.4,
+                          height: 1.3,
+                          color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: (widget.isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                          ),
+                        ),
+                        child: Text(
+                          s.heroBridgeTag,
+                          style: TextStyle(
+                            fontFamily: OryzaTypography.monoFontFamily,
+                            package: 'oryzaelo_ui',
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.8,
+                            color: textSecondary,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
+            ),
+          ),
+          const SizedBox(height: 18),
+
+          // 2. Dual Historical Story Cards (Sukhothai 1292 ⇋ Caminha 1500)
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 820),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isStacked = constraints.maxWidth < 750;
+                final thaiCard = _HistoricalStoryCard(
+                  tag: s.heroThaiCardTag,
+                  country: s.heroThaiTitle,
+                  coords: "17.0055° N",
+                  mainQuote: s.heroThaiScript,
+                  secondaryQuote: s.heroThaiTranslit,
+                  meaning: s.heroThaiMeaning,
+                  contextText: s.heroThaiContext,
+                  accentColor: OryzaColors.mustardYellow,
+                  plantAsset: 'assets/plants/Jungle_Plant_2.png',
+                  isDark: widget.isDark,
+                );
+                final brazilCard = _HistoricalStoryCard(
+                  tag: s.heroBrazilCardTag,
+                  country: s.heroBrazilTitle,
+                  coords: "22.7136° S",
+                  mainQuote: s.heroBrazilQuote,
+                  secondaryQuote: s.heroBrazilPopular,
+                  contextText: s.heroBrazilContext,
+                  accentColor: OryzaColors.militaryGreen,
+                  plantAsset: 'assets/plants/Jungle_Plant_3.png',
+                  isDark: widget.isDark,
+                );
+
+                if (isStacked) {
+                  return Column(
+                    children: [
+                      thaiCard,
+                      const SizedBox(height: 14),
+                      brazilCard,
+                    ],
+                  );
+                }
+
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: thaiCard),
+                    const SizedBox(width: 16),
+                    Expanded(child: brazilCard),
+                  ],
+                );
+              },
             ),
           ),
           const SizedBox(height: 32),
@@ -421,6 +506,238 @@ class _MetricCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _HistoricalStoryCard extends StatefulWidget {
+  final String tag;
+  final String country;
+  final String coords;
+  final String mainQuote;
+  final String? secondaryQuote;
+  final String? meaning;
+  final String contextText;
+  final Color accentColor;
+  final String plantAsset;
+  final bool isDark;
+
+  const _HistoricalStoryCard({
+    required this.tag,
+    required this.country,
+    required this.coords,
+    required this.mainQuote,
+    this.secondaryQuote,
+    this.meaning,
+    required this.contextText,
+    required this.accentColor,
+    required this.plantAsset,
+    required this.isDark,
+  });
+
+  @override
+  State<_HistoricalStoryCard> createState() => _HistoricalStoryCardState();
+}
+
+class _HistoricalStoryCardState extends State<_HistoricalStoryCard> {
+  bool _showContext = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final textPrimary = widget.isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
+    final textSecondary = widget.isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+
+    return ScrapbookCard(
+      isDark: widget.isDark,
+      tag: widget.tag,
+      accentColor: widget.accentColor,
+      padding: const EdgeInsets.all(20),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            right: -24,
+            bottom: -24,
+            child: IgnorePointer(
+              child: Opacity(
+                opacity: widget.isDark ? 0.06 : 0.08,
+                child: Image.asset(
+                  widget.plantAsset,
+                  width: 105,
+                  height: 105,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                ),
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header: Country & Geocoordinates
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: widget.accentColor,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        widget.country,
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.fontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: widget.accentColor.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: widget.accentColor.withValues(alpha: 0.3)),
+                    ),
+                    child: Text(
+                      widget.coords,
+                      style: TextStyle(
+                        fontFamily: OryzaTypography.monoFontFamily,
+                        package: 'oryzaelo_ui',
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: widget.accentColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+
+              // Main Historical Script / Inscription
+              Text(
+                widget.mainQuote,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.fontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 15.5,
+                  height: 1.4,
+                  fontWeight: FontWeight.w700,
+                  color: textPrimary,
+                ),
+              ),
+
+              // Transliteration or Popular Adage
+              if (widget.secondaryQuote != null) ...[
+                const SizedBox(height: 6),
+                Text(
+                  widget.secondaryQuote!,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 11.5,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w600,
+                    color: widget.accentColor,
+                  ),
+                ),
+              ],
+
+              // Meaning
+              if (widget.meaning != null) ...[
+                const SizedBox(height: 6),
+                Text(
+                  "“${widget.meaning!}”",
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.fontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w500,
+                    color: textPrimary,
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 14),
+
+              // Interactive Context Expander
+              InkWell(
+                onTap: () => setState(() => _showContext = !_showContext),
+                borderRadius: BorderRadius.circular(4),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _showContext ? Icons.unfold_less : Icons.history_edu,
+                        size: 14,
+                        color: widget.accentColor,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        _showContext ? "Ocultar contexto" : "Ver contexto histórico",
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: widget.accentColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              AnimatedCrossFade(
+                firstChild: const SizedBox.shrink(),
+                secondChild: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: widget.isDark
+                          ? const Color(0xFF141914).withValues(alpha: 0.8)
+                          : const Color(0xFFEDE9DC).withValues(alpha: 0.8),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                      ),
+                    ),
+                    child: Text(
+                      widget.contextText,
+                      style: TextStyle(
+                        fontFamily: OryzaTypography.fontFamily,
+                        package: 'oryzaelo_ui',
+                        fontSize: 11.5,
+                        height: 1.45,
+                        color: textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+                crossFadeState: _showContext ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                duration: const Duration(milliseconds: 200),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

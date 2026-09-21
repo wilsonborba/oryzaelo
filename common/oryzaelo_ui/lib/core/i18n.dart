@@ -12,6 +12,21 @@ class OryzaStrings {
 
   final String heroPill;
   final String heroJingle;
+  final String heroManifestoPrefix;
+  final String heroManifestoLine1;
+  final String heroManifestoLine2;
+  final String heroBridgeTag;
+  final String heroThaiCardTag;
+  final String heroThaiTitle;
+  final String heroThaiScript;
+  final String heroThaiTranslit;
+  final String heroThaiMeaning;
+  final String heroThaiContext;
+  final String heroBrazilCardTag;
+  final String heroBrazilTitle;
+  final String heroBrazilQuote;
+  final String heroBrazilPopular;
+  final String heroBrazilContext;
   final String heroHeadline;
   final String heroSubhead;
   final String heroCtaSimulate;
@@ -85,6 +100,21 @@ class OryzaStrings {
     required this.navSignUp,
     required this.heroPill,
     required this.heroJingle,
+    required this.heroManifestoPrefix,
+    required this.heroManifestoLine1,
+    required this.heroManifestoLine2,
+    required this.heroBridgeTag,
+    required this.heroThaiCardTag,
+    required this.heroThaiTitle,
+    required this.heroThaiScript,
+    required this.heroThaiTranslit,
+    required this.heroThaiMeaning,
+    required this.heroThaiContext,
+    required this.heroBrazilCardTag,
+    required this.heroBrazilTitle,
+    required this.heroBrazilQuote,
+    required this.heroBrazilPopular,
+    required this.heroBrazilContext,
     required this.heroHeadline,
     required this.heroSubhead,
     required this.heroCtaSimulate,
@@ -155,7 +185,22 @@ class OryzaI18n {
     navSignUp: "Criar Conta",
 
     heroPill: "ESTAÇÃO DE FENOLOGIA DE PRECISÃO NA BORDA RURAL",
-    heroJingle: "No mar de arroz que o vento ondula / Da Ásia antiga ao solo que pula / Na água há peixes, nos campos há arroz (Rei Ramkhamhaeng, 1292) / Em se plantando tudo dá (Pero Vaz de Caminha, 1500) / Da Tailândia ao Brasil, a semente vigia / Oryza-Elo: a inteligência do grão que nos guia.",
+    heroJingle: "Seja na América Latina ou na Ásia:\nOnde há sol e água, o campo vive.\nOnde há dados e borda, a ciência colhe.",
+    heroManifestoPrefix: "Seja na América Latina ou na Ásia:",
+    heroManifestoLine1: "Onde há sol e água, o campo vive.",
+    heroManifestoLine2: "Onde há dados e borda, a ciência colhe.",
+    heroBridgeTag: "PONTE TRANSCONTINENTAL: SUKHOTHAI (17.0055°N) ⇋ PIRACICABA (22.7136°S)",
+    heroThaiCardTag: "ESTELA DE SUKHOTHAI • 1292",
+    heroThaiTitle: "Tailândia (Ásia)",
+    heroThaiScript: "ในน้ำมีปลา ในนามีข้าว",
+    heroThaiTranslit: "Nai nam mi pla, nai na mi khao",
+    heroThaiMeaning: "Na água há peixes, no campo há arroz",
+    heroThaiContext: "Gravada em 1292 na célebre estela do Rei Ramkhamhaeng em Sukhothai, simboliza a fartura biológica e a soberania alimentar da orizicultura asiática.",
+    heroBrazilCardTag: "CARTA DE CAMINHA • 1500",
+    heroBrazilTitle: "Brasil (América Latina)",
+    heroBrazilQuote: "Águas são muitas; infindas... dar-se-á nela tudo, por bem das águas que tem.",
+    heroBrazilPopular: "« Nesta terra, em se plantando, tudo dá »",
+    heroBrazilContext: "Na certidão de nascimento do Brasil em 1500, Pero Vaz de Caminha registrou a fertilidade das águas. Hoje elevada pelo rigor científico da ESALQ/USP.",
     heroHeadline: "Monitoramento Fenológico em Tempo Real na Borda Rural",
     heroSubhead: "Inferência neural ONNX sub-milissegundo, tempo térmico acumulado (GDD) e banco de dados SQLite WAL rodando diretamente no campo com zero dependência de nuvem.",
     heroCtaSimulate: "SIMULAR LAVOURA EM TEMPO REAL",
@@ -230,7 +275,22 @@ class OryzaI18n {
     navSignUp: "Create Account",
 
     heroPill: "EDGE PRECISION PHENOLOGY STATION FOR RICE CROPS",
-    heroJingle: "In the rice sea rippling with the wind / From ancient Asia to fertile soil / In the water there are fish, in the fields there is rice (King Ramkhamhaeng, 1292) / By planting, all will yield (Pero Vaz de Caminha, 1500) / From Thailand to Brazil, the seed keeps watch / Oryza-Elo: the intelligence of the grain that guides us.",
+    heroJingle: "Whether in Latin America or in Asia:\nWhere there is sun and water, the field thrives.\nWhere there are data and edge, science reaps.",
+    heroManifestoPrefix: "Whether in Latin America or in Asia:",
+    heroManifestoLine1: "Where there is sun and water, the field thrives.",
+    heroManifestoLine2: "Where there are data and edge, science reaps.",
+    heroBridgeTag: "TRANSCONTINENTAL BRIDGE: SUKHOTHAI (17.0055°N) ⇋ PIRACICABA (22.7136°S)",
+    heroThaiCardTag: "SUKHOTHAI STELE • 1292",
+    heroThaiTitle: "Thailand (Asia)",
+    heroThaiScript: "ในน้ำมีปลา ในนามีข้าว",
+    heroThaiTranslit: "Nai nam mi pla, nai na mi khao",
+    heroThaiMeaning: "In the water there are fish, in the fields there is rice",
+    heroThaiContext: "Engraved in 1292 on King Ramkhamhaeng's stele in Sukhothai, embodying natural biological abundance and food sovereignty in Asian rice farming.",
+    heroBrazilCardTag: "LETTER OF CAMINHA • 1500",
+    heroBrazilTitle: "Brazil (Latin America)",
+    heroBrazilQuote: "The waters are endless... by planting, all will yield in this land.",
+    heroBrazilPopular: "« In this land, whatever is planted will grow »",
+    heroBrazilContext: "Written in 1500 in Brazil's founding document to King Manuel I, celebrating water fertility, now paired with modern agrometeorology from ESALQ/USP.",
     heroHeadline: "Real-Time Phenological Edge Intelligence in Rice Paddies",
     heroSubhead: "Sub-millisecond ONNX neural inference, thermal time modeling (GDD), and local SQLite WAL storage running directly in the field with zero cloud dependency.",
     heroCtaSimulate: "SIMULATE FIELD IN REAL-TIME",
@@ -305,7 +365,22 @@ class OryzaI18n {
     navSignUp: "สร้างบัญชี",
 
     heroPill: "สถานีฟีโนโลยีแม่นยำระดับขอบข่ายสำหรับการทำนาข้าว",
-    heroJingle: "ในสายลมพัดผ่านผืนนาข้าว / จากเอเชียโบราณสู่ผืนดินอุดมสมบูรณ์ / ในน้ำมีปลา ในนามีข้าว (พ่อขุนรามคำแหง, 1292) / ปลูกสิ่งใดย่อมงอกงาม (เปโร วาซ เด กามิญญา, 1500) / จากไทยสู่บราซิล เมล็ดพันธุ์เฝ้าดูแล / Oryza-Elo: ปัญญาประดิษฐ์แห่งเมล็ดข้าวผู้นำทาง",
+    heroJingle: "ไม่ว่าในละตินอเมริกาหรือเอเชีย:\nที่ใดมีแดดและน้ำ ท้องทุ่งย่อมงอกงาม\nที่ใดมีข้อมูลและ Edge Computing วิทยาศาสตร์ย่อมเก็บเกี่ยวผล",
+    heroManifestoPrefix: "ไม่ว่าในละตินอเมริกาหรือเอเชีย:",
+    heroManifestoLine1: "ที่ใดมีแดดและน้ำ ท้องทุ่งย่อมงอกงาม",
+    heroManifestoLine2: "ที่ใดมีข้อมูลและ Edge Computing วิทยาศาสตร์ย่อมเก็บเกี่ยวผล",
+    heroBridgeTag: "สะพานเชื่อมข้ามทวีป: สุโขทัย (17.0055°N) ⇋ ปีราซีคาบา (22.7136°S)",
+    heroThaiCardTag: "ศิลาจารึกสุโขทัย • พ.ศ. 1835",
+    heroThaiTitle: "ประเทศไทย (เอเชีย)",
+    heroThaiScript: "ในน้ำมีปลา ในนามีข้าว",
+    heroThaiTranslit: "Nai nam mi pla, nai na mi khao",
+    heroThaiMeaning: "ในน้ำมีปลา ในนามีข้าว",
+    heroThaiContext: "จารึกบนศิลาจารึกพ่อขุนรามคำแหงมหาราชแห่งอาณาจักรสุโขทัย แสดงถึงความอุดมสมบูรณ์และรากฐานของวัฒนธรรมการทำนาข้าว",
+    heroBrazilCardTag: "จดหมายของกามินญา • ค.ศ. 1500",
+    heroBrazilTitle: "ประเทศบราซิล (ละตินอเมริกา)",
+    heroBrazilQuote: "Águas são muitas; infindas... dar-se-á nela tudo, por bem das águas que tem.",
+    heroBrazilPopular: "« ในผืนแผ่นดินนี้ เมื่อเพาะปลูกสิ่งใดย่อมงอกงาม »",
+    heroBrazilContext: "บันทึกประวัติศาสตร์ปี 1500 ของเปรู วาซ ดึ กามินญา ถึงกษัตริย์มานูเอลที่ 1 ถึงความอุดมสมบูรณ์ของสายน้ำ วันนี้ขับเคลื่อนด้วยวิทยาการเกษตรแม่นยำของ ESALQ/USP",
     heroHeadline: "ระบบตรวจติดตามระยะการเจริญเติบโตของข้าวแบบเรียลไทม์ระดับขอบข่าย",
     heroSubhead: "การอนุมานเครือข่ายประสาทเทียม ONNX ต่ำกว่ามิลลิวินาที แบบจำลองความร้อนสะสม (GDD) และฐานข้อมูล SQLite WAL บนอุปกรณ์โดยไม่ต้องพึ่งพาระบบคลาวด์",
     heroCtaSimulate: "จำลองแปลงนาแบบเรียลไทม์",
