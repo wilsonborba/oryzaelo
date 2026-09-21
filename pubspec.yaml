@@ -5,3 +5,4 @@ environment:
 workspace:
   - common/oryzaelo_ui
   - apps/local
+  - apps/cloud
