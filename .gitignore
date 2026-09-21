@@ -1,0 +1,49 @@
+# Local documentation directory (AI Agent Working Rules #9)
+docs/
+
+# Secrets and environment variables (AI Agent Working Rules #1)
+.env
+.env.*
+!.env.example
+
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-preload-cache/
+.pub/
+.pub-cache/
+build/
+**/generated_plugin_registrant.dart
+flutter_*.png
+linked_*.ds
+unlinked.ds
+unlinked_spec.ds
+
+# Web specific
+**/build/web/
+**/web/version.json
+
+# Local/assistant context and scratch files
+context/
+.scratch/
+*.local.md
+
+# Miscellaneous
+*.class
+*.lock
+!pubspec.lock
+*.log
+*.pyc
+*.swp
+.buildlog/
+.history
+coverage/
+
+# OS and IDE files
+.DS_Store
+.idea/
+.vscode/
+*.iml
+*~

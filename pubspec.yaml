@@ -1,0 +1,7 @@
+name: oryzaelo_workspace
+environment:
+  sdk: ^3.11.1
+
+workspace:
+  - common/oryzaelo_ui
+  - apps/farmer_app
