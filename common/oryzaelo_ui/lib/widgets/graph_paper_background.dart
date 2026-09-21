@@ -5,13 +5,13 @@ import '../core/state.dart';
 
 /// Senior UI/UX Engineered Atmospheric Background for Oryza-Elo.
 /// Renders an ultra-refined, whispering rice paddy topography (várzea de arroz)
-/// designed to elevate and frame foreground cards with impeccable visual hierarchy,
-/// serene negative space, and zero visual clutter.
+/// focused on the Jingle/Hero section, smoothly fading out into a pure solid background.
 class OryzaAtmosphericBackground extends StatefulWidget {
   final Widget child;
   final bool isDark;
   final OryzaBackgroundStyle style;
   final ScrollController? scrollController;
+  final bool fadeBottom;
 
   const OryzaAtmosphericBackground({
     super.key,
@@ -19,6 +19,7 @@ class OryzaAtmosphericBackground extends StatefulWidget {
     required this.isDark,
     this.style = OryzaBackgroundStyle.topographic,
     this.scrollController,
+    this.fadeBottom = true,
   });
 
   @override
@@ -66,6 +67,7 @@ class _OryzaAtmosphericBackgroundState extends State<OryzaAtmosphericBackground>
             scrollOffset: scrollOffset,
             particles: _particles,
             isDark: widget.isDark,
+            fadeBottom: widget.fadeBottom,
           ),
           child: widget.child,
         );
@@ -79,13 +81,22 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
   final double scrollOffset;
   final List<_FieldPollenParticle> particles;
   final bool isDark;
+  final bool fadeBottom;
 
   _SeniorRicePaddyTopographyPainter({
     required this.progress,
     required this.scrollOffset,
     required this.particles,
     required this.isDark,
+    required this.fadeBottom,
   });
+
+  double _getFadeMultiplier(int tier, int totalTiers) {
+    if (!fadeBottom) return 1.0;
+    final t = tier / (totalTiers - 1);
+    if (t <= 0.52) return 1.0;
+    return (1.0 - (t - 0.52) / 0.36).clamp(0.0, 1.0);
+  }
 
   // Harmonically balanced organic curve representing terraced flooded paddy contours
   double _getContourY(double x, int tier, Size size) {
@@ -101,11 +112,11 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
 
-    // 1. Base architectural field canvas
-    final baseColor = isDark ? const Color(0xFF101410) : const Color(0xFFF9F8F5);
+    // 1. Base architectural field canvas (Exact solid background color)
+    final baseColor = isDark ? const Color(0xFF101410) : const Color(0xFFF7F6F0);
     canvas.drawRect(rect, Paint()..color = baseColor);
 
-    // 2. Spatial Studio Illumination (Soft, wide ambient glow behind content)
+    // 2. Spatial Studio Illumination (Soft, wide ambient glow behind jingle & cards)
     final sunCenter = Offset(size.width * 0.5, size.height * 0.12 - scrollOffset * 0.02);
     final sunRadius = size.width * 0.7;
     final breathe = sin(progress * pi);
@@ -126,14 +137,14 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
       Paint()..shader = sunGradient.createShader(Rect.fromCircle(center: sunCenter, radius: sunRadius)),
     );
 
-    // 3. Deep Agronomic Canopy & Earth Depth (Gentle peripheral gradient)
-    final mudCenter = Offset(size.width * 0.9, size.height * 0.8 - scrollOffset * 0.025);
-    final mudRadius = size.width * 0.6;
+    // 3. Deep Agronomic Canopy & Earth Depth (Gentle peripheral gradient fading before bottom)
+    final mudCenter = Offset(size.width * 0.9, size.height * 0.45 - scrollOffset * 0.02);
+    final mudRadius = size.width * 0.55;
     final mudGradient = RadialGradient(
       colors: [
         isDark
-            ? OryzaColors.militaryGreen.withValues(alpha: 0.045)
-            : OryzaColors.militaryGreen.withValues(alpha: 0.025),
+            ? OryzaColors.militaryGreen.withValues(alpha: 0.04)
+            : OryzaColors.militaryGreen.withValues(alpha: 0.022),
         Colors.transparent,
       ],
       stops: const [0.0, 1.0],
@@ -144,13 +155,15 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
       Paint()..shader = mudGradient.createShader(Rect.fromCircle(center: mudCenter, radius: mudRadius)),
     );
 
-    // 4. Sinuous Rice Paddy Terraces (Whispering Topography)
-    // Clean, elegant, low-contrast hairline contours that frame the cards without distraction.
+    // 4. Sinuous Rice Paddy Terraces (Focused on Jingle/Hero, smoothly fading to solid)
     const int totalTiers = 14;
     const double stepX = 50.0;
 
-    // A) Extremely subtle terrace wash between alternate terrace tiers
+    // A) Subtle terrace wash between alternate terrace tiers with vertical fade-out
     for (int i = 0; i < totalTiers - 1; i += 2) {
+      final fade = _getFadeMultiplier(i, totalTiers);
+      if (fade <= 0.001) continue;
+
       final basinPath = Path();
       basinPath.moveTo(0, _getContourY(0, i, size));
 
@@ -167,29 +180,17 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
 
       final washPaint = Paint()
         ..color = isDark
-            ? const Color(0xFF1B3821).withValues(alpha: 0.04 + 0.01 * breathe)
-            : const Color(0xFF4A7C4E).withValues(alpha: 0.015 + 0.005 * breathe);
+            ? const Color(0xFF1B3821).withValues(alpha: (0.04 + 0.01 * breathe) * fade)
+            : const Color(0xFF4A7C4E).withValues(alpha: (0.015 + 0.005 * breathe) * fade);
 
       canvas.drawPath(basinPath, washPaint);
     }
 
-    // B) Delicate Agronomic Contour Lines
-    // Tuned with tasteful opacities: primary at 0.08 / 0.07; secondary at 0.045 / 0.04.
-    final primaryLinePaint = Paint()
-      ..color = isDark
-          ? const Color(0xFF68B270).withValues(alpha: 0.08)
-          : const Color(0xFF28502A).withValues(alpha: 0.085)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-
-    final secondaryLinePaint = Paint()
-      ..color = isDark
-          ? const Color(0xFF509658).withValues(alpha: 0.045)
-          : const Color(0xFF336035).withValues(alpha: 0.048)
-      ..strokeWidth = 0.7
-      ..style = PaintingStyle.stroke;
-
+    // B) Delicate Agronomic Contour Lines with vertical fade-out
     for (int i = 0; i < totalTiers; i++) {
+      final fade = _getFadeMultiplier(i, totalTiers);
+      if (fade <= 0.001) continue;
+
       final isPrimary = i % 3 == 0;
       final path = Path();
       path.moveTo(0, _getContourY(0, i, size));
@@ -198,10 +199,19 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
         path.lineTo(x, _getContourY(x, i, size));
       }
 
-      canvas.drawPath(path, isPrimary ? primaryLinePaint : secondaryLinePaint);
+      final linePaint = Paint()
+        ..color = isDark
+            ? (isPrimary ? const Color(0xFF68B270) : const Color(0xFF509658))
+                .withValues(alpha: (isPrimary ? 0.08 : 0.045) * fade)
+            : (isPrimary ? const Color(0xFF28502A) : const Color(0xFF336035))
+                .withValues(alpha: (isPrimary ? 0.085 : 0.048) * fade)
+        ..strokeWidth = isPrimary ? 1.0 : 0.7
+        ..style = PaintingStyle.stroke;
+
+      canvas.drawPath(path, linePaint);
     }
 
-    // 5. Airborne Rice Pollen Particles (Gentle, micro-scale, soft)
+    // 5. Airborne Rice Pollen Particles in upper section
     _drawPollenParticles(canvas, size);
   }
 
@@ -212,7 +222,10 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
 
     for (final p in particles) {
       final pos = p.position(size, progress, scrollOffset);
-      canvas.drawCircle(pos, p.radius, particlePaint);
+      // Only show particles in the top 75% of the hero area
+      if (pos.dy <= size.height * 0.75) {
+        canvas.drawCircle(pos, p.radius, particlePaint);
+      }
     }
   }
 
@@ -220,7 +233,8 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
   bool shouldRepaint(covariant _SeniorRicePaddyTopographyPainter oldDelegate) {
     return oldDelegate.progress != progress ||
         oldDelegate.scrollOffset != scrollOffset ||
-        oldDelegate.isDark != isDark;
+        oldDelegate.isDark != isDark ||
+        oldDelegate.fadeBottom != fadeBottom;
   }
 }
 

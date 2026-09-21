@@ -105,18 +105,12 @@ class _LandingPageState extends State<LandingPage> {
     final controller = OryzaScope.of(context);
     final isDark = controller.isDark;
 
+    final solidBgColor = isDark ? const Color(0xFF101410) : const Color(0xFFF7F6F0);
+
     return Scaffold(
+      backgroundColor: solidBgColor,
       body: Stack(
         children: [
-          // Immersive Rice Paddy Topographic Background (Várzea de Arroz)
-          Positioned.fill(
-            child: OryzaAtmosphericBackground(
-              isDark: isDark,
-              scrollController: _scrollController,
-              child: const SizedBox.expand(),
-            ),
-          ),
-
           // Scrollable Content (4 Screens + Footer)
           Positioned.fill(
             child: SingleChildScrollView(
@@ -124,12 +118,24 @@ class _LandingPageState extends State<LandingPage> {
               padding: const EdgeInsets.only(top: 64),
               child: Column(
                 children: [
-                  // Tela 1: Hero & Simulação
-                  Center(
-                    child: HeroScreen(
-                      key: _heroKey,
-                      isDark: isDark,
-                    ),
+                  // Tela 1: Hero & Jingle (Com Topografia de Várzea de Arroz focada no Jingle)
+                  Stack(
+                    children: [
+                      Positioned.fill(
+                        child: OryzaAtmosphericBackground(
+                          isDark: isDark,
+                          scrollController: _scrollController,
+                          fadeBottom: true,
+                          child: const SizedBox.expand(),
+                        ),
+                      ),
+                      Center(
+                        child: HeroScreen(
+                          key: _heroKey,
+                          isDark: isDark,
+                        ),
+                      ),
+                    ],
                   ),
                   _buildSectionDivider(isDark),
 
