@@ -540,7 +540,7 @@ class _HeroScreenState extends State<HeroScreen> {
 
             final portalTcc = _PortalCard(
               isDark: widget.isDark,
-              tag: "USP ESALQ & UFMS",
+              tag: "USP • MBA ENG. SOFTWARE",
               icon: Icons.school_outlined,
               accentColor: OryzaColors.burntOrange,
               title: s.exploreSectionTcc,

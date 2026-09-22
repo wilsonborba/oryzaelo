@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
+import '../../core/routes.dart';
 import '../widgets/header.dart';
 import '../widgets/hero_screen.dart';
 import '../widgets/system_pipeline_screen.dart';
@@ -9,7 +10,12 @@ import '../widgets/benchmark_screen.dart';
 import '../widgets/footer.dart';
 
 class LandingPage extends StatefulWidget {
-  const LandingPage({super.key});
+  final String activeSection;
+
+  const LandingPage({
+    super.key,
+    this.activeSection = 'hero',
+  });
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -17,7 +23,26 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final ScrollController _scrollController = ScrollController();
-  String _activeSection = 'hero'; // 'hero', 'system', 'hardware', 'tcc', 'benchmark'
+  late String _activeSection;
+
+  @override
+  void initState() {
+    super.initState();
+    _activeSection = widget.activeSection;
+  }
+
+  @override
+  void didUpdateWidget(covariant LandingPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.activeSection != widget.activeSection) {
+      setState(() {
+        _activeSection = widget.activeSection;
+      });
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(0);
+      }
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -72,11 +97,35 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void _navigateToSection(String key) {
-    setState(() {
-      _activeSection = key;
-    });
-    if (_scrollController.hasClients) {
-      _scrollController.jumpTo(0);
+    final targetRoute = OryzaRoutes.fromSectionKey(key);
+    final currentRoute = ModalRoute.of(context)?.settings.name;
+
+    if (targetRoute == OryzaRoutes.home) {
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        return;
+      }
+    }
+
+    if (currentRoute != targetRoute) {
+      Navigator.of(context).pushNamed(targetRoute);
+    } else {
+      if (_activeSection != key) {
+        setState(() {
+          _activeSection = key;
+        });
+      }
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(0);
+      }
+    }
+  }
+
+  void _navigateToHome() {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } else {
+      _navigateToSection('hero');
     }
   }
 
@@ -189,7 +238,7 @@ class _LandingPageState extends State<LandingPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               InkWell(
-                onTap: () => _navigateToSection('hero'),
+                onTap: _navigateToHome,
                 borderRadius: BorderRadius.circular(6),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),

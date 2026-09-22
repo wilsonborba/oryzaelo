@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
 import 'package:cloud/main.dart';
+import 'package:cloud/core/routes.dart';
+import 'package:cloud/presentation/pages/landing_page.dart';
 import 'package:cloud/presentation/widgets/benchmark_screen.dart';
 import 'package:cloud/presentation/widgets/header.dart';
 
@@ -83,5 +85,71 @@ void main() {
     expect(find.text('DISTRIBUIÇÃO CARTOGRÁFICA DA PRODUÇÃO DE ARROZ'), findsOneWidget);
     expect(find.text('REPERCUSSÃO CIENTÍFICA & COMUNIDADE DE BORDA'), findsOneWidget);
     expect(find.text('22.4 µs'), findsWidgets);
+  });
+
+  testWidgets('OryzaCloudApp deep links to /tcc with USP MBA affiliation and no UFMS', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    final controller = OryzaController();
+    await tester.pumpWidget(
+      OryzaScope(
+        controller: controller,
+        child: AnimatedBuilder(
+          animation: controller,
+          builder: (context, _) {
+            return MaterialApp(
+              initialRoute: '/tcc',
+              onGenerateRoute: (settings) {
+                final section = OryzaRoutes.toSectionKey(settings.name);
+                return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) => LandingPage(activeSection: section),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Universidade de São Paulo (USP)'), findsWidgets);
+    expect(find.textContaining('MBA em Engenharia de Software'), findsWidgets);
+    expect(find.textContaining('UFMS'), findsNothing);
+    expect(find.textContaining('RiceGuard'), findsNothing);
+  });
+
+  testWidgets('OryzaCloudApp deep links to /benchmark with Government of Thailand source and no RiceGuard', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    final controller = OryzaController();
+    await tester.pumpWidget(
+      OryzaScope(
+        controller: controller,
+        child: AnimatedBuilder(
+          animation: controller,
+          builder: (context, _) {
+            return MaterialApp(
+              initialRoute: '/benchmark',
+              onGenerateRoute: (settings) {
+                final section = OryzaRoutes.toSectionKey(settings.name);
+                return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) => LandingPage(activeSection: section),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Departamento de Arroz (Rice Department)'), findsWidgets);
+    expect(find.textContaining('RiceGuard'), findsNothing);
   });
 }

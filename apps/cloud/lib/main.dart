@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
+import 'core/routes.dart';
 import 'presentation/pages/landing_page.dart';
 
 void main() {
@@ -36,7 +37,14 @@ class _OryzaCloudAppState extends State<OryzaCloudApp> {
             theme: OryzaTheme.lightTheme,
             darkTheme: OryzaTheme.darkTheme,
             themeMode: _controller.themeMode,
-            home: const LandingPage(),
+            initialRoute: OryzaRoutes.home,
+            onGenerateRoute: (settings) {
+              final section = OryzaRoutes.toSectionKey(settings.name);
+              return MaterialPageRoute(
+                settings: settings,
+                builder: (context) => LandingPage(activeSection: section),
+              );
+            },
           );
         },
       ),

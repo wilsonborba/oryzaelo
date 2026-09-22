@@ -381,12 +381,11 @@ class TccResearchScreen extends StatelessWidget {
             tag: s.tccPaperBannerTag,
             accentColor: OryzaColors.burntOrange,
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 26),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final isStacked = constraints.maxWidth < 840;
-                return Flex(
-                  direction: isStacked ? Axis.vertical : Axis.horizontal,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Image.asset(
                       'assets/icons3d/file-text-dynamic-color.png',
@@ -412,9 +411,8 @@ class TccResearchScreen extends StatelessWidget {
                         color: isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange,
                       ),
                     ),
-                    SizedBox(width: isStacked ? 0 : 24, height: isStacked ? 16 : 0),
+                    const SizedBox(width: 20),
                     Expanded(
-                      flex: isStacked ? 0 : 1,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -442,58 +440,57 @@ class TccResearchScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: isStacked ? 0 : 24, height: isStacked ? 18 : 0),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 10,
-                      alignment: WrapAlignment.center,
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
-                          label: Text(
-                            s.tccReadPaper,
-                            style: const TextStyle(
-                              fontFamily: OryzaTypography.fontFamily,
-                              package: 'oryzaelo_ui',
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: OryzaColors.burntOrange,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            elevation: 0,
-                          ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 10,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
+                      label: Text(
+                        s.tccReadPaper,
+                        style: const TextStyle(
+                          fontFamily: OryzaTypography.fontFamily,
+                          package: 'oryzaelo_ui',
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
                         ),
-                        OutlinedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.code, size: 18),
-                          label: Text(
-                            s.tccGithubBtn,
-                            style: TextStyle(
-                              fontFamily: OryzaTypography.fontFamily,
-                              package: 'oryzaelo_ui',
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.5,
-                              color: textPrimary,
-                            ),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                              color: isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: OryzaColors.burntOrange,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                      ),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.code, size: 18),
+                      label: Text(
+                        s.tccGithubBtn,
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.fontFamily,
+                          package: 'oryzaelo_ui',
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                          color: textPrimary,
                         ),
-                      ],
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
                     ),
                   ],
-                );
-              },
+                ),
+              ],
             ),
           ),
         ],
