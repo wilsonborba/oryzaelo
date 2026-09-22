@@ -304,127 +304,172 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: borderColor),
           ),
-          child: Scrollbar(
-            controller: _tableScrollController,
-            thumbVisibility: true,
-            trackVisibility: true,
-            child: SingleChildScrollView(
-              controller: _tableScrollController,
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(bottom: 12),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 980),
-                child: DataTable(
-                headingRowHeight: 52,
-                dataRowMinHeight: 56,
-                dataRowMaxHeight: 76,
-                columnSpacing: 24,
-                horizontalMargin: 20,
-                headingRowColor: WidgetStateProperty.all(
-                  widget.isDark
-                      ? const Color(0xFF1D1815)
-                      : const Color(0xFFEBE6D6),
-                ),
-                columns: [
-                  DataColumn(
-                    label: Text(
-                      s.benchmarkColCriterion.toUpperCase(),
-                      style: TextStyle(
-                        fontFamily: OryzaTypography.monoFontFamily,
-                        package: 'oryzaelo_ui',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: textPrimary,
+          child: LayoutBuilder(
+            builder: (context, tableConstraints) {
+              final availableWidth = tableConstraints.maxWidth;
+              // Margins and internal padding:
+              // horizontalMargin = 20 on each side (40px)
+              // 4 column spacings of 24px (96px)
+              // Total non-column width = 136px
+              final netAvailable = math.max(844.0, availableWidth - 136.0);
+              final col0Width = math.max(170.0, netAvailable * 0.21);
+              final col1Width = math.max(200.0, netAvailable * 0.25);
+              final col2Width = math.max(160.0, netAvailable * 0.18);
+              final col3Width = math.max(160.0, netAvailable * 0.18);
+              final col4Width = math.max(160.0, netAvailable * 0.18);
+              final minTableWidth = col0Width + col1Width + col2Width + col3Width + col4Width + 136.0;
+
+              return Scrollbar(
+                controller: _tableScrollController,
+                thumbVisibility: true,
+                trackVisibility: true,
+                child: SingleChildScrollView(
+                  controller: _tableScrollController,
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minWidth: minTableWidth),
+                    child: DataTable(
+                      headingRowHeight: 52,
+                      dataRowMinHeight: 56,
+                      dataRowMaxHeight: 76,
+                      columnSpacing: 24,
+                      horizontalMargin: 20,
+                      headingRowColor: WidgetStateProperty.all(
+                        widget.isDark
+                            ? const Color(0xFF1D1815)
+                            : const Color(0xFFEBE6D6),
                       ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: highlightHeaderColor,
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: widget.isDark ? OryzaColors.burntOrange : OryzaColors.botanicalGreen,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.star,
-                            size: 13,
-                            color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            s.benchmarkColOryza.toUpperCase(),
-                            style: TextStyle(
-                              fontFamily: OryzaTypography.monoFontFamily,
-                              package: 'oryzaelo_ui',
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              color: widget.isDark ? OryzaColors.burntOrange : OryzaColors.botanicalGreen,
+                      columns: [
+                        DataColumn(
+                          label: SizedBox(
+                            width: col0Width,
+                            child: Text(
+                              s.benchmarkColCriterion.toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: OryzaTypography.monoFontFamily,
+                                package: 'oryzaelo_ui',
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: textPrimary,
+                              ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        DataColumn(
+                          label: SizedBox(
+                            width: col1Width,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: highlightHeaderColor,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: widget.isDark ? OryzaColors.burntOrange : OryzaColors.botanicalGreen,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      size: 13,
+                                      color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Flexible(
+                                      child: Text(
+                                        s.benchmarkColOryza.toUpperCase(),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontFamily: OryzaTypography.monoFontFamily,
+                                          package: 'oryzaelo_ui',
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w800,
+                                          color: widget.isDark ? OryzaColors.burntOrange : OryzaColors.botanicalGreen,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        DataColumn(
+                          label: SizedBox(
+                            width: col2Width,
+                            child: Text(
+                              s.benchmarkColSatellite.toUpperCase(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: OryzaTypography.monoFontFamily,
+                                package: 'oryzaelo_ui',
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        DataColumn(
+                          label: SizedBox(
+                            width: col3Width,
+                            child: Text(
+                              s.benchmarkColDrone.toUpperCase(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: OryzaTypography.monoFontFamily,
+                                package: 'oryzaelo_ui',
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        DataColumn(
+                          label: SizedBox(
+                            width: col4Width,
+                            child: Text(
+                              s.benchmarkColCloudWeather.toUpperCase(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: OryzaTypography.monoFontFamily,
+                                package: 'oryzaelo_ui',
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      rows: [
+                        _buildRow(s.benchmarkRowLatencyTitle, s.benchmarkRowLatencyOryza, s.benchmarkRowLatencySatellite, s.benchmarkRowLatencyDrone, s.benchmarkRowLatencyCloudWeather, textPrimary, textSecondary, true, col0Width, col1Width, col2Width, col3Width, col4Width),
+                        _buildRow(s.benchmarkRowCloudTitle, s.benchmarkRowCloudOryza, s.benchmarkRowCloudSatellite, s.benchmarkRowCloudDrone, s.benchmarkRowCloudCloudWeather, textPrimary, textSecondary, false, col0Width, col1Width, col2Width, col3Width, col4Width),
+                        _buildRow(s.benchmarkRowOcclusionTitle, s.benchmarkRowOcclusionOryza, s.benchmarkRowOcclusionSatellite, s.benchmarkRowOcclusionDrone, s.benchmarkRowOcclusionCloudWeather, textPrimary, textSecondary, true, col0Width, col1Width, col2Width, col3Width, col4Width),
+                        _buildRow(s.benchmarkRowPowerTitle, s.benchmarkRowPowerOryza, s.benchmarkRowPowerSatellite, s.benchmarkRowPowerDrone, s.benchmarkRowPowerCloudWeather, textPrimary, textSecondary, false, col0Width, col1Width, col2Width, col3Width, col4Width),
+                        _buildRow(s.benchmarkRowCostTitle, s.benchmarkRowCostOryza, s.benchmarkRowCostSatellite, s.benchmarkRowCostDrone, s.benchmarkRowCostCloudWeather, textPrimary, textSecondary, true, col0Width, col1Width, col2Width, col3Width, col4Width),
+                        _buildRow(s.benchmarkRowTemporalTitle, s.benchmarkRowTemporalOryza, s.benchmarkRowTemporalSatellite, s.benchmarkRowTemporalDrone, s.benchmarkRowTemporalCloudWeather, textPrimary, textSecondary, false, col0Width, col1Width, col2Width, col3Width, col4Width),
+                        _buildRow(s.benchmarkRowConnectivityTitle, s.benchmarkRowConnectivityOryza, s.benchmarkRowConnectivitySatellite, s.benchmarkRowConnectivityDrone, s.benchmarkRowConnectivityCloudWeather, textPrimary, textSecondary, true, col0Width, col1Width, col2Width, col3Width, col4Width),
+                        _buildRow(s.benchmarkRowPrivacyTitle, s.benchmarkRowPrivacyOryza, s.benchmarkRowPrivacySatellite, s.benchmarkRowPrivacyDrone, s.benchmarkRowPrivacyCloudWeather, textPrimary, textSecondary, false, col0Width, col1Width, col2Width, col3Width, col4Width),
+                      ],
                     ),
                   ),
-                  DataColumn(
-                    label: Text(
-                      s.benchmarkColSatellite.toUpperCase(),
-                      style: TextStyle(
-                        fontFamily: OryzaTypography.monoFontFamily,
-                        package: 'oryzaelo_ui',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: textSecondary,
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      s.benchmarkColDrone.toUpperCase(),
-                      style: TextStyle(
-                        fontFamily: OryzaTypography.monoFontFamily,
-                        package: 'oryzaelo_ui',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: textSecondary,
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      s.benchmarkColCloudWeather.toUpperCase(),
-                      style: TextStyle(
-                        fontFamily: OryzaTypography.monoFontFamily,
-                        package: 'oryzaelo_ui',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: textSecondary,
-                      ),
-                    ),
-                  ),
-                ],
-                rows: [
-                  _buildRow(s.benchmarkRowLatencyTitle, s.benchmarkRowLatencyOryza, s.benchmarkRowLatencySatellite, s.benchmarkRowLatencyDrone, s.benchmarkRowLatencyCloudWeather, textPrimary, textSecondary, true),
-                  _buildRow(s.benchmarkRowCloudTitle, s.benchmarkRowCloudOryza, s.benchmarkRowCloudSatellite, s.benchmarkRowCloudDrone, s.benchmarkRowCloudCloudWeather, textPrimary, textSecondary, false),
-                  _buildRow(s.benchmarkRowOcclusionTitle, s.benchmarkRowOcclusionOryza, s.benchmarkRowOcclusionSatellite, s.benchmarkRowOcclusionDrone, s.benchmarkRowOcclusionCloudWeather, textPrimary, textSecondary, true),
-                  _buildRow(s.benchmarkRowPowerTitle, s.benchmarkRowPowerOryza, s.benchmarkRowPowerSatellite, s.benchmarkRowPowerDrone, s.benchmarkRowPowerCloudWeather, textPrimary, textSecondary, false),
-                  _buildRow(s.benchmarkRowCostTitle, s.benchmarkRowCostOryza, s.benchmarkRowCostSatellite, s.benchmarkRowCostDrone, s.benchmarkRowCostCloudWeather, textPrimary, textSecondary, true),
-                  _buildRow(s.benchmarkRowTemporalTitle, s.benchmarkRowTemporalOryza, s.benchmarkRowTemporalSatellite, s.benchmarkRowTemporalDrone, s.benchmarkRowTemporalCloudWeather, textPrimary, textSecondary, false),
-                  _buildRow(s.benchmarkRowConnectivityTitle, s.benchmarkRowConnectivityOryza, s.benchmarkRowConnectivitySatellite, s.benchmarkRowConnectivityDrone, s.benchmarkRowConnectivityCloudWeather, textPrimary, textSecondary, true),
-                  _buildRow(s.benchmarkRowPrivacyTitle, s.benchmarkRowPrivacyOryza, s.benchmarkRowPrivacySatellite, s.benchmarkRowPrivacyDrone, s.benchmarkRowPrivacyCloudWeather, textPrimary, textSecondary, false),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
   }
 
   DataRow _buildRow(
@@ -436,6 +481,11 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
     Color textPrimary,
     Color textSecondary,
     bool isZebra,
+    double col0Width,
+    double col1Width,
+    double col2Width,
+    double col3Width,
+    double col4Width,
   ) {
     final zebraColor = widget.isDark
         ? const Color(0xFF181411).withValues(alpha: 0.5)
@@ -445,8 +495,8 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
       color: WidgetStateProperty.all(isZebra ? zebraColor : Colors.transparent),
       cells: [
         DataCell(
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 190),
+          SizedBox(
+            width: col0Width,
             child: Text(
               criterion,
               style: TextStyle(
@@ -460,32 +510,35 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           ),
         ),
         DataCell(
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 220),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              decoration: BoxDecoration(
-                color: widget.isDark
-                    ? OryzaColors.burntOrange.withValues(alpha: 0.12)
-                    : OryzaColors.botanicalGreenLight.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                oryzaVal,
-                style: TextStyle(
-                  fontFamily: OryzaTypography.fontFamily,
-                  package: 'oryzaelo_ui',
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w700,
-                  color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+          SizedBox(
+            width: col1Width,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                decoration: BoxDecoration(
+                  color: widget.isDark
+                      ? OryzaColors.burntOrange.withValues(alpha: 0.12)
+                      : OryzaColors.botanicalGreenLight.withValues(alpha: 0.7),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  oryzaVal,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.fontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                    color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                  ),
                 ),
               ),
             ),
           ),
         ),
         DataCell(
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 190),
+          SizedBox(
+            width: col2Width,
             child: Text(
               satelliteVal,
               style: TextStyle(
@@ -498,8 +551,8 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           ),
         ),
         DataCell(
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 190),
+          SizedBox(
+            width: col3Width,
             child: Text(
               droneVal,
               style: TextStyle(
@@ -512,8 +565,8 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           ),
         ),
         DataCell(
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 190),
+          SizedBox(
+            width: col4Width,
             child: Text(
               cloudVal,
               style: TextStyle(
@@ -1044,64 +1097,107 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           child: Column(
             children: [
               // Vector Open-Source Agnostic Map Canvas
-              SizedBox(
-                height: 320,
-                width: double.infinity,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                  child: Stack(
-                    children: [
-                      // Cartographic Painter
-                      Positioned.fill(
-                        child: CustomPaint(
-                          painter: _AgnosticMapPainter(
-                            isDark: widget.isDark,
-                            selectedCountry: _selectedMapCountry,
-                          ),
-                        ),
-                      ),
-                      // Top Map Badges
-                      Positioned(
-                        top: 14,
-                        left: 16,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: (widget.isDark ? OryzaColors.darkCanvas : OryzaColors.lightCanvas).withValues(alpha: 0.85),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: borderColor),
-                          ),
-                          child: Text(
-                            s.benchmarkMapFooterTag,
-                            style: TextStyle(
-                              fontFamily: OryzaTypography.monoFontFamily,
-                              package: 'oryzaelo_ui',
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.w700,
-                              color: textSecondary,
+              LayoutBuilder(
+                builder: (context, mapBoxConstraints) {
+                  final isNarrow = mapBoxConstraints.maxWidth < 620;
+                  final mapHeight = isNarrow ? 350.0 : 320.0;
+
+                  return SizedBox(
+                    height: mapHeight,
+                    width: double.infinity,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                      child: Stack(
+                        children: [
+                          // Cartographic Painter
+                          Positioned.fill(
+                            child: CustomPaint(
+                              painter: _AgnosticMapPainter(
+                                isDark: widget.isDark,
+                                selectedCountry: _selectedMapCountry,
+                              ),
                             ),
                           ),
-                        ),
+                          // Responsive Map Header: Badges & Country Switcher (No Mobile Overlap)
+                          Positioned(
+                            top: 12,
+                            left: 14,
+                            right: 14,
+                            child: LayoutBuilder(
+                              builder: (context, mapHeaderConstraints) {
+                                final isMobile = mapHeaderConstraints.maxWidth < 620;
+
+                                final tagWidget = Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: (widget.isDark ? OryzaColors.darkCanvas : OryzaColors.lightCanvas).withValues(alpha: 0.88),
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(color: borderColor),
+                                  ),
+                                  child: Text(
+                                    s.benchmarkMapFooterTag,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontFamily: OryzaTypography.monoFontFamily,
+                                      package: 'oryzaelo_ui',
+                                      fontSize: 9.5,
+                                      fontWeight: FontWeight.w700,
+                                      color: textSecondary,
+                                    ),
+                                  ),
+                                );
+
+                                if (isMobile) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      tagWidget,
+                                      const SizedBox(height: 8),
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 6,
+                                        children: [
+                                          _buildMapSelectPill(s.benchmarkMapLegendBrazil, _selectedMapCountry == 0, () {
+                                            setState(() => _selectedMapCountry = 0);
+                                          }),
+                                          _buildMapSelectPill(s.benchmarkMapLegendThai, _selectedMapCountry == 1, () {
+                                            setState(() => _selectedMapCountry = 1);
+                                          }),
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                }
+
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(child: tagWidget),
+                                    const SizedBox(width: 12),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        _buildMapSelectPill(s.benchmarkMapLegendBrazil, _selectedMapCountry == 0, () {
+                                          setState(() => _selectedMapCountry = 0);
+                                        }),
+                                        const SizedBox(width: 8),
+                                        _buildMapSelectPill(s.benchmarkMapLegendThai, _selectedMapCountry == 1, () {
+                                          setState(() => _selectedMapCountry = 1);
+                                        }),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      // Country Focus Switcher on Map
-                      Positioned(
-                        top: 14,
-                        right: 16,
-                        child: Row(
-                          children: [
-                            _buildMapSelectPill(s.benchmarkMapLegendBrazil, _selectedMapCountry == 0, () {
-                              setState(() => _selectedMapCountry = 0);
-                            }),
-                            const SizedBox(width: 8),
-                            _buildMapSelectPill(s.benchmarkMapLegendThai, _selectedMapCountry == 1, () {
-                              setState(() => _selectedMapCountry = 1);
-                            }),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
 
               // Country Stats Breakdown Cards below Map
@@ -1121,6 +1217,9 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                       yieldVal: s.benchmarkMapBrazilYield,
                       climate: s.benchmarkMapBrazilClimate,
                       tech: s.benchmarkMapBrazilTech,
+                      sourceLabel: s.benchmarkGovSourceLabel,
+                      source: s.benchmarkMapBrazilSource,
+                      sourceUrl: s.benchmarkMapBrazilUrl,
                       accentColor: OryzaColors.burntOrange,
                       isSelected: _selectedMapCountry == 0,
                       onTap: () => setState(() => _selectedMapCountry = 0),
@@ -1133,6 +1232,9 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                       yieldVal: s.benchmarkMapThaiYield,
                       climate: s.benchmarkMapThaiClimate,
                       tech: s.benchmarkMapThaiTech,
+                      sourceLabel: s.benchmarkGovSourceLabel,
+                      source: s.benchmarkMapThaiSource,
+                      sourceUrl: s.benchmarkMapThaiUrl,
                       accentColor: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
                       isSelected: _selectedMapCountry == 1,
                       onTap: () => setState(() => _selectedMapCountry = 1),
@@ -1201,6 +1303,9 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
     required String yieldVal,
     required String climate,
     required String tech,
+    required String sourceLabel,
+    required String source,
+    required String sourceUrl,
     required Color accentColor,
     required bool isSelected,
     required VoidCallback onTap,
@@ -1262,6 +1367,10 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
             _buildStatLine(Icons.wb_sunny_outlined, climate, textSecondary),
             const SizedBox(height: 6),
             _buildStatLine(Icons.science_outlined, tech, textSecondary),
+            const SizedBox(height: 6),
+            _buildStatLine(Icons.verified_outlined, "$sourceLabel $source", textSecondary),
+            const SizedBox(height: 4),
+            _buildStatLine(Icons.link_outlined, sourceUrl, accentColor),
           ],
         ),
       ),
@@ -1336,6 +1445,9 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
               role: s.benchmarkQuote1Role,
               tag: s.benchmarkQuote1Tag,
               text: s.benchmarkQuote1Text,
+              sourceLabel: s.benchmarkSourceLabel,
+              source: s.benchmarkQuote1Source,
+              url: s.benchmarkQuote1Url,
               avatarAsset: "assets/student/_0040.png",
               accentColor: OryzaColors.burntOrange,
             );
@@ -1344,6 +1456,9 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
               role: s.benchmarkQuote2Role,
               tag: s.benchmarkQuote2Tag,
               text: s.benchmarkQuote2Text,
+              sourceLabel: s.benchmarkSourceLabel,
+              source: s.benchmarkQuote2Source,
+              url: s.benchmarkQuote2Url,
               avatarAsset: "assets/student/_0017.png",
               accentColor: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
             );
@@ -1352,6 +1467,9 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
               role: s.benchmarkQuote3Role,
               tag: s.benchmarkQuote3Tag,
               text: s.benchmarkQuote3Text,
+              sourceLabel: s.benchmarkSourceLabel,
+              source: s.benchmarkQuote3Source,
+              url: s.benchmarkQuote3Url,
               avatarAsset: "assets/student/_0028.png",
               accentColor: OryzaColors.burntOrange,
             );
@@ -1360,6 +1478,9 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
               role: s.benchmarkQuote4Role,
               tag: s.benchmarkQuote4Tag,
               text: s.benchmarkQuote4Text,
+              sourceLabel: s.benchmarkSourceLabel,
+              source: s.benchmarkQuote4Source,
+              url: s.benchmarkQuote4Url,
               avatarAsset: "assets/student/_0005.png",
               accentColor: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
             );
@@ -1410,6 +1531,9 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
     required String role,
     required String tag,
     required String text,
+    required String sourceLabel,
+    required String source,
+    required String url,
     required String avatarAsset,
     required Color accentColor,
   }) {
@@ -1523,6 +1647,59 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              color: (widget.isDark ? Colors.black : Colors.white).withValues(alpha: 0.22),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: borderColor.withValues(alpha: 0.7)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.verified_outlined, size: 13, color: accentColor),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        "$sourceLabel $source",
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    Icon(Icons.link_outlined, size: 13, color: accentColor),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: SelectableText(
+                        url,
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: accentColor,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

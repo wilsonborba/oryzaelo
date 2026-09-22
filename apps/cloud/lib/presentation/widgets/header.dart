@@ -131,6 +131,12 @@ class OryzaHeader extends StatelessWidget {
                             onTap: () => onNavigateToSection?.call('benchmark'),
                             isDark: isDark,
                           ),
+                          _NavLink(
+                            label: s.navHowToUse,
+                            isActive: activeSection == 'howToUse',
+                            onTap: () => onNavigateToSection?.call('howToUse'),
+                            isDark: isDark,
+                          ),
                         ],
                       ),
                     ),
@@ -196,6 +202,16 @@ class OryzaHeader extends StatelessWidget {
                         style: TextStyle(
                           color: activeSection == 'benchmark' ? OryzaColors.burntOrange : textColor,
                           fontWeight: activeSection == 'benchmark' ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'howToUse',
+                      child: Text(
+                        s.navHowToUse,
+                        style: TextStyle(
+                          color: activeSection == 'howToUse' ? OryzaColors.burntOrange : textColor,
+                          fontWeight: activeSection == 'howToUse' ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
                     ),

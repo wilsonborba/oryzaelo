@@ -7,6 +7,7 @@ import '../widgets/system_pipeline_screen.dart';
 import '../widgets/hardware_workbench_screen.dart';
 import '../widgets/tcc_research_screen.dart';
 import '../widgets/benchmark_screen.dart';
+import '../widgets/how_to_use_screen.dart';
 import '../widgets/footer.dart';
 
 class LandingPage extends StatefulWidget {
@@ -139,6 +140,8 @@ class _LandingPageState extends State<LandingPage> {
         return s.navTcc;
       case 'benchmark':
         return s.navBenchmark;
+      case 'howToUse':
+        return s.navHowToUse;
       default:
         return s.navHome;
     }
@@ -194,7 +197,9 @@ class _LandingPageState extends State<LandingPage> {
                     else if (_activeSection == 'tcc')
                       Center(child: TccResearchScreen(isDark: isDark))
                     else if (_activeSection == 'benchmark')
-                      Center(child: BenchmarkScreen(isDark: isDark)),
+                      Center(child: BenchmarkScreen(isDark: isDark))
+                    else if (_activeSection == 'howToUse')
+                      Center(child: HowToUseScreen(isDark: isDark)),
                   ],
 
                   // Rodapé Asodya

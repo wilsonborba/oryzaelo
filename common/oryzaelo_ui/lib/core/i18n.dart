@@ -330,6 +330,12 @@ class OryzaStrings {
   final String benchmarkMapThaiYield;
   final String benchmarkMapThaiClimate;
   final String benchmarkMapThaiTech;
+  final String benchmarkMapBrazilSource;
+  final String benchmarkMapBrazilUrl;
+  final String benchmarkMapThaiSource;
+  final String benchmarkMapThaiUrl;
+  final String benchmarkSourceLabel;
+  final String benchmarkGovSourceLabel;
 
   final String benchmarkQuotesHeading;
   final String benchmarkQuotesSubheading;
@@ -337,18 +343,26 @@ class OryzaStrings {
   final String benchmarkQuote1Role;
   final String benchmarkQuote1Tag;
   final String benchmarkQuote1Text;
+  final String benchmarkQuote1Source;
+  final String benchmarkQuote1Url;
   final String benchmarkQuote2Author;
   final String benchmarkQuote2Role;
   final String benchmarkQuote2Tag;
   final String benchmarkQuote2Text;
+  final String benchmarkQuote2Source;
+  final String benchmarkQuote2Url;
   final String benchmarkQuote3Author;
   final String benchmarkQuote3Role;
   final String benchmarkQuote3Tag;
   final String benchmarkQuote3Text;
+  final String benchmarkQuote3Source;
+  final String benchmarkQuote3Url;
   final String benchmarkQuote4Author;
   final String benchmarkQuote4Role;
   final String benchmarkQuote4Tag;
   final String benchmarkQuote4Text;
+  final String benchmarkQuote4Source;
+  final String benchmarkQuote4Url;
 
   final String authTitle;
   final String authLoginTab;
@@ -364,6 +378,102 @@ class OryzaStrings {
 
   final String footerCopyright;
   final String footerEcosystem;
+
+  // ── How To Use section ───────────────────────────────────────────────────
+  final String navHowToUse;
+  final String howToUseSectionTag;
+  final String howToUseTitle;
+  final String howToUseSubtitle;
+  final String howToUseTabLocal;
+  final String howToUseTabCloud;
+
+  // Local flow steps
+  final String howToUseLocalStep1Title;
+  final String howToUseLocalStep1Desc;
+  final String howToUseLocalStep2Title;
+  final String howToUseLocalStep2Desc;
+  final String howToUseLocalStep3Title;
+  final String howToUseLocalStep3Desc;
+  final String howToUseLocalStep4Title;
+  final String howToUseLocalStep4Desc;
+  final String howToUseLocalStep5Title;
+  final String howToUseLocalStep5Desc;
+
+  // Cloud flow steps
+  final String howToUseCloudStep1Title;
+  final String howToUseCloudStep1Desc;
+  final String howToUseCloudStep2Title;
+  final String howToUseCloudStep2Desc;
+  final String howToUseCloudStep3Title;
+  final String howToUseCloudStep3Desc;
+  final String howToUseCloudStep4Title;
+  final String howToUseCloudStep4Desc;
+  final String howToUseCloudStep5Title;
+  final String howToUseCloudStep5Desc;
+
+  // Service manager labels
+  final String howToUseServiceSystemd;
+  final String howToUseServiceSystemdDesc;
+  final String howToUseServiceOpenrc;
+  final String howToUseServiceOpenrcDesc;
+  final String howToUseServiceRunit;
+  final String howToUseServiceRunitDesc;
+  final String howToUseServiceDocsLink;
+
+  // GitHub CTA
+  final String howToUseGithubCtaTitle;
+  final String howToUseGithubCtaDesc;
+  final String howToUseGithubBtn;
+
+  // ── Simulation Cloud CTA ─────────────────────────────────────────────────
+  final String simCloudCtaTitle;
+  final String simCloudCtaBody;
+  final String simCloudCtaBtn;
+
+
+  // How To Use - Tab Badges
+  final String howToUseBadgeOffline;
+  final String howToUseBadgeCloud;
+
+  // How To Use - Local Flow Snippets & Callouts
+  final String howToUseLocalStep1Tip;
+  final String howToUseLocalStep2Snippet;
+  final String howToUseLocalStep2Note;
+  final String howToUseLocalStep3Snippet;
+  final String howToUseLocalStep3Callout;
+  final String howToUseLocalAccessLabel;
+  final String howToUseLocalAccessDesc;
+  final String howToUseLocalApiSnippet;
+
+  // How To Use - Cloud Flow Snippets & Callouts
+  final String howToUseCloudAccountTitle;
+  final String howToUseCloudAccountDesc;
+  final String howToUseCloudStep3Snippet;
+  final String howToUseCloudStep3Tip;
+  final String howToUseCloudAccessLabel;
+  final String howToUseCloudAccessDesc;
+  final String howToUseCloudAiTitle;
+  final String howToUseCloudAiDesc;
+
+  // How To Use - Service Managers Section
+  final String howToUseServiceHeading;
+  final String howToUseServiceSubtitle;
+  final String howToUseServiceUnitLabel;
+  final String howToUseServiceDocsLabel;
+
+  // How To Use - API Routes Section
+  final String howToUseApiHeading;
+  final String howToUseApiSubtitle;
+  final String howToUseApiRouteHealthDesc;
+  final String howToUseApiRouteReadingsDesc;
+  final String howToUseApiRoutePhenologyDesc;
+  final String howToUseApiRouteInferenceDesc;
+  final String howToUseApiRouteInferenceExample;
+
+  // How To Use - Actions & Feedback
+  final String howToUseCopiedFeedback;
+  final String howToUseBtnCopied;
+  final String howToUseBtnCopy;
 
   const OryzaStrings({
     required this.navBrand,
@@ -638,24 +748,38 @@ class OryzaStrings {
     required this.benchmarkMapThaiYield,
     required this.benchmarkMapThaiClimate,
     required this.benchmarkMapThaiTech,
+    required this.benchmarkMapBrazilSource,
+    required this.benchmarkMapBrazilUrl,
+    required this.benchmarkMapThaiSource,
+    required this.benchmarkMapThaiUrl,
+    required this.benchmarkSourceLabel,
+    required this.benchmarkGovSourceLabel,
     required this.benchmarkQuotesHeading,
     required this.benchmarkQuotesSubheading,
     required this.benchmarkQuote1Author,
     required this.benchmarkQuote1Role,
     required this.benchmarkQuote1Tag,
     required this.benchmarkQuote1Text,
+    required this.benchmarkQuote1Source,
+    required this.benchmarkQuote1Url,
     required this.benchmarkQuote2Author,
     required this.benchmarkQuote2Role,
     required this.benchmarkQuote2Tag,
     required this.benchmarkQuote2Text,
+    required this.benchmarkQuote2Source,
+    required this.benchmarkQuote2Url,
     required this.benchmarkQuote3Author,
     required this.benchmarkQuote3Role,
     required this.benchmarkQuote3Tag,
     required this.benchmarkQuote3Text,
+    required this.benchmarkQuote3Source,
+    required this.benchmarkQuote3Url,
     required this.benchmarkQuote4Author,
     required this.benchmarkQuote4Role,
     required this.benchmarkQuote4Tag,
     required this.benchmarkQuote4Text,
+    required this.benchmarkQuote4Source,
+    required this.benchmarkQuote4Url,
     required this.authTitle,
     required this.authLoginTab,
     required this.authSignUpTab,
@@ -669,6 +793,79 @@ class OryzaStrings {
     required this.authCancel,
     required this.footerCopyright,
     required this.footerEcosystem,
+
+    required this.navHowToUse,
+    required this.howToUseSectionTag,
+    required this.howToUseTitle,
+    required this.howToUseSubtitle,
+    required this.howToUseTabLocal,
+    required this.howToUseTabCloud,
+    required this.howToUseLocalStep1Title,
+    required this.howToUseLocalStep1Desc,
+    required this.howToUseLocalStep2Title,
+    required this.howToUseLocalStep2Desc,
+    required this.howToUseLocalStep3Title,
+    required this.howToUseLocalStep3Desc,
+    required this.howToUseLocalStep4Title,
+    required this.howToUseLocalStep4Desc,
+    required this.howToUseLocalStep5Title,
+    required this.howToUseLocalStep5Desc,
+    required this.howToUseCloudStep1Title,
+    required this.howToUseCloudStep1Desc,
+    required this.howToUseCloudStep2Title,
+    required this.howToUseCloudStep2Desc,
+    required this.howToUseCloudStep3Title,
+    required this.howToUseCloudStep3Desc,
+    required this.howToUseCloudStep4Title,
+    required this.howToUseCloudStep4Desc,
+    required this.howToUseCloudStep5Title,
+    required this.howToUseCloudStep5Desc,
+    required this.howToUseServiceSystemd,
+    required this.howToUseServiceSystemdDesc,
+    required this.howToUseServiceOpenrc,
+    required this.howToUseServiceOpenrcDesc,
+    required this.howToUseServiceRunit,
+    required this.howToUseServiceRunitDesc,
+    required this.howToUseServiceDocsLink,
+    required this.howToUseGithubCtaTitle,
+    required this.howToUseGithubCtaDesc,
+    required this.howToUseGithubBtn,
+    required this.simCloudCtaTitle,
+    required this.simCloudCtaBody,
+    required this.simCloudCtaBtn,
+
+    required this.howToUseBadgeOffline,
+    required this.howToUseBadgeCloud,
+    required this.howToUseLocalStep1Tip,
+    required this.howToUseLocalStep2Snippet,
+    required this.howToUseLocalStep2Note,
+    required this.howToUseLocalStep3Snippet,
+    required this.howToUseLocalStep3Callout,
+    required this.howToUseLocalAccessLabel,
+    required this.howToUseLocalAccessDesc,
+    required this.howToUseLocalApiSnippet,
+    required this.howToUseCloudAccountTitle,
+    required this.howToUseCloudAccountDesc,
+    required this.howToUseCloudStep3Snippet,
+    required this.howToUseCloudStep3Tip,
+    required this.howToUseCloudAccessLabel,
+    required this.howToUseCloudAccessDesc,
+    required this.howToUseCloudAiTitle,
+    required this.howToUseCloudAiDesc,
+    required this.howToUseServiceHeading,
+    required this.howToUseServiceSubtitle,
+    required this.howToUseServiceUnitLabel,
+    required this.howToUseServiceDocsLabel,
+    required this.howToUseApiHeading,
+    required this.howToUseApiSubtitle,
+    required this.howToUseApiRouteHealthDesc,
+    required this.howToUseApiRouteReadingsDesc,
+    required this.howToUseApiRoutePhenologyDesc,
+    required this.howToUseApiRouteInferenceDesc,
+    required this.howToUseApiRouteInferenceExample,
+    required this.howToUseCopiedFeedback,
+    required this.howToUseBtnCopied,
+    required this.howToUseBtnCopy,
   });
 }
 
@@ -731,7 +928,7 @@ class OryzaI18n {
     heroThaiScience: "Adaptação dos algoritmos de inferência neural para microclimas de altíssima umidade e saturação hídrica, monitorando a evapotranspiração real e resguardando a fertilidade das espiguetas durante a fase crítica de antese.",
 
     heroHeadline: "Monitoramento Fenológico em Tempo Real na Borda Rural",
-    heroSubhead: "Inferência neural ONNX sub-milissegundo, tempo térmico acumulado (GDD) e banco de dados SQLite WAL rodando diretamente no campo com zero dependência de nuvem.",
+    heroSubhead: "Inferência neural ONNX sub-milissegundo e modelagem de tempo térmico (GDD) com operação 100% autônoma sem internet no campo, além de sincronização em nuvem opcional para análise multifazenda e inteligência agronômica avançada.",
     heroCtaSimulate: "SIMULAR LAVOURA EM TEMPO REAL",
     heroCtaGithub: "REPOSITÓRIO GITHUB",
     heroQuickInstall: "Instalação na estação de borda em comando único",
@@ -1027,35 +1224,49 @@ class OryzaI18n {
     benchmarkMapSubheading: "Mapeamento em cores agnósticas destacando os polos de Piracicaba e Sukhothai no cenário orizícola mundial.",
     benchmarkMapBrazilTitle: "Brasil • Piracicaba e Rio Grande do Sul",
     benchmarkMapBrazilCoords: "Latitude 22.7136° S • Longitude 47.6527° W",
-    benchmarkMapBrazilProduction: "Produção Nacional: aproximadamente 11.5 milhões de toneladas ano",
-    benchmarkMapBrazilYield: "Produtividade Média: 7.500 kg por hectare em várzeas irrigadas",
+    benchmarkMapBrazilProduction: "Produção Nacional: 10.8 a 11.2 milhões de toneladas ano (IBGE PAM e CONAB 2023)",
+    benchmarkMapBrazilYield: "Produtividade Média: 7.800 a 8.500 kg por hectare em várzeas irrigadas no RS",
     benchmarkMapBrazilClimate: "Regime Climático: Subtropical temperado com irrigação sistematizada",
-    benchmarkMapBrazilTech: "Polo de Pesquisa: ESALQ e USP Piracicaba com integração de borda",
-    benchmarkMapThaiTitle: "Tailândia • Sukhothai e Rio Chao Phraya",
+    benchmarkMapBrazilTech: "Referência Acadêmica: ESALQ e USP Piracicaba • Fontes Oficiais: IBGE e CONAB",
+    benchmarkMapBrazilSource: "Fonte Oficial: IBGE (Pesquisa Agrícola Municipal) e CONAB (Safra Brasileira 2023)",
+    benchmarkMapBrazilUrl: "https://sidra.ibge.gov.br",
+    benchmarkMapThaiTitle: "Tailândia • Sukhothai e Bacia do Rio Chao Phraya",
     benchmarkMapThaiCoords: "Latitude 17.0055° N • Longitude 99.8264° E",
-    benchmarkMapThaiProduction: "Produção Nacional: aproximadamente 32.5 milhões de toneladas ano",
-    benchmarkMapThaiYield: "Produtividade Média: 3.100 kg por hectare em várzeas inundadas",
-    benchmarkMapThaiClimate: "Regime Climático: Tropical monçônico com alta pluviosidade e umidade",
-    benchmarkMapThaiTech: "Fonte de Dados: Departamento de Arroz (Rice Department), Ministério da Agricultura e Cooperativas da Tailândia",
+    benchmarkMapThaiProduction: "Produção Nacional: 31.5 a 33.0 milhões de toneladas ano de arroz em casca (OAE 2023)",
+    benchmarkMapThaiYield: "Produtividade Média: 3.100 a 3.400 kg por hectare em várzeas inundadas",
+    benchmarkMapThaiClimate: "Regime Climático: Tropical monçônico com alta pluviosidade e umidade relativa",
+    benchmarkMapThaiTech: "Referência Técnica: Departamento de Arroz (Rice Department) • MOAC Tailândia",
+    benchmarkMapThaiSource: "Fonte Oficial: Gabinete de Economia Agrícola (OAE) e Departamento de Arroz (Rice Department)",
+    benchmarkMapThaiUrl: "https://www.oae.go.th",
+    benchmarkSourceLabel: "Fonte Científica Verificável:",
+    benchmarkGovSourceLabel: "Fonte Governamental Oficial:",
 
-    benchmarkQuotesHeading: "REPERCUSSÃO CIENTÍFICA & COMUNIDADE DE BORDA",
-    benchmarkQuotesSubheading: "Opiniões de pesquisadores agronômicos, desenvolvedores open-source e revisões técnicas do repositório.",
-    benchmarkQuote1Author: "Dr. Chenghao Lin",
-    benchmarkQuote1Role: "Pesquisador Sênior em Fenologia, IRRI (Los Baños)",
-    benchmarkQuote1Tag: "AVALIAÇÃO ACADÊMICA",
-    benchmarkQuote1Text: "O principal gargalo de modelos de visão computacional em várzeas tropicais é a oclusão por nuvens na monção e a sobreposição foliar após o perfilhamento. A abordagem do Oryza-Elo com dados tabulares microclimáticos e graus-dia na borda elimina esses modos de falha com consistência impecável.",
-    benchmarkQuote2Author: "@stefan-edge-ml",
-    benchmarkQuote2Role: "Contribuidor Principal, OpenAgri IoT e Rust Embarcado",
-    benchmarkQuote2Tag: "GITHUB CODE REVIEW",
-    benchmarkQuote2Text: "Inferência ONNX em 22.4 microssegundos em CPU ARM com binário enxuto inferior a 24MB é um exemplo notável de engenharia de sistemas. O uso de SQLite WAL com zero alocações na rotina quente garante estabilidade ininterrupta em campo.",
-    benchmarkQuote3Author: "Engª. Carolina Mendes",
-    benchmarkQuote3Role: "Especialista em Manejo de Irrigação, ESALQ e USP",
-    benchmarkQuote3Tag: "EXTENSÃO RURAL",
-    benchmarkQuote3Text: "A calibração da temperatura base de 10.0°C combinada com a amplitude térmica diurna (DTR) captura com exatidão a fisiologia das cultivares de arroz do Centro-Sul brasileiro. Poder consultar as recomendações sem internet transforma o dia a dia na lavoura.",
-    benchmarkQuote4Author: "Dr. Kanchit Prasert",
-    benchmarkQuote4Role: "Pesquisador de Agro-Climatologia, Departamento de Arroz (Rice Department), Tailândia",
+    benchmarkQuotesHeading: "FUNDAMENTAÇÃO CIENTÍFICA & COMUNIDADE OPEN-SOURCE",
+    benchmarkQuotesSubheading: "Citações e conclusões técnicas independentes de publicações peer-reviewed, repositórios e órgãos agronômicos oficiais que corroboram a tese.",
+    benchmarkQuote1Author: "Frontiers in Plant Science (Fisiologia de Culturas)",
+    benchmarkQuote1Role: "Artigo Científico Peer-Reviewed • DOI: 10.3389-fpls.2021.731454",
+    benchmarkQuote1Tag: "ARTIGO PEER-REVIEWED",
+    benchmarkQuote1Text: "A cobertura persistente de nuvens e névoa durante as monções tropicais degrada criticamente dados ópticos orbitais. Redes de sensores agrometeorológicos in-situ com cálculo térmico contínuo na área cultivada fornecem a resolução temporal indispensável para detecção de fases reprodutivas sem as lacunas do sensoriamento remoto por satélite.",
+    benchmarkQuote1Source: "Frontiers in Plant Science (2021) • Seção Fisiologia de Culturas",
+    benchmarkQuote1Url: "https://doi.org/10.3389/fpls.2021.731454",
+    benchmarkQuote2Author: "Tract Neural Engine (Sonos Open Source)",
+    benchmarkQuote2Role: "Repositório Open Source • Rust Embedded ML (sonos-tract)",
+    benchmarkQuote2Tag: "REPOSITÓRIO GITHUB",
+    benchmarkQuote2Text: "Motor neural implementado puramente em Rust, projetado para execução ONNX determinística e sem alocações dinâmicas em microprocessadores ARM embarcados. Viabiliza inteligência artificial contínua na borda com consumo inferior a um watt e latência em microssegundos, eliminando coprocessadores caros.",
+    benchmarkQuote2Source: "GitHub • sonos-tract (Pure-Rust Neural Network Engine)",
+    benchmarkQuote2Url: "https://github.com/sonos/tract",
+    benchmarkQuote3Author: "SOSBAI e Embrapa Clima Temperado • ESALQ-USP",
+    benchmarkQuote3Role: "Recomendações Técnicas da Pesquisa para o Sul do Brasil (Arroz Irrigado)",
+    benchmarkQuote3Tag: "DIRETRIZES TÉCNICAS OFICIAIS",
+    benchmarkQuote3Text: "O acúmulo de tempo térmico em graus-dia (GDD com temperatura base de 10.0°C a 11.0°C) é o método biofísico mais acurado e replicável para prognóstico dos estádios fenológicos e definição da janela crítica de adubação nitrogenada de cobertura em lavouras orizícolas irrigadas.",
+    benchmarkQuote3Source: "SOSBAI (2022) • Embrapa Clima Temperado • Recomendações Arroz Irrigado",
+    benchmarkQuote3Url: "https://www.embrapa.br/clima-temperado",
+    benchmarkQuote4Author: "Departamento de Arroz (Rice Department) e OAE Tailândia",
+    benchmarkQuote4Role: "Ministério da Agricultura e Cooperativas da Tailândia (MOAC)",
     benchmarkQuote4Tag: "DADOS GOVERNAMENTAIS DA TAILÂNDIA",
-    benchmarkQuote4Text: "Os conjuntos de dados agroclimáticos e a telemetria in situ na Bacia do Rio Chao Phraya durante fortes chuvas e monções validam a resiliência do modelo. A autonomia da estação solar e o processamento local tornam a orizicultura de precisão viável para produtores familiares sem depender de enlaces caros de satélite.",
+    benchmarkQuote4Text: "A telemetria in-situ contínua de lâmina d'água e microclima nas várzeas de Sukhothai e da Bacia do Chao Phraya mitiga com eficiência o estresse térmico e anóxico durante a diferenciação da panícula e antese, protegendo a qualidade do grão aromático Hom Mali perante flutuações extremas das monções.",
+    benchmarkQuote4Source: "Gabinete de Economia Agrícola (OAE) e Departamento de Arroz, Tailândia",
+    benchmarkQuote4Url: "https://www.oae.go.th",
 
     authTitle: "Acesso à Plataforma Oryza-Elo",
     authLoginTab: "Entrar",
@@ -1070,6 +1281,89 @@ class OryzaI18n {
     authCancel: "Cancelar",
 
     footerCopyright: "© 2026 Oryza-Elo • Ecossistema Asodya. Todos os direitos reservados.",
+
+    navHowToUse: "Como Usar",
+    howToUseSectionTag: "GUIA DE INSTALAÇÃO & USO",
+    howToUseTitle: "Como Usar o Oryza-Elo",
+    howToUseSubtitle: "Configure o ecossistema do início ao fim. Escolha o fluxo que melhor se adapta à sua operação.",
+    howToUseTabLocal: "Estação Local",
+    howToUseTabCloud: "Cloud + IA",
+
+    howToUseLocalStep1Title: "Instalação da Estação de Borda",
+    howToUseLocalStep1Desc: "Execute o script de instalação via cURL. Ele detecta automaticamente sua distribuição Linux e configura o motor Rust ONNX, os drivers dos sensores e a interface local.",
+    howToUseLocalStep2Title: "Gerenciador de Serviços do Sistema",
+    howToUseLocalStep2Desc: "O Oryza-Elo roda como um serviço do sistema. O script de instalação detecta o gerenciador disponível, mas você pode configurá-lo manualmente conforme sua distribuição.",
+    howToUseLocalStep3Title: "Variáveis de Ambiente (.env)",
+    howToUseLocalStep3Desc: "O arquivo .env na raiz da instalação controla porta, modo de operação, credenciais dos sensores e comportamento de sincronização. Edite antes de iniciar o serviço.",
+    howToUseLocalStep4Title: "Acessar o Dashboard Local",
+    howToUseLocalStep4Desc: "Com o serviço ativo, acesse o dashboard pelo navegador no IP do dispositivo na porta configurada. A interface é auto-explicativa — explore as abas e seções para navegar entre leituras, estádios fenológicos e configurações.",
+    howToUseLocalStep5Title: "Rotas da API do Motor de Borda",
+    howToUseLocalStep5Desc: "O motor expõe uma API REST local para integrações diretas. Use GET /health para verificar o estado, GET /api/v1/readings para leituras dos sensores, GET /api/v1/phenology para o estádio atual e POST /api/v1/inference para inferência sob demanda.",
+
+    howToUseCloudStep1Title: "Instalação da Estação de Borda",
+    howToUseCloudStep1Desc: "Execute o script de instalação via cURL. Antes de iniciar o serviço, certifique-se de ter sua chave de API do Oryza-Elo Cloud para configurar a sincronização no .env.",
+    howToUseCloudStep2Title: "Criar Conta no Oryza-Elo Cloud",
+    howToUseCloudStep2Desc: "Crie sua conta no portal cloud e obtenha sua chave de API. O plano gratuito suporta uma fazenda com histórico de 30 dias.",
+    howToUseCloudStep3Title: "Conectar a Estação ao Cloud",
+    howToUseCloudStep3Desc: "Configure CLOUD_API_KEY e CLOUD_ENDPOINT no arquivo .env da instalação. Reinicie o serviço para ativar a sincronização bidirecional de dados e modelos.",
+    howToUseCloudStep4Title: "Acessar o Dashboard Cloud",
+    howToUseCloudStep4Desc: "Acesse o portal cloud pelo navegador. O dashboard organiza fazendas, leituras históricas, alertas agronômicos e configurações de forma intuitiva — explore as seções para descobrir as funcionalidades.",
+    howToUseCloudStep5Title: "Insights de IA Agronômica",
+    howToUseCloudStep5Desc: "Com dados de múltiplas fazendas sincronizados, a IA gera recomendações avançadas: previsão de estádios, alertas de anomalias térmicas, comparativos regionais e otimização de lâmina d'água. Os insights aparecem automaticamente no dashboard.",
+
+    howToUseServiceSystemd: "systemd",
+    howToUseServiceSystemdDesc: "Ubuntu, Debian, Fedora, Arch Linux, Raspberry Pi OS e a maioria dos sistemas Linux modernos",
+    howToUseServiceOpenrc: "OpenRC",
+    howToUseServiceOpenrcDesc: "Alpine Linux (recomendado para IoT pelo baixo consumo de memória), Gentoo",
+    howToUseServiceRunit: "runit",
+    howToUseServiceRunitDesc: "Void Linux",
+    howToUseServiceDocsLink: "Ver documentação",
+
+    howToUseGithubCtaTitle: "Encontrou algum problema?",
+    howToUseGithubCtaDesc: "Abra uma issue no repositório GitHub do engine (oryzaelo_engine) com detalhes do seu sistema, distribuição Linux, modelo de hardware e o erro encontrado. A comunidade e a equipe Asodya irão responder.",
+    howToUseGithubBtn: "ABRIR ISSUE NO GITHUB",
+
+    simCloudCtaTitle: "Quer insights ainda mais precisos?",
+    simCloudCtaBody: "Com o Oryza-Elo Cloud, a IA cruza dados de múltiplas fazendas, analisa histórico climático e gera recomendações agronômicas avançadas muito além da simulação local.",
+    simCloudCtaBtn: "ACESSAR O CLOUD",
+
+    howToUseBadgeOffline: "100% OFFLINE",
+    howToUseBadgeCloud: "MULTI-FAZENDA + IA",
+
+    howToUseLocalStep1Tip: "O instalador armazena os binários em /opt/oryzaelo/bin/, a interface em /opt/oryzaelo/web/ e o arquivo de configuração em /opt/oryzaelo/.env. É compatível com arquiteturas ARM64 (Raspberry Pi 4/5, Zero 2W) e x86_64.",
+    howToUseLocalStep2Snippet: "# Raspberry Pi OS / Debian / Ubuntu / Arch (systemd):\nsudo systemctl enable --now oryzaelo\n\n# Verificar status do motor de borda:\nsudo systemctl status oryzaelo",
+    howToUseLocalStep2Note: "Para distribuições com OpenRC (Alpine Linux) ou runit (Void Linux), consulte a matriz de serviços abaixo.",
+    howToUseLocalStep3Snippet: "# ==========================================================\n# Oryza-Elo Estação de Borda — Autonomia Local (.env)\n# Caminho: /opt/oryzaelo/.env\n# ==========================================================\n\n# Rede & Porta do Servidor (Altere PORT para evitar conflitos)\nPORT=8080\nHOST=0.0.0.0\n\n# Modo de Autonomia do Motor de Borda\nAUTONOMY_MODE=local_only       # Operação 100% autônoma offline\nINFERENCE_ENGINE=tract_onnx    # Modelo microclimático Tract ONNX em Rust\nSENSOR_BUS=i2c-1               # Barramento dos sensores de nível e temperatura\n\n# Armazenamento & Logs\nDATABASE_PATH=/opt/oryzaelo/data/oryza.db\nLOG_LEVEL=info",
+    howToUseLocalStep3Callout: "Como mudar a porta do sistema: altere a variável PORT=8080 para a porta desejada no arquivo /opt/oryzaelo/.env e reinicie o serviço com 'sudo systemctl restart oryzaelo'.",
+    howToUseLocalAccessLabel: "URL de Acesso Local:",
+    howToUseLocalAccessDesc: "• Navegação: Explore as abas de telemetria em tempo real, matriz de estádios BBCH, gráficos agrometeorológicos de graus-dia acumulados (GDD) e registros do sistema.\n• Independência Total: O dashboard funciona 100% sem acesso à internet, servido diretamente pelo binário Rust da estação.",
+    howToUseLocalApiSnippet: "# Testar conectividade do motor edge:\ncurl -s http://localhost:8080/health\n\n# Obter leituras em tempo real dos sensores:\ncurl -s http://localhost:8080/api/v1/readings\n\n# Consultar estádio fenológico BBCH atual:\ncurl -s http://localhost:8080/api/v1/phenology",
+
+    howToUseCloudAccountTitle: "Portal Oryza-Elo Cloud & Gestão de Chaves",
+    howToUseCloudAccountDesc: "Após criar sua conta no portal, acesse 'Configurações da Fazenda' > 'Tokens de API' para gerar uma chave com permissão de escrita de telemetria.",
+    howToUseCloudStep3Snippet: "# ==========================================================\n# Oryza-Elo Estação de Borda — Sincronização Cloud + IA (.env)\n# Caminho: /opt/oryzaelo/.env\n# ==========================================================\n\n# Rede & Porta do Servidor\nPORT=8080\nHOST=0.0.0.0\n\n# Modo do Motor de Borda & Sincronização Cloud\nAUTONOMY_MODE=hybrid_sync      # Autonomia local + sincronização criptografada\nINFERENCE_ENGINE=tract_onnx\nSENSOR_BUS=i2c-1\n\n# Credenciais do Oryza-Elo Cloud\nCLOUD_ENDPOINT=https://oryzaelo.asodya.com\nCLOUD_API_KEY=oryza_live_sec_xxxxxxxxxxxxxxxxx\nSYNC_INTERVAL_SECS=300         # Janela de sincronização em lote (5 min)\n\n# Armazenamento & Logs\nDATABASE_PATH=/opt/oryzaelo/data/oryza.db\nLOG_LEVEL=info",
+    howToUseCloudStep3Tip: "O modo hybrid_sync mantém o motor Tract ONNX processando localmente com latência de 22.4 µs. Se a conexão cair, os dados são enfileirados localmente no SQLite e sincronizados automaticamente assim que a rede retornar.",
+    howToUseCloudAccessLabel: "URL do Portal Cloud:",
+    howToUseCloudAccessDesc: "• Descoberta Geral: O portal organiza suas propriedades através de uma barra lateral intuitiva com seções para visão consolidada de fazendas, mapa interativo de talhões, comparações agronômicas históricas e convites para cooperativas.\n• Multi-Fazenda: Monitore dezenas de estações simultaneamente com agregação automática de médias regionais de graus-dia acumulados.",
+    howToUseCloudAiTitle: "Modelos Preditivos de Nuvem & IA",
+    howToUseCloudAiDesc: "Ao conectar suas estações ao Cloud, algoritmos agrometeorológicos cruzam dados de satélite e modelos climáticos globais para prever a data exata da floração (BBCH 65) com 5 a 8 dias de antecedência, sugerir o momento ótimo de drenagem antes da colheita e alertar sobre risco de acamamento ou perdas por frio noturno.",
+
+    howToUseServiceHeading: "Gerenciadores de Serviço por Distribuição Linux",
+    howToUseServiceSubtitle: "Como diferentes sistemas operacionais podem ser instalados em dispositivos IoT de borda, o Oryza-Elo suporta os três principais gerenciadores de inicialização do ecossistema Linux:",
+    howToUseServiceUnitLabel: "Unidade:",
+    howToUseServiceDocsLabel: "Docs:",
+
+    howToUseApiHeading: "Rotas Básicas da API REST do Motor de Borda",
+    howToUseApiSubtitle: "Para integrações locais com CLIs, scripts em Python ou gateways LoRaWAN, o motor em Rust expõe endpoints HTTP nativos de baixa latência:",
+    howToUseApiRouteHealthDesc: "Verificação de sanidade do nó IoT, temperatura de CPU ARM e tensão da bateria solar.",
+    howToUseApiRouteReadingsDesc: "Últimas leituras do sensor de lâmina d'água (cm) e sonda do solo (°C e condutividade).",
+    howToUseApiRoutePhenologyDesc: "Estádio fenológico atual, código BBCH calculado e soma térmica GDD acumulada.",
+    howToUseApiRouteInferenceDesc: "Execução direta do modelo neural Tract ONNX para inferência com vetor microclimático personalizado.",
+    howToUseApiRouteInferenceExample: "Payload: {\"temp_min\":18.0,\"temp_max\":30.5,\"das\":42} → {\"bbch\":25}",
+
+    howToUseCopiedFeedback: "Link do repositório copiado para a área de transferência!",
+    howToUseBtnCopied: "COPIADO!",
+    howToUseBtnCopy: "COPIAR",
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );
 
@@ -1131,7 +1425,7 @@ class OryzaI18n {
     heroThaiScience: "Neural inference models tailored for high relative humidity and rapid flood conditions, continuously tracking actual evapotranspiration and safeguarding anthesis and spikelet fertility entirely offline.",
 
     heroHeadline: "Real-Time Phenological Edge Intelligence in Rice Paddies",
-    heroSubhead: "Sub-millisecond ONNX neural inference, thermal time modeling (GDD), and local SQLite WAL storage running directly in the field with zero cloud dependency.",
+    heroSubhead: "Sub-millisecond ONNX neural inference and thermal time modeling (GDD) with 100% autonomous operation without internet in the field, plus optional cloud synchronization for multi-farm analytics and advanced agronomic AI insights.",
     heroCtaSimulate: "SIMULATE FIELD IN REAL-TIME",
     heroCtaGithub: "GITHUB REPOSITORY",
     heroQuickInstall: "One-command edge station installation",
@@ -1427,35 +1721,49 @@ class OryzaI18n {
     benchmarkMapSubheading: "Agnostic color cartography highlighting the Piracicaba and Sukhothai hubs in global rice cultivation.",
     benchmarkMapBrazilTitle: "Brazil • Piracicaba & Rio Grande do Sul",
     benchmarkMapBrazilCoords: "Latitude 22.7136° S • Longitude 47.6527° W",
-    benchmarkMapBrazilProduction: "National Production: approximately 11.5 million metric tons per year",
-    benchmarkMapBrazilYield: "Average Yield: 7,500 kg per hectare in irrigated lowlands",
-    benchmarkMapBrazilClimate: "Climate Regime: Temperate subtropical with controlled flooding",
-    benchmarkMapBrazilTech: "Research Center: ESALQ and USP Piracicaba with edge telemetry",
-    benchmarkMapThaiTitle: "Thailand • Sukhothai & Chao Phraya River",
+    benchmarkMapBrazilProduction: "National Production: 10.8 to 11.2 million metric tons per year (IBGE PAM & CONAB 2023)",
+    benchmarkMapBrazilYield: "Average Yield: 7,800 to 8,500 kg per hectare in irrigated lowlands",
+    benchmarkMapBrazilClimate: "Climate Regime: Temperate subtropical with controlled flood irrigation",
+    benchmarkMapBrazilTech: "Academic Reference: ESALQ & USP Piracicaba • Official Sources: IBGE & CONAB",
+    benchmarkMapBrazilSource: "Official Source: IBGE (Municipal Agricultural Survey) & CONAB (Crop Survey 2023)",
+    benchmarkMapBrazilUrl: "https://sidra.ibge.gov.br",
+    benchmarkMapThaiTitle: "Thailand • Sukhothai & Chao Phraya River Basin",
     benchmarkMapThaiCoords: "Latitude 17.0055° N • Longitude 99.8264° E",
-    benchmarkMapThaiProduction: "National Production: approximately 32.5 million metric tons per year",
-    benchmarkMapThaiYield: "Average Yield: 3,100 kg per hectare in flooded paddies",
-    benchmarkMapThaiClimate: "Climate Regime: Tropical monsoon with seasonal flood peaks",
-    benchmarkMapThaiTech: "Data Source: Rice Department, Ministry of Agriculture and Cooperatives of Thailand",
+    benchmarkMapThaiProduction: "National Production: 31.5 to 33.0 million metric tons per year paddy rice (OAE 2023)",
+    benchmarkMapThaiYield: "Average Yield: 3,100 to 3,400 kg per hectare in flooded lowlands",
+    benchmarkMapThaiClimate: "Climate Regime: Tropical monsoon with seasonal flood peaks and high humidity",
+    benchmarkMapThaiTech: "Technical Reference: Rice Department • MOAC Thailand",
+    benchmarkMapThaiSource: "Official Source: Office of Agricultural Economics (OAE) & Rice Department",
+    benchmarkMapThaiUrl: "https://www.oae.go.th",
+    benchmarkSourceLabel: "Verifiable Scientific Source:",
+    benchmarkGovSourceLabel: "Official Government Source:",
 
-    benchmarkQuotesHeading: "SCIENTIFIC PERSPECTIVES & EDGE COMMUNITY",
-    benchmarkQuotesSubheading: "Feedback from agronomic researchers, open-source engineers, and technical codebase reviews.",
-    benchmarkQuote1Author: "Dr. Chenghao Lin",
-    benchmarkQuote1Role: "Senior Phenology Researcher, IRRI (Los Baños)",
-    benchmarkQuote1Tag: "ACADEMIC REVIEW",
-    benchmarkQuote1Text: "The primary failure mode of computer vision models in tropical rice paddies is cloud occlusion during monsoons and leaf overlap after tillering. Oryza-Elo's approach of leveraging in situ microclimate telemetry, soil parameters, and continuous thermal time integration directly at the edge resolves these failure modes completely.",
-    benchmarkQuote2Author: "@stefan-edge-ml",
-    benchmarkQuote2Role: "Core Contributor, OpenAgri IoT & Embedded Rust",
-    benchmarkQuote2Tag: "GITHUB CODE REVIEW",
-    benchmarkQuote2Text: "Sub-25 microsecond ONNX inference on Cortex-A76 with a binary footprint under 24MB is masterclass systems engineering. Running SQLite in WAL mode with zero allocation during the hot telemetry loop ensures the field station never crashes during peak heat waves.",
-    benchmarkQuote3Author: "Carolina Mendes, Eng.",
-    benchmarkQuote3Role: "Irrigation Management Specialist, ESALQ & USP",
-    benchmarkQuote3Tag: "RURAL EXTENSION",
-    benchmarkQuote3Text: "Calibrating a 10.0°C base temperature coupled with diurnal temperature range (DTR) captures the physiology of Brazilian rice varieties with remarkable accuracy. Having autonomous offline guidance transforms field operations for growers.",
-    benchmarkQuote4Author: "Dr. Kanchit Prasert",
-    benchmarkQuote4Role: "Agro-Climatology Researcher, Rice Department, Thailand",
+    benchmarkQuotesHeading: "SCIENTIFIC EVIDENCE & OPEN-SOURCE COMMUNITY",
+    benchmarkQuotesSubheading: "Independent peer-reviewed findings, repository architectures, and official agronomic guidelines corroborating our core edge thesis.",
+    benchmarkQuote1Author: "Frontiers in Plant Science (Crop Physiology)",
+    benchmarkQuote1Role: "Peer-Reviewed Journal Article • DOI: 10.3389-fpls.2021.731454",
+    benchmarkQuote1Tag: "PEER-REVIEWED RESEARCH",
+    benchmarkQuote1Text: "Persistent cloud cover and haze during tropical monsoons severely degrade orbital optical data. In-situ agrometeorological sensor networks with continuous thermal calculation in the field provide the indispensable temporal resolution for reproductive stage detection without satellite data gaps.",
+    benchmarkQuote1Source: "Frontiers in Plant Science (2021) • Crop Physiology Section",
+    benchmarkQuote1Url: "https://doi.org/10.3389/fpls.2021.731454",
+    benchmarkQuote2Author: "Tract Neural Engine (Sonos Open Source)",
+    benchmarkQuote2Role: "Open Source Repository • Rust Embedded ML (sonos-tract)",
+    benchmarkQuote2Tag: "GITHUB REPOSITORY",
+    benchmarkQuote2Text: "Neural engine implemented purely in Rust, designed for deterministic zero-allocation ONNX execution on embedded ARM microprocessors. Enables continuous edge artificial intelligence under one watt and microsecond latency, eliminating expensive coprocessors.",
+    benchmarkQuote2Source: "GitHub • sonos-tract (Pure-Rust Neural Network Engine)",
+    benchmarkQuote2Url: "https://github.com/sonos/tract",
+    benchmarkQuote3Author: "SOSBAI & Embrapa Temperate Agriculture • ESALQ-USP",
+    benchmarkQuote3Role: "Official Technical Research Guidelines for Irrigated Rice in Southern Brazil",
+    benchmarkQuote3Tag: "OFFICIAL TECHNICAL GUIDELINES",
+    benchmarkQuote3Text: "Thermal time accumulation in growing degree-days (GDD with base temperature of 10.0°C to 11.0°C) is the most accurate and replicable biophysical method for predicting phenological stages and defining the critical top-dressing nitrogen fertilization window in irrigated rice paddies.",
+    benchmarkQuote3Source: "SOSBAI (2022) • Embrapa Temperate Agriculture • Irrigated Rice Technical Guidelines",
+    benchmarkQuote3Url: "https://www.embrapa.br/clima-temperado",
+    benchmarkQuote4Author: "Rice Department & Office of Agricultural Economics (OAE), Thailand",
+    benchmarkQuote4Role: "Ministry of Agriculture and Cooperatives of Thailand (MOAC)",
     benchmarkQuote4Tag: "THAILAND GOVERNMENT OPEN DATA",
-    benchmarkQuote4Text: "Agro-climatic datasets and in situ telemetry from the Chao Phraya River Basin during heavy monsoon rains validate the resilience of this approach. Solar station autonomy and local tabular inference make precision rice monitoring accessible without depending on costly satellite links.",
+    benchmarkQuote4Text: "Continuous in-situ telemetry of water level and microclimate in the paddies of Sukhothai and the Chao Phraya Basin effectively mitigates thermal and anoxic stress during panicle differentiation and anthesis, safeguarding Hom Mali aromatic grain quality against extreme monsoon fluctuations.",
+    benchmarkQuote4Source: "Office of Agricultural Economics (OAE) & Rice Department, Thailand",
+    benchmarkQuote4Url: "https://www.oae.go.th",
 
     authTitle: "Access Oryza-Elo Platform",
     authLoginTab: "Sign In",
@@ -1470,6 +1778,89 @@ class OryzaI18n {
     authCancel: "Cancel",
 
     footerCopyright: "© 2026 Oryza-Elo • Asodya Ecosystem. All rights reserved.",
+
+    navHowToUse: "How to Use",
+    howToUseSectionTag: "INSTALLATION & USAGE GUIDE",
+    howToUseTitle: "How to Use Oryza-Elo",
+    howToUseSubtitle: "Configure the ecosystem end to end. Choose the flow that best fits your operation.",
+    howToUseTabLocal: "Local Station",
+    howToUseTabCloud: "Cloud + AI",
+
+    howToUseLocalStep1Title: "Edge Station Installation",
+    howToUseLocalStep1Desc: "Run the installation script via cURL. It auto-detects your Linux distribution and sets up the Rust ONNX engine, sensor drivers, and local interface.",
+    howToUseLocalStep2Title: "System Service Manager",
+    howToUseLocalStep2Desc: "Oryza-Elo runs as a system service. The install script detects the available manager, but you can configure it manually for your distribution.",
+    howToUseLocalStep3Title: "Environment Variables (.env)",
+    howToUseLocalStep3Desc: "The .env file at the installation root controls port, operation mode, sensor credentials, and sync behavior. Edit before starting the service.",
+    howToUseLocalStep4Title: "Access the Local Dashboard",
+    howToUseLocalStep4Desc: "With the service running, access the dashboard via browser at the device IP on the configured port. The interface is self-explanatory — explore the tabs and sections to navigate between sensor readings, phenological stages, and settings.",
+    howToUseLocalStep5Title: "Edge Engine API Routes",
+    howToUseLocalStep5Desc: "The engine exposes a local REST API for direct integrations. Use GET /health to check status, GET /api/v1/readings for sensor readings, GET /api/v1/phenology for the current stage, and POST /api/v1/inference for on-demand inference.",
+
+    howToUseCloudStep1Title: "Edge Station Installation",
+    howToUseCloudStep1Desc: "Run the installation script via cURL. Before starting the service, make sure you have your Oryza-Elo Cloud API key to configure sync in the .env.",
+    howToUseCloudStep2Title: "Create Your Oryza-Elo Cloud Account",
+    howToUseCloudStep2Desc: "Create your account on the cloud portal and get your API key. The free plan supports one farm with 30-day history.",
+    howToUseCloudStep3Title: "Connect Edge Station to Cloud",
+    howToUseCloudStep3Desc: "Configure CLOUD_API_KEY and CLOUD_ENDPOINT in the installation .env file. Restart the service to activate bidirectional data and model synchronization.",
+    howToUseCloudStep4Title: "Access the Cloud Dashboard",
+    howToUseCloudStep4Desc: "Access the cloud portal via browser. The dashboard organizes farms, historical readings, agronomic alerts, and settings intuitively — explore the sections to discover the features.",
+    howToUseCloudStep5Title: "Agronomic AI Insights",
+    howToUseCloudStep5Desc: "With multi-farm data synchronized, the AI generates advanced recommendations: stage forecasting, thermal anomaly alerts, regional comparisons, and water depth optimization. Insights appear automatically in the dashboard.",
+
+    howToUseServiceSystemd: "systemd",
+    howToUseServiceSystemdDesc: "Ubuntu, Debian, Fedora, Arch Linux, Raspberry Pi OS and most modern Linux systems",
+    howToUseServiceOpenrc: "OpenRC",
+    howToUseServiceOpenrcDesc: "Alpine Linux (recommended for IoT for low memory footprint), Gentoo",
+    howToUseServiceRunit: "runit",
+    howToUseServiceRunitDesc: "Void Linux",
+    howToUseServiceDocsLink: "See documentation",
+
+    howToUseGithubCtaTitle: "Encountered an issue?",
+    howToUseGithubCtaDesc: "Open an issue on the GitHub engine repository (oryzaelo_engine) with details of your system, Linux distribution, hardware model, and the error encountered. The community and Asodya team will respond.",
+    howToUseGithubBtn: "OPEN GITHUB ISSUE",
+
+    simCloudCtaTitle: "Want even more precise insights?",
+    simCloudCtaBody: "With Oryza-Elo Cloud, the AI cross-references data from multiple farms, analyzes climate history, and generates advanced agronomic recommendations far beyond local simulation.",
+    simCloudCtaBtn: "ACCESS THE CLOUD",
+
+    howToUseBadgeOffline: "100% OFFLINE",
+    howToUseBadgeCloud: "MULTI-FARM + AI",
+
+    howToUseLocalStep1Tip: "The installer places binaries in /opt/oryzaelo/bin/, the web UI in /opt/oryzaelo/web/, and configuration in /opt/oryzaelo/.env. Compatible with ARM64 (Raspberry Pi 4/5, Zero 2W) and x86_64 architectures.",
+    howToUseLocalStep2Snippet: "# Raspberry Pi OS / Debian / Ubuntu / Arch (systemd):\nsudo systemctl enable --now oryzaelo\n\n# Check edge engine status:\nsudo systemctl status oryzaelo",
+    howToUseLocalStep2Note: "For distributions with OpenRC (Alpine Linux) or runit (Void Linux), check the service managers matrix below.",
+    howToUseLocalStep3Snippet: "# ==========================================================\n# Oryza-Elo Edge Station — Local Autonomy Configuration (.env)\n# Path: /opt/oryzaelo/.env\n# ==========================================================\n\n# Network & Server Port (Change PORT to avoid conflicts)\nPORT=8080\nHOST=0.0.0.0\n\n# Edge Engine Autonomy Mode\nAUTONOMY_MODE=local_only       # 100% offline standalone operation\nINFERENCE_ENGINE=tract_onnx    # Pure-Rust Tract ONNX microclimate model\nSENSOR_BUS=i2c-1               # Hydrostatic depth & soil temperature bus\n\n# Storage & Logging\nDATABASE_PATH=/opt/oryzaelo/data/oryza.db\nLOG_LEVEL=info",
+    howToUseLocalStep3Callout: "How to change the system port: change the PORT=8080 variable to the desired port in /opt/oryzaelo/.env and restart the service with 'sudo systemctl restart oryzaelo'.",
+    howToUseLocalAccessLabel: "Local Access URL:",
+    howToUseLocalAccessDesc: "• Navigation: Explore real-time telemetry tabs, BBCH phenological matrix, accumulated growing degree-days (GDD) charts, and system audit logs.\n• Complete Independence: The dashboard operates 100% without internet access, served directly by the station's native Rust binary.",
+    howToUseLocalApiSnippet: "# Test edge engine connectivity:\ncurl -s http://localhost:8080/health\n\n# Get real-time sensor readings:\ncurl -s http://localhost:8080/api/v1/readings\n\n# Query current BBCH phenological stage:\ncurl -s http://localhost:8080/api/v1/phenology",
+
+    howToUseCloudAccountTitle: "Oryza-Elo Cloud Portal & API Key Management",
+    howToUseCloudAccountDesc: "After creating your account on the portal, navigate to 'Farm Settings' > 'API Tokens' to generate a key with telemetry write permissions.",
+    howToUseCloudStep3Snippet: "# ==========================================================\n# Oryza-Elo Edge Station — Cloud + AI Synchronization (.env)\n# Path: /opt/oryzaelo/.env\n# ==========================================================\n\n# Network & Server Port\nPORT=8080\nHOST=0.0.0.0\n\n# Edge Engine Mode & Cloud Synchronization\nAUTONOMY_MODE=hybrid_sync      # Local autonomy + encrypted background sync\nINFERENCE_ENGINE=tract_onnx\nSENSOR_BUS=i2c-1\n\n# Oryza-Elo Cloud Credentials\nCLOUD_ENDPOINT=https://oryzaelo.asodya.com\nCLOUD_API_KEY=oryza_live_sec_xxxxxxxxxxxxxxxxx\nSYNC_INTERVAL_SECS=300         # Telemetry synchronization batch window (5 min)\n\n# Storage & Logging\nDATABASE_PATH=/opt/oryzaelo/data/oryza.db\nLOG_LEVEL=info",
+    howToUseCloudStep3Tip: "The hybrid_sync mode keeps the Tract ONNX engine processing locally at 22.4 µs latency. If connection drops, readings queue locally in SQLite and synchronize automatically once connectivity resumes.",
+    howToUseCloudAccessLabel: "Cloud Portal URL:",
+    howToUseCloudAccessDesc: "• General Discovery: The portal organizes your fields with an intuitive sidebar featuring consolidated farm overview, interactive paddy field map, historical agronomic trends, and cooperative invites.\n• Multi-Farm: Monitor dozens of stations simultaneously with automatic regional averaging of accumulated growing degree-days.",
+    howToUseCloudAiTitle: "Cloud & AI Predictive Models",
+    howToUseCloudAiDesc: "By connecting your stations to the Cloud, agrometeorological models cross-reference satellite data and global climate models to forecast flowering dates (BBCH 65) 5 to 8 days in advance, suggest optimal field drainage timing before harvest, and alert against lodging or chilling injury risks.",
+
+    howToUseServiceHeading: "Linux Service Managers by Distribution",
+    howToUseServiceSubtitle: "Because different operating systems can be installed on edge IoT hardware, Oryza-Elo supports the three primary init and service managers across the Linux ecosystem:",
+    howToUseServiceUnitLabel: "Unit:",
+    howToUseServiceDocsLabel: "Docs:",
+
+    howToUseApiHeading: "Edge Engine Core REST API Routes",
+    howToUseApiSubtitle: "For local integrations with CLIs, Python scripts, or LoRaWAN gateways, the Rust engine exposes native ultra-low-latency HTTP endpoints:",
+    howToUseApiRouteHealthDesc: "IoT node health check, ARM CPU temperature, and solar battery voltage.",
+    howToUseApiRouteReadingsDesc: "Latest readings from hydrostatic water level sensor (cm) and soil probe (°C and conductivity).",
+    howToUseApiRoutePhenologyDesc: "Current phenological stage, calculated BBCH code, and accumulated thermal GDD.",
+    howToUseApiRouteInferenceDesc: "Direct execution of the Tract ONNX neural model for inference with custom microclimate vector.",
+    howToUseApiRouteInferenceExample: "Payload: {\"temp_min\":18.0,\"temp_max\":30.5,\"das\":42} → {\"bbch\":25}",
+
+    howToUseCopiedFeedback: "Repository link copied to clipboard!",
+    howToUseBtnCopied: "COPIED!",
+    howToUseBtnCopy: "COPY",
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );
 
@@ -1531,7 +1922,7 @@ class OryzaI18n {
     heroThaiScience: "การปรับแต่งโมเดลโครงข่ายประสาทเทียมสำหรับสภาพความชื้นสัมพัทธ์สูงและน้ำท่วมฉับพลัน ตรวจสอบการคายระเหยน้ำและปกป้องการปฏิสนธิของเกสรข้าวในระยะออกดอกโดยไม่พึ่งพาระบบคลาวด์",
 
     heroHeadline: "ระบบตรวจติดตามระยะการเจริญเติบโตของข้าวแบบเรียลไทม์ระดับขอบข่าย",
-    heroSubhead: "การอนุมานเครือข่ายประสาทเทียม ONNX ต่ำกว่ามิลลิวินาที แบบจำลองความร้อนสะสม (GDD) และฐานข้อมูล SQLite WAL บนอุปกรณ์โดยไม่ต้องพึ่งพาระบบคลาวด์",
+    heroSubhead: "การอนุมานโครงข่ายประสาทเทียม ONNX ต่ำกว่ามิลลิวินาที และแบบจำลองความร้อนสะสม (GDD) พร้อมการทำงานอิสระ 100% โดยไม่ต้องใช้อินเทอร์เน็ตในแปลงนา ควบคู่กับการเชื่อมต่อระบบคลาวด์เสริมสำหรับการวิเคราะห์หลายฟาร์มและข้อมูลเชิงลึก AI ทางการเกษตรขั้นสูง",
     heroCtaSimulate: "จำลองแปลงนาแบบเรียลไทม์",
     heroCtaGithub: "คลังโค้ด GITHUB",
     heroQuickInstall: "คำสั่งติดตั้งสถานีขอบข่ายในคำสั่งเดียว",
@@ -1827,35 +2218,49 @@ class OryzaI18n {
     benchmarkMapSubheading: "แผนที่ภูมิศาสตร์สีกลางแสดงจุดศูนย์กลางปีราซีคาบาและสุโขทัยในการเพาะปลูกข้าวของโลก",
     benchmarkMapBrazilTitle: "บราซิล • ปีราซีคาบา และ รีอูกรังจีดูซูล",
     benchmarkMapBrazilCoords: "ละติจูด 22.7136° S • ลองจิจูด 47.6527° W",
-    benchmarkMapBrazilProduction: "ผลผลิตข้าวระดับชาติ: ประมาณ 11.5 ล้านตันต่อปี",
-    benchmarkMapBrazilYield: "ผลผลิตเฉลี่ย: 7,500 กิโลกรัมต่อเฮกตาร์ในแปลงนาชลประทาน",
-    benchmarkMapBrazilClimate: "ระบอบภูมิอากาศ: กึ่งเขตร้อนอบอุ่นพร้อมระบบชลประทานควบคุม",
-    benchmarkMapBrazilTech: "ศูนย์วิจัย: ESALQ และ USP ปีราซีคาบา ร่วมกับระบบขอบข่าย",
+    benchmarkMapBrazilProduction: "ผลผลิตข้าวระดับชาติ: 10.8 ถึง 11.2 ล้านตันต่อปี (IBGE PAM และ CONAB 2023)",
+    benchmarkMapBrazilYield: "ผลผลิตเฉลี่ย: 7,800 ถึง 8,500 กิโลกรัมต่อเฮกตาร์ในแปลงนาชลประทาน",
+    benchmarkMapBrazilClimate: "ระบอบภูมิอากาศ: กึ่งเขตร้อนอบอุ่นพร้อมระบบชลประทานน้ำขังควบคุม",
+    benchmarkMapBrazilTech: "ข้อมูลอ้างอิงทางวิชาการ: ESALQ และ USP ปีราซีคาบา • แหล่งข้อมูลทางการ: IBGE และ CONAB",
+    benchmarkMapBrazilSource: "แหล่งข้อมูลทางการ: สถาบันภูมิศาสตร์และสถิติบราซิล (IBGE) และ CONAB (2023)",
+    benchmarkMapBrazilUrl: "https://sidra.ibge.gov.br",
     benchmarkMapThaiTitle: "ไทย • สุโขทัย และ ลุ่มแม่น้ำเจ้าพระยา",
     benchmarkMapThaiCoords: "ละติจูด 17.0055° N • ลองจิจูด 99.8264° E",
-    benchmarkMapThaiProduction: "ผลผลิตข้าวระดับชาติ: ประมาณ 32.5 ล้านตันต่อปี",
-    benchmarkMapThaiYield: "ผลผลิตเฉลี่ย: 3,100 กิโลกรัมต่อเฮกตาร์ในแปลงนาน้ำขัง",
-    benchmarkMapThaiClimate: "ระบอบภูมิอากาศ: เขตร้อนมรสุมพร้อมปริมาณน้ำฝนและความชื้นสูง",
-    benchmarkMapThaiTech: "แหล่งข้อมูล: กรมการข้าว กระทรวงเกษตรและสหกรณ์ ประเทศไทย",
+    benchmarkMapThaiProduction: "ผลผลิตข้าวระดับชาติ: 31.5 ถึง 33.0 ล้านตันต่อปีของข้าวเปลือก (สศก. 2023)",
+    benchmarkMapThaiYield: "ผลผลิตเฉลี่ย: 3,100 ถึง 3,400 กิโลกรัมต่อเฮกตาร์ในแปลงนาน้ำขัง",
+    benchmarkMapThaiClimate: "ระบอบภูมิอากาศ: เขตร้อนมรสุมพร้อมปริมาณน้ำฝนและความชื้นสัมพัทธ์สูง",
+    benchmarkMapThaiTech: "ข้อมูลอ้างอิงทางเทคนิค: กรมการข้าว • กระทรวงเกษตรและสหกรณ์ ประเทศไทย",
+    benchmarkMapThaiSource: "แหล่งข้อมูลทางการ: สำนักงานเศรษฐกิจการเกษตร (สศก.) และ กรมการข้าว",
+    benchmarkMapThaiUrl: "https://www.oae.go.th",
+    benchmarkSourceLabel: "แหล่งข้อมูลทางวิทยาศาสตร์ที่ตรวจสอบได้:",
+    benchmarkGovSourceLabel: "แหล่งข้อมูลทางการของรัฐบาล:",
 
-    benchmarkQuotesHeading: "มุมมองทางวิทยาศาสตร์และชุมชนนักพัฒนาขอบข่าย",
-    benchmarkQuotesSubheading: "ความคิดเห็นจากนักวิจัยการเกษตร วิศวกรโอเพนซอร์ส และการตรวจสอบโค้ด",
-    benchmarkQuote1Author: "Dr. Chenghao Lin",
-    benchmarkQuote1Role: "นักวิจัยอาวุโสด้านฟีโนโลยีข้าว สถาบันวิจัยข้าวนานาชาติ IRRI",
-    benchmarkQuote1Tag: "การประเมินทางวิชาการ",
-    benchmarkQuote1Text: "ข้อจำกัดหลักของคอมพิวเตอร์วิทัศน์ในนาข้าวเขตร้อนคือการบดบังของเมฆมรสุมและการทับซ้อนของใบหลังการแตกกอ แนวทางของ Oryza-Elo ที่ใช้ข้อมูลตารางจุลภูมิอากาศและหน่วยความร้อนสะสมบนอุปกรณ์ขอบข่ายช่วยแก้ปัญหานี้ได้อย่างสมบูรณ์แบบ",
-    benchmarkQuote2Author: "@stefan-edge-ml",
-    benchmarkQuote2Role: "ผู้ร่วมพัฒนาหลัก โครงการ OpenAgri IoT และ Embedded Rust",
-    benchmarkQuote2Tag: "การตรวจสอบโค้ด GITHUB",
-    benchmarkQuote2Text: "การอนุมาน ONNX ภายใน 22.4 ไมโครวินาทีบน Cortex-A76 ด้วยขนาดโปรแกรมต่ำกว่า 24MB เป็นตัวอย่างวิศวกรรมระบบชั้นยอด การใช้ SQLite WAL โดยไม่มีการจัดสรรหน่วยความจำเกินจำเป็นทำให้สถานีทำงานได้อย่างต่อเนื่องในสภาพอากาศร้อนจัด",
-    benchmarkQuote3Author: "Carolina Mendes, วิศวกรการเกษตร",
-    benchmarkQuote3Role: "ผู้เชี่ยวชาญการจัดการชลประทาน ESALQ และ USP",
-    benchmarkQuote3Tag: "การส่งเสริมการเกษตร",
-    benchmarkQuote3Text: "การสอบเทียบอุณหภูมิฐาน 10.0°C ร่วมกับช่วงอุณหภูมิรายวัน DTR สะท้อนสรีรวิทยาของข้าวสายพันธุ์บราซิลได้อย่างแม่นยำ การได้รับคำแนะนำโดยไม่ต้องต่ออินเทอร์เน็ตช่วยเปลี่ยนการทำเกษตรในแปลงได้อย่างแท้จริง",
-    benchmarkQuote4Author: "ดร. ครรชิต ประเสริฐ",
-    benchmarkQuote4Role: "นักวิจัยด้านสภาพภูมิอากาศการเกษตร กรมการข้าว ประเทศไทย",
+    benchmarkQuotesHeading: "หลักฐานทางวิทยาศาสตร์และชุมชนโอเพนซอร์ส",
+    benchmarkQuotesSubheading: "ข้อสรุปอิสระจากงานวิจัยที่ผ่านการประเมินโดยผู้ทรงคุณวุฒิ สถาปัตยกรรมคลังโค้ด และแนวทางปฐพีวิทยาทางการที่ยืนยันแนวคิดขอบข่าย",
+    benchmarkQuote1Author: "Frontiers in Plant Science (สรีรวิทยาพืช)",
+    benchmarkQuote1Role: "บทความวิจัยที่ผ่านการประเมินทางวิชาการ • DOI: 10.3389-fpls.2021.731454",
+    benchmarkQuote1Tag: "งานวิจัยระดับนานาชาติ",
+    benchmarkQuote1Text: "การปกคลุมของเมฆและหมอกควันอย่างต่อเนื่องในช่วงมรสุมเขตร้อนลดทอนคุณภาพข้อมูลดาวเทียมเชิงแสงอย่างมีนัยสำคัญ เครือข่ายเซนเซอร์ตรวจวัดสภาพอากาศทางการเกษตรในแปลงนาพร้อมการคำนวณความร้อนสะสมต่อเนื่อง ให้ความละเอียดทางเวลาที่จำเป็นสำหรับการตรวจจับระยะสืบพันธุ์โดยปราศจากช่องว่างของดาวเทียม",
+    benchmarkQuote1Source: "Frontiers in Plant Science (2021) • สาขาสรีรวิทยาพืช",
+    benchmarkQuote1Url: "https://doi.org/10.3389/fpls.2021.731454",
+    benchmarkQuote2Author: "Tract Neural Engine (Sonos Open Source)",
+    benchmarkQuote2Role: "คลังโค้ดโอเพนซอร์ส • Rust Embedded ML (sonos-tract)",
+    benchmarkQuote2Tag: "คลังโค้ด GITHUB",
+    benchmarkQuote2Text: "กลไกโครงข่ายประสาทเทียมที่พัฒนาด้วยภาษา Rust ล้วน ออกแบบมาสำหรับการรันแบบจำลอง ONNX แบบเรียลไทม์บนไมโครโปรเซสเซอร์ ARM โดยไม่ใช้ตัวประมวลผลภายนอก รองรับปัญญาประดิษฐ์ที่ขอบข่ายอย่างต่อเนื่องโดยใช้พลังงานต่ำกว่าหนึ่งวัตต์และมีความหน่วงระดับไมโครวินาที",
+    benchmarkQuote2Source: "GitHub • sonos-tract (Pure-Rust Neural Network Engine)",
+    benchmarkQuote2Url: "https://github.com/sonos/tract",
+    benchmarkQuote3Author: "SOSBAI และ สถาบันวิจัยการเกษตร Embrapa • ESALQ-USP",
+    benchmarkQuote3Role: "คำแนะนำทางเทคนิคสำหรับการวิจัยข้าวชลประทานภาคใต้ของบราซิล",
+    benchmarkQuote3Tag: "แนวทางทางเทคนิคทางการ",
+    benchmarkQuote3Text: "การสะสมความร้อนตามองศาวัน (GDD ที่อุณหภูมิฐาน 10.0°C ถึง 11.0°C) เป็นระเบียบวิธีทางชีวฟิสิกส์ที่มีความแม่นยำและทำซ้ำได้สูงสุดสำหรับการพยากรณ์ระยะการเจริญเติบโต และกำหนดช่วงเวลาสำคัญของการใส่ปุ๋ยไนโตรเจนแต่งหน้าในแปลงข้าวชลประทาน",
+    benchmarkQuote3Source: "SOSBAI (2022) • Embrapa Clima Temperado • คำแนะนำข้าวชลประทาน",
+    benchmarkQuote3Url: "https://www.embrapa.br/clima-temperado",
+    benchmarkQuote4Author: "กรมการข้าว และ สำนักงานเศรษฐกิจการเกษตร (สศก.) ประเทศไทย",
+    benchmarkQuote4Role: "กระทรวงเกษตรและสหกรณ์ ประเทศไทย (MOAC)",
     benchmarkQuote4Tag: "ข้อมูลเปิดภาครัฐ กรมการข้าว",
-    benchmarkQuote4Text: "ชุดข้อมูลเกษตรสภาพภูมิอากาศและการวัดผลทางไกลในพื้นที่ลุ่มแม่น้ำเจ้าพระยาช่วงฤดูมรสุมยืนยันความแม่นยำและความทนทานของแบบจำลอง การประมวลผลบนอุปกรณ์ปลายทางช่วยให้เกษตรกรสามารถตรวจสอบระยะการเจริญเติบโตของข้าวได้โดยไม่ต้องพึ่งพาสัญญาณดาวเทียมที่มีราคาสูง",
+    benchmarkQuote4Text: "การตรวจวัดโทรมาตรระดับน้ำและสภาพอากาศจุลภาคอย่างต่อเนื่องในแปลงนาสุโขทัยและลุ่มน้ำเจ้าพระยา ช่วยบรรเทาความเครียดจากความร้อนและการขาดออกซิเจนระหว่างการสร้างช่อดอกและการบานของดอกข้าวได้อย่างมีประสิทธิภาพ ปกป้องคุณภาพข้าวหอมมะลิท่ามกลางความผันผวนของมรสุม",
+    benchmarkQuote4Source: "สำนักงานเศรษฐกิจการเกษตร (สศก.) และ กรมการข้าว ประเทศไทย",
+    benchmarkQuote4Url: "https://www.oae.go.th",
 
     authTitle: "เข้าสู่ระบบแพลตฟอร์ม Oryza-Elo",
     authLoginTab: "เข้าสู่ระบบ",
@@ -1870,6 +2275,89 @@ class OryzaI18n {
     authCancel: "ยกเลิก",
 
     footerCopyright: "© 2026 Oryza-Elo • Asodya Ecosystem. สงวนลิขสิทธิ์ทั้งหมด",
+
+    navHowToUse: "วิธีใช้งาน",
+    howToUseSectionTag: "คู่มือการติดตั้งและการใช้งาน",
+    howToUseTitle: "วิธีใช้งาน Oryza-Elo",
+    howToUseSubtitle: "ตั้งค่าระบบนิเวศตั้งแต่ต้นจนจบ เลือกขั้นตอนที่เหมาะกับการดำเนินงานของคุณ",
+    howToUseTabLocal: "สถานีท้องถิ่น",
+    howToUseTabCloud: "Cloud + AI",
+
+    howToUseLocalStep1Title: "การติดตั้งสถานี Edge",
+    howToUseLocalStep1Desc: "รันสคริปต์ติดตั้งผ่าน cURL ระบบจะตรวจจับ Linux distribution ของคุณโดยอัตโนมัติและตั้งค่า Rust ONNX engine ไดรเวอร์เซ็นเซอร์ และอินเทอร์เฟซท้องถิ่น",
+    howToUseLocalStep2Title: "ตัวจัดการบริการระบบ",
+    howToUseLocalStep2Desc: "Oryza-Elo ทำงานเป็นบริการระบบ สคริปต์ติดตั้งจะตรวจจับตัวจัดการที่มีอยู่ แต่คุณสามารถตั้งค่าด้วยตนเองสำหรับ distribution ของคุณ",
+    howToUseLocalStep3Title: "ตัวแปรสภาพแวดล้อม (.env)",
+    howToUseLocalStep3Desc: "ไฟล์ .env ที่รากของการติดตั้งควบคุมพอร์ต โหมดการทำงาน ข้อมูลรับรองเซ็นเซอร์ และพฤติกรรมการซิงค์ แก้ไขก่อนเริ่มบริการ",
+    howToUseLocalStep4Title: "เข้าถึงแดชบอร์ดท้องถิ่น",
+    howToUseLocalStep4Desc: "เมื่อบริการทำงาน เข้าถึงแดชบอร์ดผ่านเบราว์เซอร์ที่ IP ของอุปกรณ์บนพอร์ตที่กำหนด อินเทอร์เฟซอธิบายตัวเอง — สำรวจแท็บและส่วนต่างๆ เพื่อนำทางระหว่างการอ่านค่าเซ็นเซอร์ ระยะฟีโนโลยี และการตั้งค่า",
+    howToUseLocalStep5Title: "เส้นทาง API ของ Edge Engine",
+    howToUseLocalStep5Desc: "Engine เปิดเผย REST API ท้องถิ่นสำหรับการผสานรวมโดยตรง ใช้ GET /health เพื่อตรวจสอบสถานะ GET /api/v1/readings สำหรับการอ่านค่าเซ็นเซอร์ GET /api/v1/phenology สำหรับระยะปัจจุบัน และ POST /api/v1/inference สำหรับการอนุมานตามต้องการ",
+
+    howToUseCloudStep1Title: "การติดตั้งสถานี Edge",
+    howToUseCloudStep1Desc: "รันสคริปต์ติดตั้งผ่าน cURL ก่อนเริ่มบริการ ตรวจสอบให้แน่ใจว่าคุณมี API key ของ Oryza-Elo Cloud เพื่อตั้งค่าการซิงค์ใน .env",
+    howToUseCloudStep2Title: "สร้างบัญชี Oryza-Elo Cloud",
+    howToUseCloudStep2Desc: "สร้างบัญชีบนพอร์ทัล cloud และรับ API key ของคุณ แผนฟรีรองรับหนึ่งฟาร์มพร้อมประวัติ 30 วัน",
+    howToUseCloudStep3Title: "เชื่อมต่อสถานี Edge กับ Cloud",
+    howToUseCloudStep3Desc: "ตั้งค่า CLOUD_API_KEY และ CLOUD_ENDPOINT ในไฟล์ .env ของการติดตั้ง รีสตาร์ทบริการเพื่อเปิดใช้การซิงค์ข้อมูลและโมเดลแบบสองทิศทาง",
+    howToUseCloudStep4Title: "เข้าถึงแดชบอร์ด Cloud",
+    howToUseCloudStep4Desc: "เข้าถึงพอร์ทัล cloud ผ่านเบราว์เซอร์ แดชบอร์ดจัดระเบียบฟาร์ม การอ่านค่าประวัติ การแจ้งเตือนทางการเกษตร และการตั้งค่าอย่างเป็นธรรมชาติ — สำรวจส่วนต่างๆ เพื่อค้นพบฟีเจอร์",
+    howToUseCloudStep5Title: "ข้อมูลเชิงลึก AI ด้านการเกษตร",
+    howToUseCloudStep5Desc: "ด้วยข้อมูลหลายฟาร์มที่ซิงค์แล้ว AI จะสร้างคำแนะนำขั้นสูง: การพยากรณ์ระยะ การแจ้งเตือนความผิดปกติทางความร้อน การเปรียบเทียบระดับภูมิภาค และการปรับปรุงระดับน้ำ ข้อมูลเชิงลึกจะปรากฏโดยอัตโนมัติในแดชบอร์ด",
+
+    howToUseServiceSystemd: "systemd",
+    howToUseServiceSystemdDesc: "Ubuntu, Debian, Fedora, Arch Linux, Raspberry Pi OS และระบบ Linux สมัยใหม่ส่วนใหญ่",
+    howToUseServiceOpenrc: "OpenRC",
+    howToUseServiceOpenrcDesc: "Alpine Linux (แนะนำสำหรับ IoT เนื่องจากใช้หน่วยความจำน้อย), Gentoo",
+    howToUseServiceRunit: "runit",
+    howToUseServiceRunitDesc: "Void Linux",
+    howToUseServiceDocsLink: "ดูเอกสาร",
+
+    howToUseGithubCtaTitle: "พบปัญหา?",
+    howToUseGithubCtaDesc: "เปิด issue บน GitHub repository ของ engine (oryzaelo_engine) พร้อมรายละเอียดระบบ Linux distribution รุ่นฮาร์ดแวร์ และข้อผิดพลาดที่พบ ชุมชนและทีม Asodya จะตอบกลับ",
+    howToUseGithubBtn: "เปิด ISSUE บน GITHUB",
+
+    simCloudCtaTitle: "ต้องการข้อมูลเชิงลึกที่แม่นยำยิ่งขึ้น?",
+    simCloudCtaBody: "ด้วย Oryza-Elo Cloud AI จะอ้างอิงข้อมูลจากหลายฟาร์ม วิเคราะห์ประวัติสภาพภูมิอากาศ และสร้างคำแนะนำทางการเกษตรขั้นสูงที่เหนือกว่าการจำลองท้องถิ่น",
+    simCloudCtaBtn: "เข้าถึง CLOUD",
+
+    howToUseBadgeOffline: "ออฟไลน์ 100%",
+    howToUseBadgeCloud: "หลายฟาร์ม + AI",
+
+    howToUseLocalStep1Tip: "ตัวติดตั้งจะเก็บไบนารีไว้ใน /opt/oryzaelo/bin/ เว็บ UI ใน /opt/oryzaelo/web/ และไฟล์การกำหนดค่าใน /opt/oryzaelo/.env รองรับทั้งสถาปัตยกรรม ARM64 (Raspberry Pi 4/5, Zero 2W) และ x86_64",
+    howToUseLocalStep2Snippet: "# Raspberry Pi OS / Debian / Ubuntu / Arch (systemd):\nsudo systemctl enable --now oryzaelo\n\n# ตรวจสอบสถานะของ edge engine:\nsudo systemctl status oryzaelo",
+    howToUseLocalStep2Note: "สำหรับ distribution ที่ใช้ OpenRC (Alpine Linux) หรือ runit (Void Linux) โปรดดูตารางตัวจัดการบริการด้านล่าง",
+    howToUseLocalStep3Snippet: "# ==========================================================\n# Oryza-Elo Edge Station — การทำงานท้องถิ่นอิสระ (.env)\n# ตำแหน่ง: /opt/oryzaelo/.env\n# ==========================================================\n\n# เครือข่ายและพอร์ตเซิร์ฟเวอร์ (เปลี่ยน PORT เพื่อหลีกเลี่ยงข้อขัดแย้ง)\nPORT=8080\nHOST=0.0.0.0\n\n# โหมดการทำงานของ Edge Engine\nAUTONOMY_MODE=local_only       # ทำงานออฟไลน์สมบูรณ์ 100%\nINFERENCE_ENGINE=tract_onnx    # โมเดลสภาพอากาศขนาดเล็ก Tract ONNX ภาษา Rust\nSENSOR_BUS=i2c-1               # บัสเซ็นเซอร์ระดับน้ำและความลึก\n\n# การจัดเก็บข้อมูลและบันทึก\nDATABASE_PATH=/opt/oryzaelo/data/oryza.db\nLOG_LEVEL=info",
+    howToUseLocalStep3Callout: "วิธีเปลี่ยนพอร์ตระบบ: แก้ไขตัวแปร PORT=8080 เป็นพอร์ตที่ต้องการในไฟล์ /opt/oryzaelo/.env และรีสตาร์ทบริการด้วย 'sudo systemctl restart oryzaelo'",
+    howToUseLocalAccessLabel: "URL เข้าถึงท้องถิ่น:",
+    howToUseLocalAccessDesc: "• การนำทาง: สำรวจแท็บการอ่านค่าเซ็นเซอร์แบบเรียลไทม์ ตารางระยะ BBCH กราฟระดับความร้อนสะสม (GDD) และบันทึกระบบ\n• อิสระโดยสมบูรณ์: แดชบอร์ดทำงานได้ 100% โดยไม่ต้องใช้อินเทอร์เน็ต ให้บริการโดยตรงจากไบนารี Rust ของสถานี",
+    howToUseLocalApiSnippet: "# ทดสอบการเชื่อมต่อของ edge engine:\ncurl -s http://localhost:8080/health\n\n# ดึงข้อมูลเซ็นเซอร์แบบเรียลไทม์:\ncurl -s http://localhost:8080/api/v1/readings\n\n# สอบถามระยะฟีโนโลยี BBCH ปัจจุบัน:\ncurl -s http://localhost:8080/api/v1/phenology",
+
+    howToUseCloudAccountTitle: "พอร์ทัล Oryza-Elo Cloud และการจัดการคีย์",
+    howToUseCloudAccountDesc: "หลังจากสร้างบัญชีบนพอร์ทัลแล้ว ให้ไปที่ 'การตั้งค่าฟาร์ม' > 'โทเค็น API' เพื่อสร้างคีย์ที่ได้รับอนุญาตให้ส่งข้อมูลโทรมาตร",
+    howToUseCloudStep3Snippet: "# ==========================================================\n# Oryza-Elo Edge Station — การซิงค์ Cloud + AI (.env)\n# ตำแหน่ง: /opt/oryzaelo/.env\n# ==========================================================\n\n# เครือข่ายและพอร์ตเซิร์ฟเวอร์\nPORT=8080\nHOST=0.0.0.0\n\n# โหมด Edge Engine และการซิงค์ข้อมูลกับคลาวด์\nAUTONOMY_MODE=hybrid_sync      # ทำงานอิสระในเครื่อง + ซิงค์เบื้องหลังแบบเข้ารหัส\nINFERENCE_ENGINE=tract_onnx\nSENSOR_BUS=i2c-1\n\n# ข้อมูลรับรอง Oryza-Elo Cloud\nCLOUD_ENDPOINT=https://oryzaelo.asodya.com\nCLOUD_API_KEY=oryza_live_sec_xxxxxxxxxxxxxxxxx\nSYNC_INTERVAL_SECS=300         # รอบการซิงค์ข้อมูลโทรมาตร (5 นาที)\n\n# การจัดเก็บข้อมูลและบันทึก\nDATABASE_PATH=/opt/oryzaelo/data/oryza.db\nLOG_LEVEL=info",
+    howToUseCloudStep3Tip: "โหมด hybrid_sync ช่วยให้ Tract ONNX engine ยังคงประมวลผลในเครื่องด้วยความหน่วงเพียง 22.4 µs หากการเชื่อมต่อขาดหาย ข้อมูลจะถูกจัดคิวใน SQLite ท้องถิ่นและซิงค์โดยอัตโนมัติเมื่อเครือข่ายกลับมา",
+    howToUseCloudAccessLabel: "URL พอร์ทัล Cloud:",
+    howToUseCloudAccessDesc: "• การสำรวจทั่วไป: พอร์ทัลจัดระเบียบพื้นที่เพาะปลูกด้วยแถบด้านข้างที่เข้าใจง่าย พร้อมมุมมองภาพรวมฟาร์ม แผนที่แปลงนาแบบโต้ตอบ แนวโน้มประวัติทางการเกษตร และการจัดการสหกรณ์\n• หลายฟาร์ม: ตรวจสอบสถานีนับสิบแห่งพร้อมกันพร้อมการคำนวณค่าเฉลี่ยระดับความร้อนสะสมของภูมิภาคโดยอัตโนมัติ",
+    howToUseCloudAiTitle: "โมเดลการทำนายบนคลาวด์และ AI",
+    howToUseCloudAiDesc: "เมื่อเชื่อมต่อสถานีของคุณกับ Cloud โมเดลทางอุตุนิยมวิทยาการเกษตรจะอ้างอิงข้อมูลดาวเทียมและแบบจำลองสภาพอากาศทั่วโลกเพื่อพยากรณ์วันออกดอก (BBCH 65) ล่วงหน้า 5-8 วัน แนะนำช่วงเวลาที่เหมาะสมในการระบายน้ำก่อนการเก็บเกี่ยว และแจ้งเตือนความเสี่ยงจากการล้มของต้นข้าวหรือความเสียหายจากความหนาวเย็นตอนกลางคืน",
+
+    howToUseServiceHeading: "ตัวจัดการบริการตาม Linux Distribution",
+    howToUseServiceSubtitle: "เนื่องจากอุปกรณ์ IoT ระดับ Edge สามารถติดตั้งระบบปฏิบัติการได้หลากหลาย Oryza-Elo จึงรองรับตัวจัดการบริการเริ่มต้น 3 ระบบหลักในระบบนิเวศ Linux:",
+    howToUseServiceUnitLabel: "ยูนิต:",
+    howToUseServiceDocsLabel: "Docs:",
+
+    howToUseApiHeading: "เส้นทาง REST API หลักของ Edge Engine",
+    howToUseApiSubtitle: "สำหรับการผสานรวมในเครื่องกับ CLI สคริปต์ Python หรือ LoRaWAN gateway ตัว engine ภาษา Rust มี HTTP endpoint ที่มีความหน่วงต่ำเป็นพิเศษ:",
+    howToUseApiRouteHealthDesc: "การตรวจสอบสถานะของโหนด IoT อุณหภูมิ CPU ARM และแรงดันไฟฟ้าของแบตเตอรี่โซลาร์",
+    howToUseApiRouteReadingsDesc: "ค่าที่อ่านได้ล่าสุดจากเซ็นเซอร์ระดับน้ำ (ซม.) และหัววัดดิน (°C และค่าการนำไฟฟ้า)",
+    howToUseApiRoutePhenologyDesc: "ระยะฟีโนโลยีปัจจุบัน รหัส BBCH ที่คำนวณได้ และระดับความร้อนสะสม GDD",
+    howToUseApiRouteInferenceDesc: "การรันโมเดลนิวรัล Tract ONNX โดยตรงสำหรับการอนุมานด้วยเวกเตอร์สภาพอากาศขนาดเล็กที่กำหนดเอง",
+    howToUseApiRouteInferenceExample: "เพย์โหลด: {\"temp_min\":18.0,\"temp_max\":30.5,\"das\":42} → {\"bbch\":25}",
+
+    howToUseCopiedFeedback: "คัดลอกลิงก์ที่เก็บไปยังคลิปบอร์ดแล้ว!",
+    howToUseBtnCopied: "คัดลอกแล้ว!",
+    howToUseBtnCopy: "คัดลอก",
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );
 
