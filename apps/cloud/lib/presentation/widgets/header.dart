@@ -230,7 +230,7 @@ class OryzaHeader extends StatelessWidget {
               // Login Button (Hidden or compact on very small screens)
               if (!isCompact) ...[
                 TextButton(
-                  onPressed: () => AuthModal.show(context, isSignUp: false, isDark: isDark),
+                  onPressed: () {},
                   style: TextButton.styleFrom(
                     foregroundColor: textColor,
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -252,7 +252,7 @@ class OryzaHeader extends StatelessWidget {
 
               // Sign Up Button
               ElevatedButton(
-                onPressed: () => AuthModal.show(context, isSignUp: true, isDark: isDark),
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: OryzaColors.burntOrange,
                   foregroundColor: Colors.white,

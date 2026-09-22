@@ -375,10 +375,7 @@ class _SimulationDialogState extends State<SimulationDialog> {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      AuthModal.show(context, isSignUp: false, isDark: widget.isDark);
-                                    },
+                                    onPressed: () {},
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: OryzaColors.burntOrange,
                                       foregroundColor: Colors.white,
@@ -447,10 +444,7 @@ class _SimulationDialogState extends State<SimulationDialog> {
                                 ),
                                 const SizedBox(width: 14),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    AuthModal.show(context, isSignUp: false, isDark: widget.isDark);
-                                  },
+                                  onPressed: () {},
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: OryzaColors.burntOrange,
                                     foregroundColor: Colors.white,
