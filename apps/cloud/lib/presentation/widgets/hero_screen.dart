@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'simulation_dialog.dart';
 
 class HeroScreen extends StatefulWidget {
@@ -20,6 +21,16 @@ class HeroScreen extends StatefulWidget {
 class _HeroScreenState extends State<HeroScreen> {
   bool _copied = false;
   static const String _installCmd = "curl -fsSL https://oryzaelo.asodya.com/install.sh | bash";
+  static const String _githubRepoUrl = "https://github.com/wilsonborba/oryzaelo_engine";
+
+  Future<void> _launchExternalUrl(String url) async {
+    final uri = Uri.parse(url);
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      debugPrint("Failed to launch external url $url: $e");
+    }
+  }
 
   void _copyCommand() {
     Clipboard.setData(const ClipboardData(text: _installCmd));
@@ -146,7 +157,7 @@ class _HeroScreenState extends State<HeroScreen> {
                 ),
               ),
               OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: () => _launchExternalUrl(_githubRepoUrl),
                 icon: const Icon(Icons.code, size: 18),
                 label: Text(
                   s.heroCtaGithub,

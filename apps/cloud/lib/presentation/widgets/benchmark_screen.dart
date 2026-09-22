@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BenchmarkScreen extends StatefulWidget {
   final bool isDark;
@@ -1679,24 +1680,34 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                   ],
                 ),
                 const SizedBox(height: 5),
-                Row(
-                  children: [
-                    Icon(Icons.link_outlined, size: 13, color: accentColor),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: SelectableText(
-                        url,
-                        style: TextStyle(
-                          fontFamily: OryzaTypography.monoFontFamily,
-                          package: 'oryzaelo_ui',
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w600,
-                          color: accentColor,
-                          decoration: TextDecoration.underline,
+                InkWell(
+                  onTap: () {
+                    final uri = Uri.tryParse(url);
+                    if (uri != null) {
+                      launchUrl(uri, mode: LaunchMode.externalApplication);
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.link_outlined, size: 13, color: accentColor),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          url,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontFamily: OryzaTypography.monoFontFamily,
+                            package: 'oryzaelo_ui',
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w600,
+                            color: accentColor,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

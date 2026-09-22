@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TccResearchScreen extends StatelessWidget {
   final bool isDark;
 
+  static const String _githubRepoUrl = "https://github.com/wilsonborba/oryzaelo_engine";
+
   const TccResearchScreen({super.key, required this.isDark});
+
+  Future<void> _launchExternalUrl(String url) async {
+    final uri = Uri.parse(url);
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      debugPrint("Failed to launch external url $url: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -468,7 +480,7 @@ class TccResearchScreen extends StatelessWidget {
                       ),
                     ),
                     OutlinedButton.icon(
-                      onPressed: () {},
+                      onPressed: () => _launchExternalUrl(_githubRepoUrl),
                       icon: const Icon(Icons.code, size: 18),
                       label: Text(
                         s.tccGithubBtn,

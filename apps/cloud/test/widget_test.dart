@@ -11,6 +11,7 @@ import 'package:cloud/presentation/widgets/header.dart';
 import 'package:cloud/presentation/widgets/system_pipeline_screen.dart';
 import 'package:cloud/presentation/widgets/how_to_use_screen.dart';
 import 'package:cloud/presentation/widgets/simulation_dialog.dart';
+import 'package:cloud/presentation/widgets/tcc_research_screen.dart';
 
 void main() {
 
@@ -361,7 +362,8 @@ void main() {
     // Install command & environment variables
     expect(find.textContaining('curl -fsSL https://oryzaelo.asodya.com/install.sh | bash'), findsOneWidget);
     expect(find.textContaining('PORT=8080'), findsWidgets);
-    expect(find.textContaining('/opt/oryzaelo/.env'), findsWidgets);
+    expect(find.textContaining('/opt/oryzaelo_engine/.env'), findsWidgets);
+    expect(find.textContaining('oryzaelo_engine'), findsWidgets);
 
     // Linux Service Managers
     expect(find.text(OryzaI18n.pt.howToUseServiceSystemd), findsOneWidget);
@@ -530,6 +532,41 @@ void main() {
     expect(find.text(OryzaI18n.th.howToUseBadgeOffline), findsOneWidget);
     expect(find.text(OryzaI18n.th.howToUseServiceHeading), findsOneWidget);
     expect(find.text(OryzaI18n.th.howToUseApiHeading), findsOneWidget);
+  });
+
+  testWidgets('Hero and TCC screens render GitHub buttons wired to engine repository', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(const OryzaCloudApp());
+    await tester.pump(const Duration(milliseconds: 200));
+
+    // Verify Hero CTA GitHub button exists and can be tapped without throwing
+    final heroGithubBtn = find.text(OryzaI18n.pt.heroCtaGithub);
+    expect(heroGithubBtn, findsOneWidget);
+    await tester.tap(heroGithubBtn);
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Also test TccResearchScreen has GitHub button
+    final controller = OryzaController();
+    await tester.pumpWidget(
+      OryzaScope(
+        controller: controller,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: TccResearchScreen(isDark: false),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+    final tccGithubBtn = find.text(OryzaI18n.pt.tccGithubBtn);
+    expect(tccGithubBtn, findsOneWidget);
+    await tester.tap(tccGithubBtn, warnIfMissed: false);
+    await tester.pump(const Duration(milliseconds: 100));
   });
 }
 
