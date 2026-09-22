@@ -6,7 +6,9 @@ import 'package:cloud/main.dart';
 import 'package:cloud/core/routes.dart';
 import 'package:cloud/presentation/pages/landing_page.dart';
 import 'package:cloud/presentation/widgets/benchmark_screen.dart';
+import 'package:cloud/presentation/widgets/hardware_workbench_screen.dart';
 import 'package:cloud/presentation/widgets/header.dart';
+import 'package:cloud/presentation/widgets/system_pipeline_screen.dart';
 
 void main() {
 
@@ -151,5 +153,99 @@ void main() {
 
     expect(find.textContaining('Departamento de Arroz (Rice Department)'), findsWidgets);
     expect(find.textContaining('RiceGuard'), findsNothing);
+  });
+
+  testWidgets('SystemPipelineScreen mobile layout (375x812) renders step cards, scrollbar and navigation', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(375, 812);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    final controller = OryzaController();
+    await tester.pumpWidget(
+      OryzaScope(
+        controller: controller,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: SystemPipelineScreen(isDark: false),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SystemPipelineScreen), findsOneWidget);
+    expect(find.text('ETAPA 1 DE 5'), findsOneWidget);
+    expect(find.text(OryzaI18n.pt.pipeActiveTag), findsOneWidget);
+    expect(find.text('01'), findsOneWidget);
+    expect(find.text('02'), findsOneWidget);
+
+    final nextBtn = find.byTooltip(OryzaI18n.pt.navNextStep);
+    expect(nextBtn, findsOneWidget);
+    await tester.ensureVisible(nextBtn);
+    await tester.tap(nextBtn);
+    await tester.pumpAndSettle();
+
+    expect(find.text('ETAPA 2 DE 5'), findsOneWidget);
+  });
+
+  testWidgets('HardwareWorkbenchScreen mobile layout (375x812) renders device cards and controls', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(375, 812);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    final controller = OryzaController();
+    await tester.pumpWidget(
+      OryzaScope(
+        controller: controller,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: HardwareWorkbenchScreen(isDark: false),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HardwareWorkbenchScreen), findsOneWidget);
+    expect(find.text('DISP. 1 DE 6'), findsOneWidget);
+    expect(find.text(OryzaI18n.pt.hwDevicesTag), findsOneWidget);
+    expect(find.text('RPI5-DIN-001'), findsWidgets);
+
+    final nextBtn = find.byTooltip(OryzaI18n.pt.navNextDevice);
+    expect(nextBtn, findsOneWidget);
+    await tester.ensureVisible(nextBtn);
+    await tester.tap(nextBtn);
+    await tester.pumpAndSettle();
+
+    expect(find.text('DISP. 2 DE 6'), findsOneWidget);
+  });
+
+  testWidgets('BenchmarkScreen mobile layout (375x812) renders table and scrollbar without overflow', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(375, 812);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    final controller = OryzaController();
+    await tester.pumpWidget(
+      OryzaScope(
+        controller: controller,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: BenchmarkScreen(isDark: false),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BenchmarkScreen), findsOneWidget);
+    expect(find.text('Deslize horizontalmente para comparar todas as colunas e métricas'), findsOneWidget);
+    expect(find.byType(DataTable), findsOneWidget);
   });
 }

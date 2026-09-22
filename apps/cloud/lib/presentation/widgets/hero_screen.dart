@@ -518,7 +518,7 @@ class _HeroScreenState extends State<HeroScreen> {
           builder: (context, constraints) {
             final portalSystem = _PortalCard(
               isDark: widget.isDark,
-              tag: "MOTOR RUST & PIPELINE",
+              tag: s.portalSystemTag,
               icon: Icons.schema_outlined,
               accentColor: OryzaColors.burntOrange,
               title: s.exploreSectionSystem,
@@ -529,7 +529,7 @@ class _HeroScreenState extends State<HeroScreen> {
 
             final portalHardware = _PortalCard(
               isDark: widget.isDark,
-              tag: "CAD & ESQUEMÁTICOS",
+              tag: s.portalHardwareTag,
               icon: Icons.developer_board_outlined,
               accentColor: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
               title: s.exploreSectionHardware,
@@ -540,7 +540,7 @@ class _HeroScreenState extends State<HeroScreen> {
 
             final portalTcc = _PortalCard(
               isDark: widget.isDark,
-              tag: "USP • MBA ENG. SOFTWARE",
+              tag: s.portalTccTag,
               icon: Icons.school_outlined,
               accentColor: OryzaColors.burntOrange,
               title: s.exploreSectionTcc,
@@ -551,7 +551,7 @@ class _HeroScreenState extends State<HeroScreen> {
 
             final portalBenchmark = _PortalCard(
               isDark: widget.isDark,
-              tag: "BENCHMARK & COMPARAÇÃO",
+              tag: s.portalBenchmarkTag,
               icon: Icons.bar_chart_outlined,
               accentColor: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
               title: s.exploreSectionBenchmark,
@@ -997,66 +997,62 @@ class _InteractiveCulturalCardState extends State<_InteractiveCulturalCard> {
               const SizedBox(height: 18),
 
               // Fluid Interactive Discovery Tabs (Visão Geral, Agronomia & Terroir, Ciência de Borda)
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(tabs.length, (idx) {
-                    final isSelected = _activeTab == idx && _expanded;
-                    final tab = tabs[idx];
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            if (_activeTab == idx && _expanded) {
-                              _expanded = false;
-                            } else {
-                              _activeTab = idx;
-                              _expanded = true;
-                            }
-                          });
-                        },
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: List.generate(tabs.length, (idx) {
+                  final isSelected = _activeTab == idx && _expanded;
+                  final tab = tabs[idx];
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (_activeTab == idx && _expanded) {
+                          _expanded = false;
+                        } else {
+                          _activeTab = idx;
+                          _expanded = true;
+                        }
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(6),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? widget.accentColor.withValues(alpha: widget.isDark ? 0.25 : 0.18)
+                            : (widget.isDark ? OryzaColors.darkCanvas : const Color(0xFFEBE7DC)),
                         borderRadius: BorderRadius.circular(6),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 180),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? widget.accentColor.withValues(alpha: widget.isDark ? 0.25 : 0.18)
-                                : (widget.isDark ? OryzaColors.darkCanvas : const Color(0xFFEBE7DC)),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: isSelected
-                                  ? widget.accentColor
-                                  : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                tab.icon,
-                                size: 14,
-                                color: isSelected ? widget.accentColor : textSecondary,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                tab.label,
-                                style: TextStyle(
-                                  fontFamily: OryzaTypography.fontFamily,
-                                  package: 'oryzaelo_ui',
-                                  fontSize: 11.5,
-                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                                  color: isSelected ? textPrimary : textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
+                        border: Border.all(
+                          color: isSelected
+                              ? widget.accentColor
+                              : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
                         ),
                       ),
-                    );
-                  }),
-                ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            tab.icon,
+                            size: 14,
+                            color: isSelected ? widget.accentColor : textSecondary,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            tab.label,
+                            style: TextStyle(
+                              fontFamily: OryzaTypography.fontFamily,
+                              package: 'oryzaelo_ui',
+                              fontSize: 11.5,
+                              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                              color: isSelected ? textPrimary : textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
               ),
               const SizedBox(height: 12),
 

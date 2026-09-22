@@ -40,6 +40,10 @@ class OryzaStrings {
   final String exploreSectionTcc;
   final String exploreSectionTccDesc;
   final String exploreActionBtn;
+  final String portalSystemTag;
+  final String portalHardwareTag;
+  final String portalTccTag;
+  final String portalBenchmarkTag;
 
   final String heroPill;
   final String heroJingle;
@@ -129,6 +133,12 @@ class OryzaStrings {
   final String pipe05Title;
   final String pipe05Desc;
   final String pipe05Eq;
+  final String pipeActiveTag;
+  final String pipeStepPrefix;
+  final String pipeOfPrefix;
+  final String pipeSwipeHint;
+  final String navPrevStep;
+  final String navNextStep;
 
   final String hwSectionTag;
   final String hwTitle;
@@ -142,6 +152,11 @@ class OryzaStrings {
   final String hwInspectorTitle;
   final String hwDeviceSelect;
   final List<OryzaDeviceI18n> hwDevices;
+  final String hwDevicesTag;
+  final String hwDevicePrefix;
+  final String hwSwipeHint;
+  final String navPrevDevice;
+  final String navNextDevice;
 
   final String tccSectionTag;
   final String tccTitle;
@@ -214,6 +229,7 @@ class OryzaStrings {
 
   final String benchmarkTableHeading;
   final String benchmarkTableSubheading;
+  final String benchmarkSwipeHint;
   final String benchmarkColCriterion;
   final String benchmarkColOryza;
   final String benchmarkColSatellite;
@@ -275,8 +291,30 @@ class OryzaStrings {
   final String benchmarkLineLegendBrazil;
   final String benchmarkLineLegendThai;
   final String benchmarkLineLegendTheoretical;
+  final String benchmarkBbch10Stage;
+  final String benchmarkBbch21Stage;
+  final String benchmarkBbch51Stage;
+  final String benchmarkBbch65Stage;
+  final String benchmarkBbch87Stage;
   final String benchmarkBarChartTitle;
   final String benchmarkBarChartSub;
+  final String benchmarkBarTabLatency;
+  final String benchmarkBarTabPower;
+  final String benchmarkBarArchOryza;
+  final String benchmarkBarArchCoral;
+  final String benchmarkBarArchPython;
+  final String benchmarkBarArchCloud;
+  final String benchmarkBarPowerOryza;
+  final String benchmarkBarPowerCoral;
+  final String benchmarkBarPowerCoralDesc;
+  final String benchmarkBarPowerPython;
+  final String benchmarkBarPowerPythonDesc;
+  final String benchmarkBarPowerCloud;
+  final String benchmarkBarPowerCloudDesc;
+  final String benchmarkBarFooterNote;
+  final String benchmarkMapFooterTag;
+  final String benchmarkMapLegendBrazil;
+  final String benchmarkMapLegendThai;
 
   final String benchmarkMapHeading;
   final String benchmarkMapSubheading;
@@ -345,6 +383,10 @@ class OryzaStrings {
     required this.exploreSectionTcc,
     required this.exploreSectionTccDesc,
     required this.exploreActionBtn,
+    required this.portalSystemTag,
+    required this.portalHardwareTag,
+    required this.portalTccTag,
+    required this.portalBenchmarkTag,
     required this.heroPill,
     required this.heroJingle,
     required this.heroManifestoTag,
@@ -422,6 +464,12 @@ class OryzaStrings {
     required this.pipe05Title,
     required this.pipe05Desc,
     required this.pipe05Eq,
+    required this.pipeActiveTag,
+    required this.pipeStepPrefix,
+    required this.pipeOfPrefix,
+    required this.pipeSwipeHint,
+    required this.navPrevStep,
+    required this.navNextStep,
     required this.hwSectionTag,
     required this.hwTitle,
     required this.hwSubtitle,
@@ -434,6 +482,11 @@ class OryzaStrings {
     required this.hwInspectorTitle,
     required this.hwDeviceSelect,
     required this.hwDevices,
+    required this.hwDevicesTag,
+    required this.hwDevicePrefix,
+    required this.hwSwipeHint,
+    required this.navPrevDevice,
+    required this.navNextDevice,
     required this.tccSectionTag,
     required this.tccTitle,
     required this.tccSubtitle,
@@ -494,6 +547,7 @@ class OryzaStrings {
     required this.benchmarkMetricOfflineSub,
     required this.benchmarkTableHeading,
     required this.benchmarkTableSubheading,
+    required this.benchmarkSwipeHint,
     required this.benchmarkColCriterion,
     required this.benchmarkColOryza,
     required this.benchmarkColSatellite,
@@ -546,8 +600,30 @@ class OryzaStrings {
     required this.benchmarkLineLegendBrazil,
     required this.benchmarkLineLegendThai,
     required this.benchmarkLineLegendTheoretical,
+    required this.benchmarkBbch10Stage,
+    required this.benchmarkBbch21Stage,
+    required this.benchmarkBbch51Stage,
+    required this.benchmarkBbch65Stage,
+    required this.benchmarkBbch87Stage,
     required this.benchmarkBarChartTitle,
     required this.benchmarkBarChartSub,
+    required this.benchmarkBarTabLatency,
+    required this.benchmarkBarTabPower,
+    required this.benchmarkBarArchOryza,
+    required this.benchmarkBarArchCoral,
+    required this.benchmarkBarArchPython,
+    required this.benchmarkBarArchCloud,
+    required this.benchmarkBarPowerOryza,
+    required this.benchmarkBarPowerCoral,
+    required this.benchmarkBarPowerCoralDesc,
+    required this.benchmarkBarPowerPython,
+    required this.benchmarkBarPowerPythonDesc,
+    required this.benchmarkBarPowerCloud,
+    required this.benchmarkBarPowerCloudDesc,
+    required this.benchmarkBarFooterNote,
+    required this.benchmarkMapFooterTag,
+    required this.benchmarkMapLegendBrazil,
+    required this.benchmarkMapLegendThai,
     required this.benchmarkMapHeading,
     required this.benchmarkMapSubheading,
     required this.benchmarkMapBrazilTitle,
@@ -616,6 +692,10 @@ class OryzaI18n {
     exploreSectionTcc: "Pesquisa Científica & TCC — USP",
     exploreSectionTccDesc: "Rigor acadêmico, modelagem agrometeorológica matemática e validação experimental em campo.",
     exploreActionBtn: "Acessar tela dedicada",
+    portalSystemTag: "MOTOR RUST E PIPELINE",
+    portalHardwareTag: "CAD E ESQUEMÁTICOS",
+    portalTccTag: "USP • MBA ENG. SOFTWARE",
+    portalBenchmarkTag: "BENCHMARK E COMPARAÇÃO",
 
     heroPill: "ESTAÇÃO DE FENOLOGIA DE PRECISÃO NA BORDA RURAL",
     heroJingle: "Seja na América Latina ou na Ásia:\nOnde há sol e água, o campo vive.\nOnde há dados e borda, a ciência colhe.",
@@ -705,6 +785,12 @@ class OryzaI18n {
     pipe05Title: "05. Decisão Agronômica Offline",
     pipe05Desc: "Recomendação instantânea na tela do produtor: ajuste da altura da lâmina de inundação, momento ótimo para adubação nitrogenada de cobertura e previsão de colheita.",
     pipe05Eq: "Lâmina: 5 a 10 cm  •  Adubação N: BBCH 25 e 32  •  Drenagem: BBCH 87",
+    pipeActiveTag: "ATIVO",
+    pipeStepPrefix: "ETAPA",
+    pipeOfPrefix: "DE",
+    pipeSwipeHint: "Deslize horizontalmente ou use as setas para inspecionar todas as etapas",
+    navPrevStep: "Etapa anterior",
+    navNextStep: "Próxima etapa",
 
     hwSectionTag: "ENGENHARIA DE HARDWARE IOT",
     hwTitle: "Bancada de Hardware IoT & Esquemáticos CAD",
@@ -773,6 +859,11 @@ class OryzaI18n {
         specs: 'Painel Solar 50W Monocristalino • Controlador Solar MPPT • Bateria LiFePO4 12V 20Ah • Gabinete IP67 • Protetor contra surtos elétricos',
       ),
     ],
+    hwDevicesTag: "DISPOSITIVOS E SENSORES",
+    hwDevicePrefix: "DISP.",
+    hwSwipeHint: "Deslize horizontalmente ou use as setas para inspecionar todos os nós",
+    navPrevDevice: "Dispositivo anterior",
+    navNextDevice: "Próximo dispositivo",
 
     tccSectionTag: "RIGOR ACADÊMICO E CIENTÍFICO",
     tccTitle: "Pesquisa Científica & TCC — USP",
@@ -845,6 +936,7 @@ class OryzaI18n {
 
     benchmarkTableHeading: "MATRIZ COMPARATIVA DE TECNOLOGIAS AGRONÔMICAS",
     benchmarkTableSubheading: "Comparação detalhada entre arquitetura de borda Oryza-Elo e as principais abordagens de monitoramento do mercado agrícola.",
+    benchmarkSwipeHint: "Deslize horizontalmente para comparar todas as colunas e métricas",
     benchmarkColCriterion: "Critério de Avaliação",
     benchmarkColOryza: "Oryza-Elo (Borda Tabular)",
     benchmarkColSatellite: "Satélites (Sentinel-2 e Landsat)",
@@ -906,8 +998,30 @@ class OryzaI18n {
     benchmarkLineLegendBrazil: "Piracicaba, Brasil (Subtropical, T_base = 10.0°C)",
     benchmarkLineLegendThai: "Sukhothai, Tailândia (Tropical Monçônico)",
     benchmarkLineLegendTheoretical: "Curva Teórica Sigmoide BBCH",
+    benchmarkBbch10Stage: "Emergência",
+    benchmarkBbch21Stage: "Perfilhamento",
+    benchmarkBbch51Stage: "Emissão Panícula",
+    benchmarkBbch65Stage: "Antese",
+    benchmarkBbch87Stage: "Maturação",
     benchmarkBarChartTitle: "Latência de Inferência por Arquitetura Computacional",
     benchmarkBarChartSub: "Tempo médio de inferência neural por ciclo fenológico (menor é melhor, escala logarítmica).",
+    benchmarkBarTabLatency: "Latência",
+    benchmarkBarTabPower: "Potência (W)",
+    benchmarkBarArchOryza: "Oryza-Elo Rust (ARM CPU)",
+    benchmarkBarArchCoral: "Coral TPU Edge (TFLite)",
+    benchmarkBarArchPython: "PyTorch CPU Edge (Python)",
+    benchmarkBarArchCloud: "Cloud REST API (FastAPI)",
+    benchmarkBarPowerOryza: "Oryza-Elo Edge (Nó Solar)",
+    benchmarkBarPowerCoral: "Coral TPU Coprocessador",
+    benchmarkBarPowerCoralDesc: "2.50W (contínuo)",
+    benchmarkBarPowerPython: "Python Edge Gateway",
+    benchmarkBarPowerPythonDesc: "8.50W (consumo CPU)",
+    benchmarkBarPowerCloud: "Estação 4G Conectada",
+    benchmarkBarPowerCloudDesc: "15.00W (modem contínuo)",
+    benchmarkBarFooterNote: "O motor em Rust atinge velocidade 660 vezes superior ao Python PyTorch e 10.700 vezes superior a requisições de nuvem, operando com consumo inferior a 1 Watt.",
+    benchmarkMapFooterTag: "PROJEÇÃO CARTOGRÁFICA AGNÓSTICA • DADOS FAOSTAT E EMBRAPA",
+    benchmarkMapLegendBrazil: "Brasil (22.7° S)",
+    benchmarkMapLegendThai: "Tailândia (17.0° N)",
 
     benchmarkMapHeading: "DISTRIBUIÇÃO CARTOGRÁFICA DA PRODUÇÃO DE ARROZ",
     benchmarkMapSubheading: "Mapeamento em cores agnósticas destacando os polos de Piracicaba e Sukhothai no cenário orizícola mundial.",
@@ -978,6 +1092,10 @@ class OryzaI18n {
     exploreSectionTcc: "Scientific Research & Thesis — USP",
     exploreSectionTccDesc: "Academic rigor, mathematical agrometeorological modeling, and empirical field validation.",
     exploreActionBtn: "Open dedicated screen",
+    portalSystemTag: "RUST ENGINE AND PIPELINE",
+    portalHardwareTag: "CAD AND SCHEMATICS",
+    portalTccTag: "USP • MBA SOFTWARE ENG.",
+    portalBenchmarkTag: "BENCHMARK AND COMPARISON",
 
     heroPill: "EDGE PRECISION PHENOLOGY STATION FOR RICE CROPS",
     heroJingle: "Whether in Latin America or in Asia:\nWhere there is sun and water, the field thrives.\nWhere there are data and edge, science reaps.",
@@ -1067,6 +1185,12 @@ class OryzaI18n {
     pipe05Title: "05. Offline Agronomic Decision",
     pipe05Desc: "Immediate guidance on the grower's screen: flood water depth adjustment, optimal timing for nitrogen top-dressing, and harvest scheduling.",
     pipe05Eq: "Water Depth: 5 to 10 cm  •  N Top-Dressing: BBCH 25 and 32  •  Drainage: BBCH 87",
+    pipeActiveTag: "ACTIVE",
+    pipeStepPrefix: "STAGE",
+    pipeOfPrefix: "OF",
+    pipeSwipeHint: "Swipe horizontally or use arrows to inspect all stages",
+    navPrevStep: "Previous stage",
+    navNextStep: "Next stage",
 
     hwSectionTag: "IOT HARDWARE ENGINEERING",
     hwTitle: "IoT Hardware Workbench & CAD Schematics",
@@ -1135,6 +1259,11 @@ class OryzaI18n {
         specs: '50W Monocrystalline Panel • MPPT Solar Controller • 12V 20Ah LiFePO4 Battery • IP67 Enclosure • Lightning surge protection',
       ),
     ],
+    hwDevicesTag: "DEVICES AND SENSORS",
+    hwDevicePrefix: "DEV.",
+    hwSwipeHint: "Swipe horizontally or use arrows to inspect all nodes",
+    navPrevDevice: "Previous device",
+    navNextDevice: "Next device",
 
     tccSectionTag: "ACADEMIC & SCIENTIFIC RIGOR",
     tccTitle: "Scientific Research & Thesis — USP",
@@ -1207,6 +1336,7 @@ class OryzaI18n {
 
     benchmarkTableHeading: "AGRONOMIC SENSING COMPARISON MATRIX",
     benchmarkTableSubheading: "Comprehensive comparison between Oryza-Elo tabular edge architecture and conventional agricultural monitoring approaches.",
+    benchmarkSwipeHint: "Swipe horizontally to compare all columns and metrics",
     benchmarkColCriterion: "Evaluation Criterion",
     benchmarkColOryza: "Oryza-Elo (Tabular Edge)",
     benchmarkColSatellite: "Satellites (Sentinel-2 & Landsat)",
@@ -1268,8 +1398,30 @@ class OryzaI18n {
     benchmarkLineLegendBrazil: "Piracicaba, Brazil (Subtropical, T_base = 10.0°C)",
     benchmarkLineLegendThai: "Sukhothai, Thailand (Tropical Monsoon)",
     benchmarkLineLegendTheoretical: "Theoretical BBCH Sigmoid Curve",
+    benchmarkBbch10Stage: "Emergence",
+    benchmarkBbch21Stage: "Tillering",
+    benchmarkBbch51Stage: "Panicle Initiation",
+    benchmarkBbch65Stage: "Anthesis",
+    benchmarkBbch87Stage: "Ripening",
     benchmarkBarChartTitle: "Inference Latency by Computing Architecture",
     benchmarkBarChartSub: "Mean neural inference time per phenology cycle (lower is better, logarithmic scale).",
+    benchmarkBarTabLatency: "Latency",
+    benchmarkBarTabPower: "Power (W)",
+    benchmarkBarArchOryza: "Oryza-Elo Rust (ARM CPU)",
+    benchmarkBarArchCoral: "Coral TPU Edge (TFLite)",
+    benchmarkBarArchPython: "PyTorch CPU Edge (Python)",
+    benchmarkBarArchCloud: "Cloud REST API (FastAPI)",
+    benchmarkBarPowerOryza: "Oryza-Elo Edge (Solar Node)",
+    benchmarkBarPowerCoral: "Coral TPU Coprocessor",
+    benchmarkBarPowerCoralDesc: "2.50W (continuous)",
+    benchmarkBarPowerPython: "Python Edge Gateway",
+    benchmarkBarPowerPythonDesc: "8.50W (CPU consumption)",
+    benchmarkBarPowerCloud: "Connected 4G Station",
+    benchmarkBarPowerCloudDesc: "15.00W (continuous modem)",
+    benchmarkBarFooterNote: "The Rust engine achieves speeds 660 times faster than Python PyTorch and 10,700 times faster than cloud requests, operating at under 1 Watt.",
+    benchmarkMapFooterTag: "AGNOSTIC CARTOGRAPHIC PROJECTION • FAOSTAT AND EMBRAPA DATA",
+    benchmarkMapLegendBrazil: "Brazil (22.7° S)",
+    benchmarkMapLegendThai: "Thailand (17.0° N)",
 
     benchmarkMapHeading: "CARTOGRAPHIC RICE PRODUCTION OVERVIEW",
     benchmarkMapSubheading: "Agnostic color cartography highlighting the Piracicaba and Sukhothai hubs in global rice cultivation.",
@@ -1340,6 +1492,10 @@ class OryzaI18n {
     exploreSectionTcc: "งานวิจัยทางวิทยาศาสตร์และปริญญานิพนธ์ — มหาวิทยาลัยเซาเปาโล (USP)",
     exploreSectionTccDesc: "มาตรฐานทางวิชาการ แบบจำลองอุตุนิยมวิทยาการเกษตร และการตรวจสอบภาคสนาม",
     exploreActionBtn: "เปิดหน้าจอเฉพาะ",
+    portalSystemTag: "เครื่องยนต์ RUST และกระบวนการ",
+    portalHardwareTag: "CAD และแบบร่าง",
+    portalTccTag: "USP • MBA วิศวกรรมซอฟต์แวร์",
+    portalBenchmarkTag: "การเปรียบเทียบมาตรฐาน",
 
     heroPill: "สถานีฟีโนโลยีแม่นยำระดับขอบข่ายสำหรับการทำนาข้าว",
     heroJingle: "ไม่ว่าในละตินอเมริกาหรือเอเชีย:\nที่ใดมีแดดและน้ำ ท้องทุ่งย่อมงอกงาม\nที่ใดมีข้อมูลและ Edge Computing วิทยาศาสตร์ย่อมเก็บเกี่ยวผล",
@@ -1429,6 +1585,12 @@ class OryzaI18n {
     pipe05Title: "05. การตัดสินใจทางการเกษตรแบบออฟไลน์",
     pipe05Desc: "คำแนะนำทันทีบนหน้าจอ: การปรับระดับน้ำในแปลงนา จังหวะเวลาใส่ปุ๋ยไนโตรเจน และการคาดการณ์วันเก็บเกี่ยว",
     pipe05Eq: "ระดับน้ำ: 5 ถึง 10 ซม.  •  ใส่ปุ๋ย N: BBCH 25 และ 32  •  ระบายน้ำ: BBCH 87",
+    pipeActiveTag: "เปิดใช้งาน",
+    pipeStepPrefix: "ขั้นตอนที่",
+    pipeOfPrefix: "จาก",
+    pipeSwipeHint: "เลื่อนในแนวนอนหรือใช้ปุ่มลูกศรเพื่อดูขั้นตอนทั้งหมด",
+    navPrevStep: "ขั้นตอนก่อนหน้า",
+    navNextStep: "ขั้นตอนถัดไป",
 
     hwSectionTag: "วิศวกรรมฮาร์ดแวร์ IOT",
     hwTitle: "โต๊ะปฏิบัติการฮาร์ดแวร์ IoT และแบบร่าง CAD",
@@ -1497,6 +1659,11 @@ class OryzaI18n {
         specs: 'แผงโซลาร์โมโนคริสตัลไลน์ 50W • ตัวควบคุมการชาร์จ MPPT • แบตเตอรี่ LiFePO4 12V 20Ah • กล่องกันน้ำ IP67 • อุปกรณ์ป้องกันไฟกระชาก',
       ),
     ],
+    hwDevicesTag: "อุปกรณ์และเซนเซอร์",
+    hwDevicePrefix: "อุปกรณ์",
+    hwSwipeHint: "เลื่อนในแนวนอนหรือใช้ปุ่มลูกศรเพื่อดูอุปกรณ์ทั้งหมด",
+    navPrevDevice: "อุปกรณ์ก่อนหน้า",
+    navNextDevice: "อุปกรณ์ถัดไป",
 
     tccSectionTag: "มาตรฐานทางวิชาการและวิทยาศาสตร์",
     tccTitle: "งานวิจัยทางวิทยาศาสตร์และปริญญานิพนธ์ — มหาวิทยาลัยเซาเปาโล (USP)",
@@ -1569,6 +1736,7 @@ class OryzaI18n {
 
     benchmarkTableHeading: "ตารางเปรียบเทียบเทคโนโลยีการตรวจวัดทางการเกษตร",
     benchmarkTableSubheading: "การเปรียบเทียบเชิงลึกระหว่างสถาปัตยกรรมขอบข่ายแบบตารางของ Oryza-Elo กับเทคโนโลยีตรวจวัดอื่นๆ ในภาคสนาม",
+    benchmarkSwipeHint: "เลื่อนในแนวนอนเพื่อเปรียบเทียบทุกคอลัมน์และเมทริกซ์",
     benchmarkColCriterion: "เกณฑ์การประเมิน",
     benchmarkColOryza: "Oryza-Elo (ข้อมูลตารางระดับขอบข่าย)",
     benchmarkColSatellite: "ดาวเทียม (Sentinel-2 และ Landsat)",
@@ -1630,8 +1798,30 @@ class OryzaI18n {
     benchmarkLineLegendBrazil: "ปีราซีคาบา บราซิล (กึ่งเขตร้อน อุณหภูมิฐาน 10.0°C)",
     benchmarkLineLegendThai: "สุโขทัย ไทย (เขตร้อนมรสุม)",
     benchmarkLineLegendTheoretical: "เส้นโค้งทฤษฎี BBCH แบบ Sigmoid",
+    benchmarkBbch10Stage: "ระยะงอก",
+    benchmarkBbch21Stage: "ระยะแตกกอ",
+    benchmarkBbch51Stage: "ระยะสร้างรวง",
+    benchmarkBbch65Stage: "ระยะออกดอก",
+    benchmarkBbch87Stage: "ระยะสุกแก่",
     benchmarkBarChartTitle: "ความหน่วงในการอนุมานตามสถาปัตยกรรมคอมพิวเตอร์",
     benchmarkBarChartSub: "เวลาเฉลี่ยในการอนุมานโครงข่ายประสาทเทียมต่อรอบฟีโนโลยี (ค่ายิ่งน้อยยิ่งดี มาตราส่วนลอการิทึม)",
+    benchmarkBarTabLatency: "ความหน่วง",
+    benchmarkBarTabPower: "กำลังไฟฟ้า (วัตต์)",
+    benchmarkBarArchOryza: "Oryza-Elo Rust (CPU ARM)",
+    benchmarkBarArchCoral: "Coral TPU Edge (TFLite)",
+    benchmarkBarArchPython: "PyTorch CPU Edge (Python)",
+    benchmarkBarArchCloud: "Cloud REST API (FastAPI)",
+    benchmarkBarPowerOryza: "Oryza-Elo Edge (โหนดโซลาร์)",
+    benchmarkBarPowerCoral: "Coral TPU หน่วยประมวลผลร่วม",
+    benchmarkBarPowerCoralDesc: "2.50W (ต่อเนื่อง)",
+    benchmarkBarPowerPython: "เกตเวย์ Python Edge",
+    benchmarkBarPowerPythonDesc: "8.50W (การใช้ CPU)",
+    benchmarkBarPowerCloud: "สถานีเชื่อมต่อ 4G",
+    benchmarkBarPowerCloudDesc: "15.00W (โมเด็มต่อเนื่อง)",
+    benchmarkBarFooterNote: "เครื่องยนต์ Rust มีความเร็วสูงกว่า Python PyTorch 660 เท่า และเร็วกว่าคลาวด์ 10,700 เท่า โดยใช้พลังงานต่ำกว่า 1 วัตต์",
+    benchmarkMapFooterTag: "แผนที่ภูมิศาสตร์สีกลาง • ข้อมูล FAOSTAT และ EMBRAPA",
+    benchmarkMapLegendBrazil: "บราซิล (22.7° S)",
+    benchmarkMapLegendThai: "ไทย (17.0° N)",
 
     benchmarkMapHeading: "แผนที่การกระจายผลผลิตข้าวระดับโลก",
     benchmarkMapSubheading: "แผนที่ภูมิศาสตร์สีกลางแสดงจุดศูนย์กลางปีราซีคาบาและสุโขทัยในการเพาะปลูกข้าวของโลก",

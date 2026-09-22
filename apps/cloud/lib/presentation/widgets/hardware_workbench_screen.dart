@@ -13,6 +13,26 @@ class HardwareWorkbenchScreen extends StatefulWidget {
 class _HardwareWorkbenchScreenState extends State<HardwareWorkbenchScreen> {
   int _selectedDevice = 0;
   bool _showExploded = false; // false = Blueprint, true = Exploded View
+  final ScrollController _deviceScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _deviceScrollController.dispose();
+    super.dispose();
+  }
+
+  void _selectDevice(int idx, int count) {
+    if (idx < 0 || idx >= count) return;
+    setState(() => _selectedDevice = idx);
+    if (_deviceScrollController.hasClients) {
+      final targetOffset = (idx * 242.0).clamp(0.0, _deviceScrollController.position.maxScrollExtent);
+      _deviceScrollController.animateTo(
+        targetOffset,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -142,15 +162,17 @@ class _HardwareWorkbenchScreenState extends State<HardwareWorkbenchScreen> {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                s.hwSectionTag,
-                style: TextStyle(
-                  fontFamily: OryzaTypography.monoFontFamily,
-                  package: 'oryzaelo_ui',
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.2,
-                  color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+              Expanded(
+                child: Text(
+                  s.hwSectionTag,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+                  ),
                 ),
               ),
             ],
@@ -179,40 +201,257 @@ class _HardwareWorkbenchScreenState extends State<HardwareWorkbenchScreen> {
           ),
           const SizedBox(height: 24),
 
-          // Horizontal Device Selector for smaller screens, or quick pills
+          // Horizontal Device Selector for smaller screens with visible scrollbar & controls
           if (!isDesktop) ...[
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(devices.length, (idx) {
-                  final isSelected = idx == _selectedDevice;
-                  final dev = devices[idx];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ChoiceChip(
-                      label: Text(dev.name),
-                      selected: isSelected,
-                      onSelected: (_) => setState(() => _selectedDevice = idx),
-                      selectedColor: OryzaColors.burntOrange,
-                      backgroundColor: widget.isDark ? const Color(0xFF1B231B) : const Color(0xFFEDEAE0),
-                      labelStyle: TextStyle(
-                        fontFamily: OryzaTypography.fontFamily,
-                        package: 'oryzaelo_ui',
-                        fontSize: 13,
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                        color: isSelected ? Colors.white : textPrimary,
+            // Mobile Device Selector Header Controls
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: OryzaColors.burntOrange.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    s.hwDevicesTag,
+                    style: TextStyle(
+                      fontFamily: OryzaTypography.monoFontFamily,
+                      package: 'oryzaelo_ui',
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.8,
+                      color: OryzaColors.burntOrange,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: widget.isDark ? const Color(0xFF1A221A) : const Color(0xFFEDE9DC),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                        ),
                       ),
-                      side: BorderSide(
-                        color: isSelected
-                            ? OryzaColors.burntOrange
-                            : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
+                      child: Text(
+                        "${s.hwDevicePrefix} ${_selectedDevice + 1} ${s.pipeOfPrefix} ${devices.length}",
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: OryzaColors.burntOrange,
+                        ),
                       ),
                     ),
-                  );
-                }),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_left_rounded, size: 22),
+                      onPressed: _selectedDevice > 0
+                          ? () => _selectDevice(_selectedDevice - 1, devices.length)
+                          : null,
+                      tooltip: s.navPrevDevice,
+                      style: IconButton.styleFrom(
+                        backgroundColor: widget.isDark ? const Color(0xFF141914) : const Color(0xFFEDEAE0),
+                        foregroundColor: textPrimary,
+                        padding: const EdgeInsets.all(6),
+                        minimumSize: const Size(34, 34),
+                        side: BorderSide(
+                          color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_right_rounded, size: 22),
+                      onPressed: _selectedDevice < devices.length - 1
+                          ? () => _selectDevice(_selectedDevice + 1, devices.length)
+                          : null,
+                      tooltip: s.navNextDevice,
+                      style: IconButton.styleFrom(
+                        backgroundColor: widget.isDark ? const Color(0xFF141914) : const Color(0xFFEDEAE0),
+                        foregroundColor: textPrimary,
+                        padding: const EdgeInsets.all(6),
+                        minimumSize: const Size(34, 34),
+                        side: BorderSide(
+                          color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // Horizontal Scrollable Device Cards with Visible Scrollbar
+            Scrollbar(
+              controller: _deviceScrollController,
+              thumbVisibility: true,
+              trackVisibility: true,
+              child: SingleChildScrollView(
+                controller: _deviceScrollController,
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(bottom: 14),
+                child: Row(
+                  children: List.generate(devices.length, (idx) {
+                    final isSelected = idx == _selectedDevice;
+                    final dev = devices[idx];
+                    return Padding(
+                      padding: EdgeInsets.only(right: idx < devices.length - 1 ? 12 : 0),
+                      child: InkWell(
+                        onTap: () => _selectDevice(idx, devices.length),
+                        borderRadius: BorderRadius.circular(10),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          width: 230,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? (widget.isDark ? const Color(0xFF231D16) : const Color(0xFFECE4D6))
+                                : (widget.isDark ? const Color(0xFF131813) : const Color(0xFFEDE8DD)),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: isSelected
+                                  ? OryzaColors.burntOrange
+                                  : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
+                              width: isSelected ? 1.5 : 1.0,
+                            ),
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: OryzaColors.burntOrange.withValues(alpha: widget.isDark ? 0.25 : 0.15),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ]
+                                : null,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Top Row: Index + Status Dot + DWG
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? OryzaColors.burntOrange
+                                              : (widget.isDark ? const Color(0xFF1E281E) : const Color(0xFFDFDACB)),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          "0${idx + 1}",
+                                          style: TextStyle(
+                                            fontFamily: OryzaTypography.monoFontFamily,
+                                            package: 'oryzaelo_ui',
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w700,
+                                            color: isSelected ? Colors.white : textSecondary,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        width: 7,
+                                        height: 7,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: isSelected
+                                              ? OryzaColors.burntOrange
+                                              : textSecondary.withValues(alpha: 0.4),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    dev.dwg,
+                                    style: TextStyle(
+                                      fontFamily: OryzaTypography.monoFontFamily,
+                                      package: 'oryzaelo_ui',
+                                      fontSize: 10,
+                                      color: isSelected
+                                          ? (widget.isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange)
+                                          : textSecondary.withValues(alpha: 0.6),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              // Device Name
+                              Text(
+                                dev.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily: OryzaTypography.fontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 13.5,
+                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                                  color: isSelected ? textPrimary : textSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              // Device Role
+                              Text(
+                                dev.role,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily: OryzaTypography.fontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 11,
+                                  color: isSelected
+                                      ? (widget.isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange)
+                                      : textSecondary.withValues(alpha: 0.8),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
               ),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 6),
+            // Mobile Swipe Indicator
+            Row(
+              children: [
+                Icon(
+                  Icons.swipe_outlined,
+                  size: 14,
+                  color: OryzaColors.burntOrange,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    s.hwSwipeHint,
+                    style: TextStyle(
+                      fontFamily: OryzaTypography.monoFontFamily,
+                      package: 'oryzaelo_ui',
+                      fontSize: 10.5,
+                      color: textSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
           ],
 
           // Widescreen Multi-Column Desktop Grid
@@ -569,23 +808,26 @@ class _HardwareWorkbenchScreenState extends State<HardwareWorkbenchScreen> {
                       color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
                     ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildToggleBtn(
-                        label: s.hwToggleBlueprint,
-                        icon: Icons.architecture,
-                        isSelected: !_showExploded,
-                        onTap: () => setState(() => _showExploded = false),
-                      ),
-                      const SizedBox(width: 4),
-                      _buildToggleBtn(
-                        label: s.hwToggleExploded,
-                        icon: Icons.auto_awesome_motion,
-                        isSelected: _showExploded,
-                        onTap: () => setState(() => _showExploded = true),
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildToggleBtn(
+                          label: s.hwToggleBlueprint,
+                          icon: Icons.architecture,
+                          isSelected: !_showExploded,
+                          onTap: () => setState(() => _showExploded = false),
+                        ),
+                        const SizedBox(width: 4),
+                        _buildToggleBtn(
+                          label: s.hwToggleExploded,
+                          icon: Icons.auto_awesome_motion,
+                          isSelected: _showExploded,
+                          onTap: () => setState(() => _showExploded = true),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 OutlinedButton.icon(

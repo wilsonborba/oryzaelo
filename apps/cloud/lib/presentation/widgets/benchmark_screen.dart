@@ -17,6 +17,13 @@ class BenchmarkScreen extends StatefulWidget {
 class _BenchmarkScreenState extends State<BenchmarkScreen> {
   int _selectedMapCountry = 0; // 0: Brazil, 1: Thailand
   int _selectedBarMetric = 0; // 0: Latency, 1: Power
+  final ScrollController _tableScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _tableScrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,15 +93,19 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(
-                s.benchmarkSectionTag,
-                style: TextStyle(
-                  fontFamily: OryzaTypography.monoFontFamily,
-                  package: 'oryzaelo_ui',
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.8,
-                  color: tagColor,
+              Flexible(
+                child: Text(
+                  s.benchmarkSectionTag,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.8,
+                    color: tagColor,
+                  ),
                 ),
               ),
             ],
@@ -228,15 +239,17 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           children: [
             Icon(Icons.table_chart_outlined, size: 20, color: OryzaColors.burntOrange),
             const SizedBox(width: 8),
-            Text(
-              s.benchmarkTableHeading,
-              style: TextStyle(
-                fontFamily: OryzaTypography.monoFontFamily,
-                package: 'oryzaelo_ui',
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.8,
-                color: textPrimary,
+            Expanded(
+              child: Text(
+                s.benchmarkTableHeading,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.monoFontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                  color: textPrimary,
+                ),
               ),
             ),
           ],
@@ -251,7 +264,37 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
             color: textSecondary,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
+
+        // Mobile swipe indicator cue
+        Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          decoration: BoxDecoration(
+            color: widget.isDark ? const Color(0xFF182218) : const Color(0xFFEBE6D6),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: borderColor),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.swipe_outlined, size: 15, color: OryzaColors.burntOrange),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  s.benchmarkSwipeHint,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
 
         // Scrollable Table Container
         Container(
@@ -261,11 +304,17 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: borderColor),
           ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 980),
-              child: DataTable(
+          child: Scrollbar(
+            controller: _tableScrollController,
+            thumbVisibility: true,
+            trackVisibility: true,
+            child: SingleChildScrollView(
+              controller: _tableScrollController,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(bottom: 12),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 980),
+                child: DataTable(
                 headingRowHeight: 52,
                 dataRowMinHeight: 56,
                 dataRowMaxHeight: 76,
@@ -373,8 +422,9 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
             ),
           ),
         ),
-      ],
-    );
+      ),
+    ],
+  );
   }
 
   DataRow _buildRow(
@@ -489,15 +539,17 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           children: [
             Icon(Icons.show_chart_outlined, size: 20, color: OryzaColors.burntOrange),
             const SizedBox(width: 8),
-            Text(
-              s.benchmarkChartsHeading,
-              style: TextStyle(
-                fontFamily: OryzaTypography.monoFontFamily,
-                package: 'oryzaelo_ui',
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.8,
-                color: textPrimary,
+            Expanded(
+              child: Text(
+                s.benchmarkChartsHeading,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.monoFontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                  color: textPrimary,
+                ),
               ),
             ),
           ],
@@ -649,15 +701,21 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
               borderRadius: BorderRadius.circular(6),
               border: Border.all(color: borderColor),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildBbchBadge("BBCH 10", "DAE 12", "Emergência"),
-                _buildBbchBadge("BBCH 21", "DAE 32", "Perfilhamento"),
-                _buildBbchBadge("BBCH 51", "DAE 65", "Emissão Panícula"),
-                _buildBbchBadge("BBCH 65", "DAE 80", "Antese"),
-                _buildBbchBadge("BBCH 87", "DAE 110", "Maturação"),
-              ],
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 440),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildBbchBadge("BBCH 10", "DAE 12", s.benchmarkBbch10Stage),
+                    _buildBbchBadge("BBCH 21", "DAE 32", s.benchmarkBbch21Stage),
+                    _buildBbchBadge("BBCH 51", "DAE 65", s.benchmarkBbch51Stage),
+                    _buildBbchBadge("BBCH 65", "DAE 80", s.benchmarkBbch65Stage),
+                    _buildBbchBadge("BBCH 87", "DAE 110", s.benchmarkBbch87Stage),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -696,28 +754,38 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
     required Color color,
     bool isDashed = false,
   }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 16,
-          height: 3,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(1.5),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxW = constraints.maxWidth.isFinite ? constraints.maxWidth : 280.0;
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxW),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 16,
+                height: 3,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(1.5),
+                ),
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.fontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 11,
+                    color: widget.isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: TextStyle(
-            fontFamily: OryzaTypography.fontFamily,
-            package: 'oryzaelo_ui',
-            fontSize: 11,
-            color: widget.isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -760,10 +828,10 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildToggleBtn("Latência", _selectedBarMetric == 0, () {
+                    _buildToggleBtn(s.benchmarkBarTabLatency, _selectedBarMetric == 0, () {
                       setState(() => _selectedBarMetric = 0);
                     }),
-                    _buildToggleBtn("Potência (W)", _selectedBarMetric == 1, () {
+                    _buildToggleBtn(s.benchmarkBarTabPower, _selectedBarMetric == 1, () {
                       setState(() => _selectedBarMetric = 1);
                     }),
                   ],
@@ -785,21 +853,21 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
 
           // 4 Bars Comparison
           if (_selectedBarMetric == 0) ...[
-            _buildBarRow("Oryza-Elo Rust (ARM CPU)", "22.4 µs (0.022 ms)", 0.05, OryzaColors.burntOrange, isBest: true),
+            _buildBarRow(s.benchmarkBarArchOryza, "22.4 µs (0.022 ms)", 0.05, OryzaColors.burntOrange, isBest: true),
             const SizedBox(height: 14),
-            _buildBarRow("Coral TPU Edge (TFLite)", "180 µs (0.180 ms)", 0.18, widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen),
+            _buildBarRow(s.benchmarkBarArchCoral, "180 µs (0.180 ms)", 0.18, widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen),
             const SizedBox(height: 14),
-            _buildBarRow("PyTorch CPU Edge (Python)", "14.8 ms (14,800 µs)", 0.65, textSecondary.withValues(alpha: 0.7)),
+            _buildBarRow(s.benchmarkBarArchPython, "14.8 ms (14,800 µs)", 0.65, textSecondary.withValues(alpha: 0.7)),
             const SizedBox(height: 14),
-            _buildBarRow("Cloud REST API (FastAPI)", "240.0 ms (240,000 µs)", 1.0, textSecondary.withValues(alpha: 0.4)),
+            _buildBarRow(s.benchmarkBarArchCloud, "240.0 ms (240,000 µs)", 1.0, textSecondary.withValues(alpha: 0.4)),
           ] else ...[
-            _buildBarRow("Oryza-Elo Edge (Nó Solar)", "0.45W (com deep sleep)", 0.08, OryzaColors.burntOrange, isBest: true),
+            _buildBarRow(s.benchmarkBarPowerOryza, "0.45W (com deep sleep)", 0.08, OryzaColors.burntOrange, isBest: true),
             const SizedBox(height: 14),
-            _buildBarRow("Coral TPU Coprocessador", "2.50W (contínuo)", 0.22, widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen),
+            _buildBarRow(s.benchmarkBarPowerCoral, s.benchmarkBarPowerCoralDesc, 0.22, widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen),
             const SizedBox(height: 14),
-            _buildBarRow("Python Edge Gateway", "8.50W (consumo CPU)", 0.55, textSecondary.withValues(alpha: 0.7)),
+            _buildBarRow(s.benchmarkBarPowerPython, s.benchmarkBarPowerPythonDesc, 0.55, textSecondary.withValues(alpha: 0.7)),
             const SizedBox(height: 14),
-            _buildBarRow("Estação 4G Conectada", "15.00W (modem contínuo)", 1.0, textSecondary.withValues(alpha: 0.4)),
+            _buildBarRow(s.benchmarkBarPowerCloud, s.benchmarkBarPowerCloudDesc, 1.0, textSecondary.withValues(alpha: 0.4)),
           ],
 
           const SizedBox(height: 24),
@@ -816,7 +884,7 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    "O motor em Rust atinge velocidade 660 vezes superior ao Python PyTorch e 10.700 vezes superior a requisições de nuvem, operando com consumo inferior a 1 Watt.",
+                    s.benchmarkBarFooterNote,
                     style: TextStyle(
                       fontFamily: OryzaTypography.fontFamily,
                       package: 'oryzaelo_ui',
@@ -939,15 +1007,17 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           children: [
             Icon(Icons.public_outlined, size: 20, color: OryzaColors.burntOrange),
             const SizedBox(width: 8),
-            Text(
-              s.benchmarkMapHeading,
-              style: TextStyle(
-                fontFamily: OryzaTypography.monoFontFamily,
-                package: 'oryzaelo_ui',
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.8,
-                color: textPrimary,
+            Expanded(
+              child: Text(
+                s.benchmarkMapHeading,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.monoFontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                  color: textPrimary,
+                ),
               ),
             ),
           ],
@@ -1002,7 +1072,7 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                             border: Border.all(color: borderColor),
                           ),
                           child: Text(
-                            "PROJEÇÃO CARTOGRÁFICA AGNÓSTICA • DADOS FAOSTAT & EMBRAPA",
+                            s.benchmarkMapFooterTag,
                             style: TextStyle(
                               fontFamily: OryzaTypography.monoFontFamily,
                               package: 'oryzaelo_ui',
@@ -1019,11 +1089,11 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                         right: 16,
                         child: Row(
                           children: [
-                            _buildMapSelectPill("Brasil (22.7° S)", _selectedMapCountry == 0, () {
+                            _buildMapSelectPill(s.benchmarkMapLegendBrazil, _selectedMapCountry == 0, () {
                               setState(() => _selectedMapCountry = 0);
                             }),
                             const SizedBox(width: 8),
-                            _buildMapSelectPill("Tailândia (17.0° N)", _selectedMapCountry == 1, () {
+                            _buildMapSelectPill(s.benchmarkMapLegendThai, _selectedMapCountry == 1, () {
                               setState(() => _selectedMapCountry = 1);
                             }),
                           ],
@@ -1230,15 +1300,17 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           children: [
             Icon(Icons.forum_outlined, size: 20, color: OryzaColors.burntOrange),
             const SizedBox(width: 8),
-            Text(
-              s.benchmarkQuotesHeading,
-              style: TextStyle(
-                fontFamily: OryzaTypography.monoFontFamily,
-                package: 'oryzaelo_ui',
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.8,
-                color: textPrimary,
+            Expanded(
+              child: Text(
+                s.benchmarkQuotesHeading,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.monoFontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                  color: textPrimary,
+                ),
               ),
             ),
           ],
@@ -1359,25 +1431,31 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  tag,
-                  style: TextStyle(
-                    fontFamily: OryzaTypography.monoFontFamily,
-                    package: 'oryzaelo_ui',
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                    color: accentColor,
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: accentColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    tag,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: OryzaTypography.monoFontFamily,
+                      package: 'oryzaelo_ui',
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
+                      color: accentColor,
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(width: 8),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: List.generate(
                   5,
                   (index) => Icon(Icons.star, size: 12, color: OryzaColors.mustardYellow),
