@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/clipboard_service.dart';
 import 'simulation_dialog.dart';
 
 class HeroScreen extends StatefulWidget {
@@ -19,9 +20,9 @@ class HeroScreen extends StatefulWidget {
 }
 
 class _HeroScreenState extends State<HeroScreen> {
-  bool _copied = false;
   static const String _installCmd = "curl -fsSL https://oryzaelo.asodya.com/install.sh | bash";
   static const String _githubRepoUrl = "https://github.com/wilsonborba/oryzaelo_engine";
+  bool _copied = false;
 
   Future<void> _launchExternalUrl(String url) async {
     final uri = Uri.parse(url);
@@ -34,7 +35,7 @@ class _HeroScreenState extends State<HeroScreen> {
 
   Future<void> _copyCommand() async {
     try {
-      await Clipboard.setData(const ClipboardData(text: _installCmd));
+      await OryzaClipboard.copy(_installCmd);
       if (mounted) setState(() => _copied = true);
       Future.delayed(const Duration(seconds: 2), () {
         if (mounted) setState(() => _copied = false);
@@ -220,16 +221,16 @@ class _HeroScreenState extends State<HeroScreen> {
                       ),
                     ),
                     const SizedBox(width: 14),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        onTap: _copyCommand,
-                        child: Icon(
-                          _copied ? Icons.check : Icons.copy_outlined,
-                          size: 15,
-                          color: _copied ? OryzaColors.mustardYellow : textSecondary,
-                        ),
+                    IconButton(
+                      icon: Icon(
+                        _copied ? Icons.check : Icons.copy_outlined,
+                        size: 15,
+                        color: _copied ? OryzaColors.mustardYellow : textSecondary,
                       ),
+                      tooltip: _copied ? s.howToUseBtnCopied : s.howToUseBtnCopy,
+                      onPressed: _copyCommand,
+                      constraints: const BoxConstraints(),
+                      padding: const EdgeInsets.all(6),
                     ),
                   ],
                 ),

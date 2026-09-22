@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/clipboard_service.dart';
 
 class HowToUseScreen extends StatefulWidget {
   final bool isDark;
@@ -35,7 +36,7 @@ class _HowToUseScreenState extends State<HowToUseScreen> {
 
   Future<void> _copyToClipboard(String text, String snippetId) async {
     try {
-      await Clipboard.setData(ClipboardData(text: text));
+      await OryzaClipboard.copy(text);
       if (mounted) {
         setState(() => _copiedSnippet = snippetId);
         Future.delayed(const Duration(seconds: 2), () {

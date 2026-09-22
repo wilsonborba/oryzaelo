@@ -297,13 +297,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Verifiable quotes: Frontiers in Plant Science, Sonos Tract, SOSBAI / Embrapa, Thai Rice Dept / OAE
-    expect(find.textContaining('Frontiers in Plant Science'), findsWidgets);
+    // Verifiable quotes: Remote Sensing of Environment (Elsevier), Sonos Tract, SOSBAI / Embrapa, Thai Rice Dept / OAE
+    expect(find.textContaining('Remote Sensing of Environment'), findsWidgets);
     expect(find.textContaining('sonos-tract'), findsWidgets);
     expect(find.textContaining('SOSBAI'), findsWidgets);
     expect(find.textContaining('Embrapa Clima Temperado'), findsWidgets);
     expect(find.textContaining('Departamento de Arroz'), findsWidgets);
-    expect(find.textContaining('https://doi.org/10.3389/fpls.2021.731454'), findsOneWidget);
+    expect(find.textContaining('https://doi.org/10.1016/j.rse.2017.03.029'), findsOneWidget);
     expect(find.textContaining('https://github.com/sonos/tract'), findsOneWidget);
 
     // Official government sources: IBGE, CONAB, OAE
