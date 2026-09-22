@@ -32,12 +32,16 @@ class _HeroScreenState extends State<HeroScreen> {
     }
   }
 
-  void _copyCommand() {
-    Clipboard.setData(const ClipboardData(text: _installCmd));
-    setState(() => _copied = true);
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) setState(() => _copied = false);
-    });
+  Future<void> _copyCommand() async {
+    try {
+      await Clipboard.setData(const ClipboardData(text: _installCmd));
+      if (mounted) setState(() => _copied = true);
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) setState(() => _copied = false);
+      });
+    } catch (e) {
+      debugPrint("Failed to copy command: $e");
+    }
   }
 
   @override
@@ -178,57 +182,56 @@ class _HeroScreenState extends State<HeroScreen> {
                 ),
               ),
               // Install Command Pill
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: _copyCommand,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: widget.isDark ? OryzaColors.darkSurface : const Color(0xFFEBE8DE),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: _copied
-                            ? OryzaColors.mustardYellow
-                            : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                decoration: BoxDecoration(
+                  color: widget.isDark ? OryzaColors.darkSurface : const Color(0xFFEBE8DE),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: _copied
+                        ? OryzaColors.mustardYellow
+                        : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "\$",
+                      style: TextStyle(
+                        fontFamily: OryzaTypography.monoFontFamily,
+                        package: 'oryzaelo_ui',
+                        color: OryzaColors.burntOrange,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "\$",
-                          style: TextStyle(
-                            fontFamily: OryzaTypography.monoFontFamily,
-                            package: 'oryzaelo_ui',
-                            color: OryzaColors.burntOrange,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 13,
-                          ),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: SelectableText(
+                        _installCmd,
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 12.5,
+                          color: textPrimary,
                         ),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Text(
-                            _installCmd,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontFamily: OryzaTypography.monoFontFamily,
-                              package: 'oryzaelo_ui',
-                              fontSize: 12.5,
-                              color: textPrimary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Icon(
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: _copyCommand,
+                        child: Icon(
                           _copied ? Icons.check : Icons.copy_outlined,
                           size: 15,
                           color: _copied ? OryzaColors.mustardYellow : textSecondary,
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ],

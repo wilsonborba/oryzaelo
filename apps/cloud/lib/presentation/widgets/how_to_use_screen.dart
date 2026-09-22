@@ -33,14 +33,20 @@ class _HowToUseScreenState extends State<HowToUseScreen> {
     }
   }
 
-  void _copyToClipboard(String text, String snippetId) {
-    Clipboard.setData(ClipboardData(text: text));
-    setState(() => _copiedSnippet = snippetId);
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted && _copiedSnippet == snippetId) {
-        setState(() => _copiedSnippet = null);
+  Future<void> _copyToClipboard(String text, String snippetId) async {
+    try {
+      await Clipboard.setData(ClipboardData(text: text));
+      if (mounted) {
+        setState(() => _copiedSnippet = snippetId);
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted && _copiedSnippet == snippetId) {
+            setState(() => _copiedSnippet = null);
+          }
+        });
       }
-    });
+    } catch (e) {
+      debugPrint("Failed to copy to clipboard: $e");
+    }
   }
 
   @override
@@ -641,30 +647,31 @@ class _HowToUseScreenState extends State<HowToUseScreen> {
                         ),
                       ],
                     ),
-                    InkWell(
-                      onTap: () => _launchExternalUrl(_cloudPortalUrl),
-                      borderRadius: BorderRadius.circular(4),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              _cloudPortalUrl,
-                              style: TextStyle(
-                                fontFamily: OryzaTypography.monoFontFamily,
-                                package: 'oryzaelo_ui',
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                                color: OryzaColors.burntOrange,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            const Icon(Icons.open_in_new, size: 12, color: OryzaColors.burntOrange),
-                          ],
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SelectableText(
+                          _cloudPortalUrl,
+                          onTap: () => _launchExternalUrl(_cloudPortalUrl),
+                          style: TextStyle(
+                            fontFamily: OryzaTypography.monoFontFamily,
+                            package: 'oryzaelo_ui',
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            decoration: TextDecoration.underline,
+                            color: OryzaColors.burntOrange,
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 6),
+                        InkWell(
+                          onTap: () => _launchExternalUrl(_cloudPortalUrl),
+                          borderRadius: BorderRadius.circular(4),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4),
+                            child: Icon(Icons.open_in_new, size: 13, color: OryzaColors.burntOrange),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -1102,18 +1109,15 @@ class _HowToUseScreenState extends State<HowToUseScreen> {
                 ),
               ),
               Expanded(
-                child: InkWell(
+                child: SelectableText(
+                  docsUrl,
                   onTap: () => _launchExternalUrl(docsUrl),
-                  borderRadius: BorderRadius.circular(2),
-                  child: Text(
-                    docsUrl,
-                    style: const TextStyle(
-                      fontFamily: OryzaTypography.monoFontFamily,
-                      package: 'oryzaelo_ui',
-                      fontSize: 10,
-                      color: OryzaColors.burntOrange,
-                      decoration: TextDecoration.underline,
-                    ),
+                  style: const TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 10,
+                    color: OryzaColors.burntOrange,
+                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),
@@ -1358,21 +1362,15 @@ class _HowToUseScreenState extends State<HowToUseScreen> {
             Row(
               children: [
                 Expanded(
-                  child: InkWell(
+                  child: SelectableText(
+                    _githubIssuesUrl,
                     onTap: () => _launchExternalUrl(_githubIssuesUrl),
-                    borderRadius: BorderRadius.circular(4),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Text(
-                        _githubIssuesUrl,
-                        style: const TextStyle(
-                          fontFamily: OryzaTypography.monoFontFamily,
-                          package: 'oryzaelo_ui',
-                          fontSize: 11.5,
-                          color: OryzaColors.burntOrange,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
+                    style: const TextStyle(
+                      fontFamily: OryzaTypography.monoFontFamily,
+                      package: 'oryzaelo_ui',
+                      fontSize: 11.5,
+                      color: OryzaColors.burntOrange,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
                 ),
@@ -1412,32 +1410,25 @@ class _HowToUseScreenState extends State<HowToUseScreen> {
                 ),
                 const SizedBox(width: 14),
                 Expanded(
-                  child: InkWell(
-                    onTap: () => _launchExternalUrl(_githubIssuesUrl),
-                    borderRadius: BorderRadius.circular(4),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.link, size: 14, color: OryzaColors.burntOrange),
-                          const SizedBox(width: 6),
-                          Flexible(
-                            child: Text(
-                              _githubIssuesUrl,
-                              style: const TextStyle(
-                                fontFamily: OryzaTypography.monoFontFamily,
-                                package: 'oryzaelo_ui',
-                                fontSize: 11.5,
-                                color: OryzaColors.burntOrange,
-                                decoration: TextDecoration.underline,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.link, size: 14, color: OryzaColors.burntOrange),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: SelectableText(
+                          _githubIssuesUrl,
+                          onTap: () => _launchExternalUrl(_githubIssuesUrl),
+                          style: const TextStyle(
+                            fontFamily: OryzaTypography.monoFontFamily,
+                            package: 'oryzaelo_ui',
+                            fontSize: 11.5,
+                            color: OryzaColors.burntOrange,
+                            decoration: TextDecoration.underline,
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 8),

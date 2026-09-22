@@ -568,5 +568,70 @@ void main() {
     await tester.tap(tccGithubBtn, warnIfMissed: false);
     await tester.pump(const Duration(milliseconds: 100));
   });
+
+  testWidgets('Links, URLs and commands are rendered as SelectableText for selection and Ctrl+C copying', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    final controller = OryzaController();
+
+    // 1. TCC screen has selectable GitHub URL
+    await tester.pumpWidget(
+      OryzaScope(
+        controller: controller,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: TccResearchScreen(isDark: false),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+    final tccRepoSelectable = find.byWidgetPredicate(
+      (w) => w is SelectableText && (w.data?.contains('oryzaelo_engine') ?? false),
+    );
+    expect(tccRepoSelectable, findsOneWidget);
+
+    // 2. How to Use screen has selectable cloud and issues URLs
+    await tester.pumpWidget(
+      OryzaScope(
+        controller: controller,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: HowToUseScreen(isDark: false),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+    final cloudUrlSelectable = find.byWidgetPredicate(
+      (w) => w is SelectableText && (w.data?.contains('oryzaelo.asodya.com') ?? false),
+    );
+    expect(cloudUrlSelectable, findsWidgets);
+
+    // 3. Benchmark screen has selectable source URLs
+    await tester.pumpWidget(
+      OryzaScope(
+        controller: controller,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: BenchmarkScreen(isDark: false),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+    final benchmarkUrlSelectable = find.byWidgetPredicate(
+      (w) => w is SelectableText && ((w.data?.contains('sidra.ibge.gov.br') ?? false) || (w.data?.contains('http') ?? false)),
+    );
+    expect(benchmarkUrlSelectable, findsWidgets);
+  });
 }
 

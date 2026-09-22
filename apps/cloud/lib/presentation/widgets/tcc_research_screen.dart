@@ -500,6 +500,35 @@ class TccResearchScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                     ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: (isDark ? OryzaColors.darkSurface : const Color(0xFFEDE9DC))
+                            .withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.link, size: 14, color: OryzaColors.burntOrange),
+                          const SizedBox(width: 8),
+                          SelectableText(
+                            _githubRepoUrl,
+                            onTap: () => _launchExternalUrl(_githubRepoUrl),
+                            style: const TextStyle(
+                              fontFamily: OryzaTypography.monoFontFamily,
+                              package: 'oryzaelo_ui',
+                              fontSize: 12,
+                              color: OryzaColors.burntOrange,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ],

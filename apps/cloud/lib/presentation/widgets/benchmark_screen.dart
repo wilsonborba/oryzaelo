@@ -1371,30 +1371,50 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
             const SizedBox(height: 6),
             _buildStatLine(Icons.verified_outlined, "$sourceLabel $source", textSecondary),
             const SizedBox(height: 4),
-            _buildStatLine(Icons.link_outlined, sourceUrl, accentColor),
+            _buildStatLine(Icons.link_outlined, sourceUrl, accentColor, isUrl: true),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatLine(IconData icon, String text, Color color) {
+  Widget _buildStatLine(IconData icon, String text, Color color, {bool isUrl = false}) {
+    final uri = isUrl ? Uri.tryParse(text) : null;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 14, color: OryzaColors.burntOrange),
+        if (isUrl)
+          InkWell(
+            onTap: uri != null ? () => launchUrl(uri, mode: LaunchMode.externalApplication) : null,
+            child: Icon(icon, size: 14, color: OryzaColors.burntOrange),
+          )
+        else
+          Icon(icon, size: 14, color: OryzaColors.burntOrange),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontFamily: OryzaTypography.fontFamily,
-              package: 'oryzaelo_ui',
-              fontSize: 12,
-              height: 1.4,
-              color: color,
-            ),
-          ),
+          child: isUrl
+              ? SelectableText(
+                  text,
+                  onTap: uri != null ? () => launchUrl(uri, mode: LaunchMode.externalApplication) : null,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 12,
+                    height: 1.4,
+                    color: color,
+                    decoration: TextDecoration.underline,
+                  ),
+                )
+              : Text(
+                  text,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.fontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 12,
+                    height: 1.4,
+                    color: color,
+                  ),
+                ),
         ),
       ],
     );
@@ -1680,34 +1700,38 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
                   ],
                 ),
                 const SizedBox(height: 5),
-                InkWell(
-                  onTap: () {
-                    final uri = Uri.tryParse(url);
-                    if (uri != null) {
-                      launchUrl(uri, mode: LaunchMode.externalApplication);
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(4),
-                  child: Row(
-                    children: [
-                      Icon(Icons.link_outlined, size: 13, color: accentColor),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          url,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: OryzaTypography.monoFontFamily,
-                            package: 'oryzaelo_ui',
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w600,
-                            color: accentColor,
-                            decoration: TextDecoration.underline,
-                          ),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        final uri = Uri.tryParse(url);
+                        if (uri != null) {
+                          launchUrl(uri, mode: LaunchMode.externalApplication);
+                        }
+                      },
+                      child: Icon(Icons.link_outlined, size: 13, color: accentColor),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: SelectableText(
+                        url,
+                        onTap: () {
+                          final uri = Uri.tryParse(url);
+                          if (uri != null) {
+                            launchUrl(uri, mode: LaunchMode.externalApplication);
+                          }
+                        },
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: accentColor,
+                          decoration: TextDecoration.underline,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
