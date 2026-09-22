@@ -31,12 +31,12 @@ class _ScrapbookCardState extends State<ScrapbookCard> {
     final surfaceColor = widget.isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
     final borderColor = widget.accentColor ??
         (_isHovered
-            ? (widget.isDark ? OryzaColors.burntOrange : OryzaColors.militaryGreen)
+            ? (widget.isDark ? OryzaColors.burntOrange : OryzaColors.botanicalGreen)
             : (widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder));
 
     final shadowColor = widget.isDark
         ? Colors.black.withValues(alpha: _isHovered ? 0.75 : 0.5)
-        : (widget.accentColor ?? OryzaColors.militaryGreen).withValues(alpha: _isHovered ? 0.2 : 0.1);
+        : (widget.accentColor ?? OryzaColors.botanicalGreen).withValues(alpha: _isHovered ? 0.2 : 0.1);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -80,7 +80,7 @@ class _ScrapbookCardState extends State<ScrapbookCard> {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: widget.isDark
-                          ? const Color(0xFF141914)
+                          ? OryzaColors.darkCanvas
                           : const Color(0xFFF0EFE6),
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(6),
@@ -100,7 +100,7 @@ class _ScrapbookCardState extends State<ScrapbookCard> {
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.6,
-                        color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+                        color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
                       ),
                     ),
                   ),

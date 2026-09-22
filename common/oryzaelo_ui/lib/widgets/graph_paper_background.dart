@@ -115,7 +115,7 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
     final rect = Offset.zero & size;
 
     // 1. Base architectural field canvas (Exact solid background color)
-    final baseColor = isDark ? const Color(0xFF101410) : const Color(0xFFF7F6F0);
+    final baseColor = isDark ? OryzaColors.darkCanvas : OryzaColors.lightCanvas;
     canvas.drawRect(rect, Paint()..color = baseColor);
 
     // 2. Spatial Studio Illumination (Soft, warm ambient glow behind jingle & cards)
@@ -126,9 +126,9 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
     final sunGradient = RadialGradient(
       colors: [
         isDark
-            ? OryzaColors.mustardYellow.withValues(alpha: 0.015 + 0.006 * breathe)
+            ? OryzaColors.mustardYellow.withValues(alpha: 0.018 + 0.006 * breathe)
             : OryzaColors.mustardYellow.withValues(alpha: 0.028 + 0.008 * breathe),
-        isDark ? const Color(0xFF121712).withValues(alpha: 0.002) : Colors.white.withValues(alpha: 0.0),
+        isDark ? const Color(0xFF1A1410).withValues(alpha: 0.002) : Colors.white.withValues(alpha: 0.0),
         Colors.transparent,
       ],
       stops: const [0.0, 0.65, 1.0],
@@ -145,8 +145,8 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
     final mudGradient = RadialGradient(
       colors: [
         isDark
-            ? OryzaColors.militaryGreen.withValues(alpha: 0.025)
-            : OryzaColors.militaryGreen.withValues(alpha: 0.018),
+            ? OryzaColors.burntOrange.withValues(alpha: 0.015)
+            : OryzaColors.botanicalGreen.withValues(alpha: 0.018),
         Colors.transparent,
       ],
       stops: const [0.0, 1.0],
@@ -182,13 +182,13 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
         basinPath.close();
 
         final washPaint = Paint()
-          ..color = const Color(0xFF4A7C4E).withValues(alpha: 0.008 * fade);
+          ..color = OryzaColors.botanicalGreen.withValues(alpha: 0.009 * fade);
 
         canvas.drawPath(basinPath, washPaint);
       }
     }
 
-    // B) Delicate Agronomic Contour Lines (Ultra-soft in dark theme, airy in light)
+    // B) Delicate Agronomic Contour Lines (Warm harvest amber in dark theme, fresh botanical green in light)
     for (int i = 0; i < totalTiers; i++) {
       final fade = _getFadeMultiplier(i, totalTiers);
       if (fade <= 0.001) continue;
@@ -203,13 +203,13 @@ class _SeniorRicePaddyTopographyPainter extends CustomPainter {
 
       final linePaint = Paint()
         ..color = isDark
-            ? (isPrimary ? const Color(0xFF68B270) : const Color(0xFF509658))
-                .withValues(alpha: (isPrimary ? 0.038 : 0.020) * fade)
-            : (isPrimary ? const Color(0xFF28502A) : const Color(0xFF336035))
-                .withValues(alpha: (isPrimary ? 0.065 : 0.036) * fade)
+            ? (isPrimary ? const Color(0xFFD4973B) : const Color(0xFFB87E28))
+                .withValues(alpha: (isPrimary ? 0.032 : 0.016) * fade)
+            : (isPrimary ? OryzaColors.botanicalGreen : const Color(0xFF3B7D42))
+                .withValues(alpha: (isPrimary ? 0.060 : 0.032) * fade)
         ..strokeWidth = isDark
-            ? (isPrimary ? 0.8 : 0.55)
-            : (isPrimary ? 0.85 : 0.6)
+            ? (isPrimary ? 0.75 : 0.50)
+            : (isPrimary ? 0.85 : 0.60)
         ..style = PaintingStyle.stroke;
 
       canvas.drawPath(path, linePaint);

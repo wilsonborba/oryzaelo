@@ -5,8 +5,13 @@ import 'simulation_dialog.dart';
 
 class HeroScreen extends StatefulWidget {
   final bool isDark;
+  final void Function(String sectionKey)? onNavigateToSection;
 
-  const HeroScreen({super.key, required this.isDark});
+  const HeroScreen({
+    super.key,
+    required this.isDark,
+    this.onNavigateToSection,
+  });
 
   @override
   State<HeroScreen> createState() => _HeroScreenState();
@@ -38,14 +43,14 @@ class _HeroScreenState extends State<HeroScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Tag Pill
+          // Tag Pill (With botanical green in light mode)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             decoration: BoxDecoration(
-              color: widget.isDark ? const Color(0xFF1B231B) : const Color(0xFFEBE8DC),
+              color: widget.isDark ? OryzaColors.darkSurface : OryzaColors.botanicalGreenLight,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.botanicalGreenBorder,
               ),
             ),
             child: Row(
@@ -54,9 +59,9 @@ class _HeroScreenState extends State<HeroScreen> {
                 Container(
                   width: 7,
                   height: 7,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: OryzaColors.burntOrange,
+                    color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -68,7 +73,7 @@ class _HeroScreenState extends State<HeroScreen> {
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.1,
-                    color: textPrimary,
+                    color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
                   ),
                 ),
               ],
@@ -170,7 +175,7 @@ class _HeroScreenState extends State<HeroScreen> {
                     duration: const Duration(milliseconds: 180),
                     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                     decoration: BoxDecoration(
-                      color: widget.isDark ? const Color(0xFF101510) : const Color(0xFFEBE8DE),
+                      color: widget.isDark ? OryzaColors.darkSurface : const Color(0xFFEBE8DE),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: _copied
@@ -265,7 +270,7 @@ class _HeroScreenState extends State<HeroScreen> {
                               fontSize: 12.5,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.8,
-                              color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+                              color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
                             ),
                           ),
                         ],
@@ -344,7 +349,7 @@ class _HeroScreenState extends State<HeroScreen> {
                 tabScienceLabel: s.culturalTabScience,
                 toggleExpandLabel: s.culturalToggleExpand,
                 toggleCollapseLabel: s.culturalToggleCollapse,
-                accentColor: OryzaColors.militaryGreen,
+                accentColor: widget.isDark ? OryzaColors.burntOrange : OryzaColors.botanicalGreen,
                 plantAsset: 'assets/plants/Jungle_Plant_3.png',
                 isDark: widget.isDark,
               );
@@ -466,6 +471,237 @@ class _HeroScreenState extends State<HeroScreen> {
                 ],
               );
             },
+          ),
+          const SizedBox(height: 48),
+
+          // 4. Portais de Navegação para Telas Dedicadas
+          _buildDedicatedPortals(s, textPrimary, textSecondary),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDedicatedPortals(
+    OryzaStrings s,
+    Color textPrimary,
+    Color textSecondary,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 4,
+              height: 20,
+              decoration: BoxDecoration(
+                color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              s.exploreSectionHeading,
+              style: TextStyle(
+                fontFamily: OryzaTypography.monoFontFamily,
+                package: 'oryzaelo_ui',
+                fontSize: 11.5,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
+                color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.burntOrange,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 18),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final portalSystem = _PortalCard(
+              isDark: widget.isDark,
+              tag: "MOTOR RUST & PIPELINE",
+              icon: Icons.schema_outlined,
+              accentColor: OryzaColors.burntOrange,
+              title: s.exploreSectionSystem,
+              desc: s.exploreSectionSystemDesc,
+              btnLabel: s.exploreActionBtn,
+              onTap: () => widget.onNavigateToSection?.call('system'),
+            );
+
+            final portalHardware = _PortalCard(
+              isDark: widget.isDark,
+              tag: "CAD & ESQUEMÁTICOS",
+              icon: Icons.developer_board_outlined,
+              accentColor: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+              title: s.exploreSectionHardware,
+              desc: s.exploreSectionHardwareDesc,
+              btnLabel: s.exploreActionBtn,
+              onTap: () => widget.onNavigateToSection?.call('hardware'),
+            );
+
+            final portalTcc = _PortalCard(
+              isDark: widget.isDark,
+              tag: "USP ESALQ & UFMS",
+              icon: Icons.school_outlined,
+              accentColor: OryzaColors.burntOrange,
+              title: s.exploreSectionTcc,
+              desc: s.exploreSectionTccDesc,
+              btnLabel: s.exploreActionBtn,
+              onTap: () => widget.onNavigateToSection?.call('tcc'),
+            );
+
+            final portalBenchmark = _PortalCard(
+              isDark: widget.isDark,
+              tag: "BENCHMARK & COMPARAÇÃO",
+              icon: Icons.bar_chart_outlined,
+              accentColor: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+              title: s.exploreSectionBenchmark,
+              desc: s.exploreSectionBenchmarkDesc,
+              btnLabel: s.exploreActionBtn,
+              onTap: () => widget.onNavigateToSection?.call('benchmark'),
+            );
+
+            if (constraints.maxWidth >= 1180) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: portalSystem),
+                  const SizedBox(width: 16),
+                  Expanded(child: portalHardware),
+                  const SizedBox(width: 16),
+                  Expanded(child: portalTcc),
+                  const SizedBox(width: 16),
+                  Expanded(child: portalBenchmark),
+                ],
+              );
+            }
+
+            if (constraints.maxWidth >= 640) {
+              final cardWidth = (constraints.maxWidth - 16) / 2;
+              return Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                children: [
+                  SizedBox(width: cardWidth, child: portalSystem),
+                  SizedBox(width: cardWidth, child: portalHardware),
+                  SizedBox(width: cardWidth, child: portalTcc),
+                  SizedBox(width: cardWidth, child: portalBenchmark),
+                ],
+              );
+            }
+
+            return Column(
+              children: [
+                portalSystem,
+                const SizedBox(height: 16),
+                portalHardware,
+                const SizedBox(height: 16),
+                portalTcc,
+                const SizedBox(height: 16),
+                portalBenchmark,
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _PortalCard extends StatelessWidget {
+  final bool isDark;
+  final String tag;
+  final IconData icon;
+  final Color accentColor;
+  final String title;
+  final String desc;
+  final String btnLabel;
+  final VoidCallback onTap;
+
+  const _PortalCard({
+    required this.isDark,
+    required this.tag,
+    required this.icon,
+    required this.accentColor,
+    required this.title,
+    required this.desc,
+    required this.btnLabel,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textPrimary = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
+    final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+
+    return ScrapbookCard(
+      isDark: isDark,
+      tag: tag,
+      accentColor: accentColor,
+      onTap: onTap,
+      padding: const EdgeInsets.all(22),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: isDark ? OryzaColors.darkCanvas : const Color(0xFFEFECE2),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
+                  ),
+                ),
+                child: Icon(icon, size: 22, color: accentColor),
+              ),
+              Icon(Icons.arrow_forward, size: 18, color: accentColor),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: TextStyle(
+              fontFamily: OryzaTypography.fontFamily,
+              package: 'oryzaelo_ui',
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            desc,
+            style: TextStyle(
+              fontFamily: OryzaTypography.fontFamily,
+              package: 'oryzaelo_ui',
+              fontSize: 13,
+              height: 1.45,
+              color: textSecondary,
+            ),
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  btnLabel,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                    color: accentColor,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 6),
+              Icon(Icons.open_in_new, size: 13, color: accentColor),
+            ],
           ),
         ],
       ),
@@ -787,7 +1023,7 @@ class _InteractiveCulturalCardState extends State<_InteractiveCulturalCard> {
                           decoration: BoxDecoration(
                             color: isSelected
                                 ? widget.accentColor.withValues(alpha: widget.isDark ? 0.25 : 0.18)
-                                : (widget.isDark ? const Color(0xFF141A14) : const Color(0xFFEBE7DC)),
+                                : (widget.isDark ? OryzaColors.darkCanvas : const Color(0xFFEBE7DC)),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
                               color: isSelected
@@ -857,7 +1093,7 @@ class _InteractiveCulturalCardState extends State<_InteractiveCulturalCard> {
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: widget.isDark
-                        ? const Color(0xFF121712).withValues(alpha: 0.85)
+                        ? OryzaColors.darkSurface.withValues(alpha: 0.90)
                         : const Color(0xFFEDE9DC).withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(

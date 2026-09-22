@@ -14,7 +14,7 @@ class LanguageSelector extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF192019) : const Color(0xFFECEAE0),
+        color: isDark ? OryzaColors.darkSurface : const Color(0xFFECEAE0),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
@@ -59,7 +59,7 @@ class LanguageSelector extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
             color: isSelected
-                ? (isDark ? OryzaColors.burntOrange : OryzaColors.militaryGreen)
+                ? (isDark ? OryzaColors.burntOrange : OryzaColors.botanicalGreen)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
           ),

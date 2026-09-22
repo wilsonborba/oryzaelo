@@ -18,7 +18,7 @@ class ThemeToggle extends StatelessWidget {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.all(7),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF192019) : const Color(0xFFECEAE0),
+            color: isDark ? OryzaColors.darkSurface : const Color(0xFFECEAE0),
             shape: BoxShape.circle,
             border: Border.all(
               color: isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder,
@@ -35,7 +35,7 @@ class ThemeToggle extends StatelessWidget {
               isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
               key: ValueKey<bool>(isDark),
               size: 16,
-              color: isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+              color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
             ),
           ),
         ),

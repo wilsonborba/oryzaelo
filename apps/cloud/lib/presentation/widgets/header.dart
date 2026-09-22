@@ -4,10 +4,12 @@ import 'package:oryzaelo_ui/oryzaelo_ui.dart';
 
 class OryzaHeader extends StatelessWidget {
   final void Function(String sectionKey)? onNavigateToSection;
+  final String activeSection;
 
   const OryzaHeader({
     super.key,
     this.onNavigateToSection,
+    this.activeSection = 'hero',
   });
 
   @override
@@ -16,12 +18,12 @@ class OryzaHeader extends StatelessWidget {
     final isDark = controller.isDark;
     final s = OryzaI18n.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
-    final isDesktop = screenWidth >= 1080;
-    final isWideTablet = screenWidth >= 860;
+    final isDesktop = screenWidth >= 1040;
+    final showCoords = screenWidth >= 1400;
     final isCompact = screenWidth < 680;
 
-    final bgColor = (isDark ? const Color(0xFF141914) : const Color(0xFFF7F6F0))
-        .withValues(alpha: 0.90);
+    final bgColor = (isDark ? OryzaColors.darkCanvas : OryzaColors.lightCanvas)
+        .withValues(alpha: 0.92);
     final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
     final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
 
@@ -39,7 +41,7 @@ class OryzaHeader extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // Logo & Brand
+              // Logo & Brand (Clicks go back to hero)
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
@@ -65,14 +67,16 @@ class OryzaHeader extends StatelessWidget {
                           color: textColor,
                         ),
                       ),
-                      if (isWideTablet) ...[
+                      if (showCoords) ...[
                         const SizedBox(width: 10),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                           decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF1C241C) : const Color(0xFFEDEAE0),
+                            color: isDark ? OryzaColors.darkSurface : OryzaColors.botanicalGreenLight,
                             borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: borderColor),
+                            border: Border.all(
+                              color: isDark ? OryzaColors.darkBorder : OryzaColors.botanicalGreenBorder,
+                            ),
                           ),
                           child: Text(
                             s.navCoords,
@@ -82,7 +86,7 @@ class OryzaHeader extends StatelessWidget {
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 0.5,
-                              color: isDark ? OryzaColors.mustardYellow : OryzaColors.militaryGreen,
+                              color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
                             ),
                           ),
                         ),
@@ -94,27 +98,114 @@ class OryzaHeader extends StatelessWidget {
 
               // Nav links (Desktop)
               if (isDesktop) ...[
-                const SizedBox(width: 24),
-                _NavLink(
-                  label: s.navSystem,
-                  onTap: () => onNavigateToSection?.call('system'),
-                  isDark: isDark,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _NavLink(
+                            label: s.navSystem,
+                            isActive: activeSection == 'system',
+                            onTap: () => onNavigateToSection?.call('system'),
+                            isDark: isDark,
+                          ),
+                          _NavLink(
+                            label: s.navHardware,
+                            isActive: activeSection == 'hardware',
+                            onTap: () => onNavigateToSection?.call('hardware'),
+                            isDark: isDark,
+                          ),
+                          _NavLink(
+                            label: s.navTcc,
+                            isActive: activeSection == 'tcc',
+                            onTap: () => onNavigateToSection?.call('tcc'),
+                            isDark: isDark,
+                          ),
+                          _NavLink(
+                            label: s.navBenchmark,
+                            isActive: activeSection == 'benchmark',
+                            onTap: () => onNavigateToSection?.call('benchmark'),
+                            isDark: isDark,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                _NavLink(
-                  label: s.navHardware,
-                  onTap: () => onNavigateToSection?.call('hardware'),
-                  isDark: isDark,
-                ),
-                _NavLink(
-                  label: s.navTcc,
-                  onTap: () => onNavigateToSection?.call('tcc'),
-                  isDark: isDark,
+              ] else ...[
+                // Mobile Menu Button
+                const SizedBox(width: 8),
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.menu_rounded, color: textColor, size: 22),
+                  tooltip: 'Navegação',
+                  color: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: borderColor),
+                  ),
+                  onSelected: (val) => onNavigateToSection?.call(val),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'hero',
+                      child: Text(
+                        s.navHome,
+                        style: TextStyle(
+                          color: activeSection == 'hero' ? OryzaColors.burntOrange : textColor,
+                          fontWeight: activeSection == 'hero' ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'system',
+                      child: Text(
+                        s.navSystem,
+                        style: TextStyle(
+                          color: activeSection == 'system' ? OryzaColors.burntOrange : textColor,
+                          fontWeight: activeSection == 'system' ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'hardware',
+                      child: Text(
+                        s.navHardware,
+                        style: TextStyle(
+                          color: activeSection == 'hardware' ? OryzaColors.burntOrange : textColor,
+                          fontWeight: activeSection == 'hardware' ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'tcc',
+                      child: Text(
+                        s.navTcc,
+                        style: TextStyle(
+                          color: activeSection == 'tcc' ? OryzaColors.burntOrange : textColor,
+                          fontWeight: activeSection == 'tcc' ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'benchmark',
+                      child: Text(
+                        s.navBenchmark,
+                        style: TextStyle(
+                          color: activeSection == 'benchmark' ? OryzaColors.burntOrange : textColor,
+                          fontWeight: activeSection == 'benchmark' ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
 
-              const Spacer(),
+              if (!isDesktop) const Spacer(),
 
-              // Right controls: Language, Theme, Background Style, Auth buttons
+              // Right controls: Language, Theme, Auth buttons
               const LanguageSelector(),
               const SizedBox(width: 8),
               const ThemeToggle(),
@@ -180,11 +271,13 @@ class _NavLink extends StatefulWidget {
   final String label;
   final VoidCallback onTap;
   final bool isDark;
+  final bool isActive;
 
   const _NavLink({
     required this.label,
     required this.onTap,
     required this.isDark,
+    this.isActive = false,
   });
 
   @override
@@ -196,9 +289,11 @@ class _NavLinkState extends State<_NavLink> {
 
   @override
   Widget build(BuildContext context) {
-    final color = _hovered
-        ? OryzaColors.burntOrange
-        : (widget.isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary);
+    final activeColor = OryzaColors.burntOrange;
+    final inactiveColor = widget.isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+    final color = widget.isActive
+        ? activeColor
+        : (_hovered ? activeColor : inactiveColor);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
@@ -207,14 +302,14 @@ class _NavLinkState extends State<_NavLink> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Text(
             widget.label,
             style: TextStyle(
               fontFamily: OryzaTypography.fontFamily,
               package: 'oryzaelo_ui',
               fontSize: 13,
-              fontWeight: _hovered ? FontWeight.w700 : FontWeight.w500,
+              fontWeight: (widget.isActive || _hovered) ? FontWeight.w700 : FontWeight.w500,
               color: color,
             ),
           ),

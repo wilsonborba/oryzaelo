@@ -5,6 +5,7 @@ import '../widgets/hero_screen.dart';
 import '../widgets/system_pipeline_screen.dart';
 import '../widgets/hardware_workbench_screen.dart';
 import '../widgets/tcc_research_screen.dart';
+import '../widgets/benchmark_screen.dart';
 import '../widgets/footer.dart';
 
 class LandingPage extends StatefulWidget {
@@ -16,11 +17,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final ScrollController _scrollController = ScrollController();
-
-  final GlobalKey _heroKey = GlobalKey();
-  final GlobalKey _systemKey = GlobalKey();
-  final GlobalKey _hardwareKey = GlobalKey();
-  final GlobalKey _tccKey = GlobalKey();
+  String _activeSection = 'hero'; // 'hero', 'system', 'hardware', 'tcc', 'benchmark'
 
   @override
   void didChangeDependencies() {
@@ -74,29 +71,27 @@ class _LandingPageState extends State<LandingPage> {
     super.dispose();
   }
 
-  void _scrollToSection(String key) {
-    GlobalKey? target;
-    switch (key) {
-      case 'hero':
-        target = _heroKey;
-        break;
-      case 'system':
-        target = _systemKey;
-        break;
-      case 'hardware':
-        target = _hardwareKey;
-        break;
-      case 'tcc':
-        target = _tccKey;
-        break;
+  void _navigateToSection(String key) {
+    setState(() {
+      _activeSection = key;
+    });
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
     }
+  }
 
-    if (target?.currentContext != null) {
-      Scrollable.ensureVisible(
-        target!.currentContext!,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOutCubic,
-      );
+  String _getSectionName(OryzaStrings s, String key) {
+    switch (key) {
+      case 'system':
+        return s.navSystem;
+      case 'hardware':
+        return s.navHardware;
+      case 'tcc':
+        return s.navTcc;
+      case 'benchmark':
+        return s.navBenchmark;
+      default:
+        return s.navHome;
     }
   }
 
@@ -104,66 +99,54 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     final controller = OryzaScope.of(context);
     final isDark = controller.isDark;
+    final s = OryzaI18n.of(context);
 
-    final solidBgColor = isDark ? const Color(0xFF101410) : const Color(0xFFF7F6F0);
+    final solidBgColor = isDark ? OryzaColors.darkCanvas : OryzaColors.lightCanvas;
 
     return Scaffold(
       backgroundColor: solidBgColor,
       body: Stack(
         children: [
-          // Scrollable Content (4 Screens + Footer)
+          // Scrollable Screen Content
           Positioned.fill(
             child: SingleChildScrollView(
               controller: _scrollController,
               padding: const EdgeInsets.only(top: 64),
               child: Column(
                 children: [
-                  // Tela 1: Hero & Jingle (Com Topografia de Várzea de Arroz focada no Jingle)
-                  Stack(
-                    children: [
-                      Positioned.fill(
-                        child: OryzaAtmosphericBackground(
-                          isDark: isDark,
-                          scrollController: _scrollController,
-                          fadeBottom: true,
-                          child: const SizedBox.expand(),
+                  if (_activeSection == 'hero') ...[
+                    // Tela 1: Hero & Jingle com Topografia de Várzea de Arroz
+                    Stack(
+                      children: [
+                        Positioned.fill(
+                          child: OryzaAtmosphericBackground(
+                            isDark: isDark,
+                            scrollController: _scrollController,
+                            fadeBottom: true,
+                            child: const SizedBox.expand(),
+                          ),
                         ),
-                      ),
-                      Center(
-                        child: HeroScreen(
-                          key: _heroKey,
-                          isDark: isDark,
+                        Center(
+                          child: HeroScreen(
+                            isDark: isDark,
+                            onNavigateToSection: _navigateToSection,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  _buildSectionDivider(isDark),
-
-                  // Tela 2: Arquitetura do Sistema & Pipeline Biofísico
-                  Center(
-                    child: SystemPipelineScreen(
-                      key: _systemKey,
-                      isDark: isDark,
+                      ],
                     ),
-                  ),
-                  _buildSectionDivider(isDark),
+                  ] else ...[
+                    // Telas Dedicadas com Barra de Retorno
+                    _buildBackBar(s, isDark),
 
-                  // Tela 3: Bancada de Hardware IoT & Blueprints CAD
-                  Center(
-                    child: HardwareWorkbenchScreen(
-                      key: _hardwareKey,
-                      isDark: isDark,
-                    ),
-                  ),
-                  _buildSectionDivider(isDark),
-
-                  // Tela 4: Rigor Científico & Pesquisa de TCC (USP / ESALQ)
-                  Center(
-                    child: TccResearchScreen(
-                      key: _tccKey,
-                      isDark: isDark,
-                    ),
-                  ),
+                    if (_activeSection == 'system')
+                      Center(child: SystemPipelineScreen(isDark: isDark))
+                    else if (_activeSection == 'hardware')
+                      Center(child: HardwareWorkbenchScreen(isDark: isDark))
+                    else if (_activeSection == 'tcc')
+                      Center(child: TccResearchScreen(isDark: isDark))
+                    else if (_activeSection == 'benchmark')
+                      Center(child: BenchmarkScreen(isDark: isDark)),
+                  ],
 
                   // Rodapé Asodya
                   OryzaFooter(isDark: isDark),
@@ -178,7 +161,8 @@ class _LandingPageState extends State<LandingPage> {
             left: 0,
             right: 0,
             child: OryzaHeader(
-              onNavigateToSection: _scrollToSection,
+              activeSection: _activeSection,
+              onNavigateToSection: _navigateToSection,
             ),
           ),
         ],
@@ -186,13 +170,71 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _buildSectionDivider(bool isDark) {
+  Widget _buildBackBar(OryzaStrings s, bool isDark) {
+    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
+    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
+    final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
+
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(maxWidth: 1600),
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      height: 1,
-      color: isDark ? OryzaColors.darkBorder.withValues(alpha: 0.5) : OryzaColors.lightBorder.withValues(alpha: 0.2),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      decoration: BoxDecoration(
+        color: surfaceColor.withValues(alpha: 0.85),
+        border: Border(bottom: BorderSide(color: borderColor)),
+      ),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1600),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () => _navigateToSection('hero'),
+                borderRadius: BorderRadius.circular(6),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.arrow_back, size: 16, color: OryzaColors.burntOrange),
+                      const SizedBox(width: 8),
+                      Text(
+                        s.backToHome,
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: OryzaColors.burntOrange,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark ? OryzaColors.darkCanvas : OryzaColors.lightCanvas,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: borderColor),
+                ),
+                child: Text(
+                  _getSectionName(s, _activeSection).toUpperCase(),
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.6,
+                    color: textColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

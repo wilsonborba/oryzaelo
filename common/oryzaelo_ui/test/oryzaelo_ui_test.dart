@@ -9,7 +9,7 @@ void main() {
     expect(light.textTheme.displayLarge?.fontFamily, contains('Ubuntu Sans'));
     expect(dark.textTheme.displayLarge?.fontFamily, contains('Ubuntu Sans'));
     expect(light.colorScheme.primary, OryzaColors.burntOrange);
-    expect(dark.colorScheme.secondary, OryzaColors.militaryGreen);
+    expect(dark.colorScheme.secondary, OryzaColors.mustardYellow);
     expect(light.colorScheme.tertiary, OryzaColors.mustardYellow);
   });
 }
