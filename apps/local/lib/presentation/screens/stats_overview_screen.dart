@@ -154,9 +154,9 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
           ),
         ];
 
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
+        return OryzaHorizontalScroller(
+          isDark: isDark,
+          step: 210,
           child: Row(
             children: cards
                 .map(
@@ -281,6 +281,8 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
                 children: [
                   Text(
                     title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontFamily: OryzaTypography.monoFontFamily,
                       package: 'oryzaelo_ui',
@@ -292,6 +294,8 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
                   ),
                   Text(
                     subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontFamily: OryzaTypography.fontFamily,
                       package: 'oryzaelo_ui',
@@ -302,14 +306,20 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
                 ],
               ),
             ),
-            Text(
-              tag,
-              style: TextStyle(
-                fontFamily: OryzaTypography.monoFontFamily,
-                package: 'oryzaelo_ui',
-                fontSize: 9.5,
-                fontWeight: FontWeight.w700,
-                color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                tag,
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.monoFontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                ),
               ),
             ),
           ],

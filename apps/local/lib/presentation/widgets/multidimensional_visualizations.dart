@@ -229,6 +229,8 @@ class MultidimensionalVisualizations extends StatelessWidget {
         children: [
           Text(
             title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w800,
@@ -239,6 +241,8 @@ class MultidimensionalVisualizations extends StatelessWidget {
           ),
           Text(
             subtitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 10,
               fontFamily: 'Ubuntu Sans',
@@ -293,70 +297,90 @@ class PhenologyProbabilitiesDonut extends StatelessWidget {
 
     final dominant = entries.first;
 
-    return Row(
-      children: [
-        // Donut
-        SizedBox(
-          width: 150,
-          height: 150,
-          child: CustomPaint(
-            painter: _DonutPainter(
-              entries: entries,
-              colors: colors,
-              dominantText: '${(dominant.value * 100).toStringAsFixed(0)}%',
-              isDark: isDark,
-            ),
-          ),
+    final donut = SizedBox(
+      width: 150,
+      height: 150,
+      child: CustomPaint(
+        painter: _DonutPainter(
+          entries: entries,
+          colors: colors,
+          dominantText: '${(dominant.value * 100).toStringAsFixed(0)}%',
+          isDark: isDark,
         ),
-        const SizedBox(width: 16),
-        // Legend
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: entries.asMap().entries.map((e) {
-              final idx = e.key;
-              final item = e.value;
-              final col = colors[idx % colors.length];
+      ),
+    );
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2.5),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(color: col, shape: BoxShape.circle),
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        item.key,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
-                          fontFamily: 'Ubuntu Sans',
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Text(
-                      '${(item.value * 100).toStringAsFixed(1)}%',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Ubuntu Sans Mono',
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
+    final legend = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: entries.asMap().entries.map((e) {
+        final idx = e.key;
+        final item = e.value;
+        final col = colors[idx % colors.length];
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2.5),
+          child: Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(color: col, shape: BoxShape.circle),
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  item.key,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                    fontFamily: 'Ubuntu Sans',
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              );
-            }).toList(),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '${(item.value * 100).toStringAsFixed(1)}%',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Ubuntu Sans Mono',
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
+              ),
+            ],
           ),
-        ),
-      ],
+        );
+      }).toList(),
+    );
+
+    // Below ~300px the donut+legend side-by-side leaves too little room for
+    // the legend to be readable — stack the donut above the legend instead.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 300) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(child: donut),
+              const SizedBox(height: 12),
+              legend,
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            donut,
+            const SizedBox(width: 16),
+            Expanded(child: legend),
+          ],
+        );
+      },
     );
   }
 }
@@ -447,11 +471,20 @@ class BiometRadarChart extends StatelessWidget {
       );
     }
 
+    final s = OryzaI18n.of(context);
+    final labelsByKey = {
+      'thermal_suitability': s.radarThermalSuitability,
+      'radiation_energy': s.radarRadiationEnergy,
+      'water_security': s.radarWaterSecurity,
+      'humidity_balance': s.radarHumidityBalance,
+      'thermal_stability': s.radarThermalStability,
+    };
+
     return SizedBox(
       height: 220,
       child: CustomPaint(
         size: Size.infinite,
-        painter: _RadarPainter(dimensions: dimensions, isDark: isDark),
+        painter: _RadarPainter(dimensions: dimensions, isDark: isDark, labelsByKey: labelsByKey),
       ),
     );
   }
@@ -460,11 +493,14 @@ class BiometRadarChart extends StatelessWidget {
 class _RadarPainter extends CustomPainter {
   final List<RadarDimensionScore> dimensions;
   final bool isDark;
+  final Map<String, String> labelsByKey;
 
-  _RadarPainter({required this.dimensions, required this.isDark});
+  _RadarPainter({required this.dimensions, required this.isDark, required this.labelsByKey});
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.clipRect(Offset.zero & size);
+
     final center = Offset(size.width / 2, size.height / 2);
     final maxR = math.min(size.width, size.height) / 2 - 32;
     final n = dimensions.length;
@@ -503,7 +539,7 @@ class _RadarPainter extends CustomPainter {
       final lx = center.dx + (maxR + 18) * math.cos(angle);
       final ly = center.dy + (maxR + 18) * math.sin(angle);
 
-      final label = dimensions[i].label;
+      final label = labelsByKey[dimensions[i].key] ?? dimensions[i].label;
       final tp = TextPainter(
         text: TextSpan(
           text: label,
@@ -516,7 +552,11 @@ class _RadarPainter extends CustomPainter {
         ),
         textDirection: TextDirection.ltr,
       )..layout();
-      tp.paint(canvas, Offset(lx - tp.width / 2, ly - tp.height / 2));
+      // Clamp so long localized axis labels near the horizontal extremes
+      // can't bleed past the canvas edge on a narrow (phone-width) card.
+      final paintX = (lx - tp.width / 2).clamp(0.0, size.width - tp.width);
+      final paintY = (ly - tp.height / 2).clamp(0.0, size.height - tp.height);
+      tp.paint(canvas, Offset(paintX, paintY));
     }
 
     // Draw Score Polygon
@@ -582,8 +622,9 @@ class CorrelationHeatmap extends StatelessWidget {
     final vars = correlation!.variables;
     final mat = correlation!.matrix;
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return OryzaHorizontalScroller(
+      isDark: isDark,
+      step: 200,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -594,9 +635,13 @@ class CorrelationHeatmap extends StatelessWidget {
               ...vars.map(
                 (v) => SizedBox(
                   width: 65,
+                  height: 32,
                   child: Center(
                     child: Text(
                       v,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
@@ -619,15 +664,21 @@ class CorrelationHeatmap extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: 80,
-                    child: Text(
-                      rowName,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Ubuntu Sans Mono',
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                    height: 32,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        rowName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          fontFamily: 'Ubuntu Sans Mono',
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                        ),
+                        textAlign: TextAlign.right,
                       ),
-                      textAlign: TextAlign.right,
                     ),
                   ),
                   const SizedBox(width: 8),

@@ -250,6 +250,8 @@ class _AgroChartCardState extends State<_AgroChartCard> {
                           ),
                           child: Text(
                             widget.unitBadge,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 9.5,
                               fontWeight: FontWeight.w700,
@@ -317,7 +319,9 @@ class _AgroChartCardState extends State<_AgroChartCard> {
                   _buildExplanationBullet(
                     label: s.chartWhatItMeans,
                     content: widget.meaningText,
-                    badgeColor: OryzaColors.mustardYellow,
+                    // Mustard yellow at full saturation is too low-contrast
+                    // as small bold text on a light background.
+                    badgeColor: widget.isDark ? OryzaColors.mustardYellow : Colors.amber.shade900,
                     isDark: widget.isDark,
                   ),
                   const SizedBox(height: 8),
@@ -614,6 +618,8 @@ class _ThermalHumidityPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.clipRect(Offset.zero & size);
+
     const padL = 36.0;
     const padR = 36.0;
     const padB = 24.0;
@@ -686,10 +692,12 @@ class _ThermalHumidityPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
     canvas.drawPath(pathTMax, tMaxPaint);
 
-    // Legends at top
+    // Legends at top, evenly spaced across the actual canvas width instead of
+    // fixed +80/+160 offsets that overrun narrow (phone-width) chart cards.
+    final legendSlot = w / 3;
     _drawLegend(canvas, padL, 4, legendTMax, Colors.deepOrangeAccent);
-    _drawLegend(canvas, padL + 80, 4, legendTMin, Colors.lightBlue);
-    _drawLegend(canvas, padL + 160, 4, legendHumidity, Colors.cyan);
+    _drawLegend(canvas, padL + legendSlot, 4, legendTMin, Colors.lightBlue);
+    _drawLegend(canvas, padL + legendSlot * 2, 4, legendHumidity, Colors.cyan);
   }
 
   void _drawLegend(Canvas canvas, double x, double y, String label, Color color) {

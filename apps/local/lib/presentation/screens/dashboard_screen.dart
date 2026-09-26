@@ -65,9 +65,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     isOnline: _handler.isEngineOnline,
                     isRefreshing: _handler.isLoading,
                     onRefresh: () => _handler.initialize(),
-                    onToggleSidebar: () {
-                      setState(() => _isSidebarExpanded = !_isSidebarExpanded);
-                    },
+                    // On mobile there's no sidebar (bottom nav is used
+                    // instead), so the toggle button would do nothing.
+                    onToggleSidebar: isCompact
+                        ? null
+                        : () {
+                            setState(() => _isSidebarExpanded = !_isSidebarExpanded);
+                          },
                   ),
                 ),
 
@@ -353,27 +357,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _NavDestination(
         icon: Icons.analytics_outlined,
         label: s.dashNavStats,
-        shortLabel: s.dashNavStats,
+        shortLabel: s.dashNavStatsShort,
       ),
       _NavDestination(
         icon: Icons.calculate_outlined,
         label: s.dashNavSim,
-        shortLabel: s.dashNavSim,
+        shortLabel: s.dashNavSimShort,
       ),
       _NavDestination(
         icon: Icons.table_chart_outlined,
         label: s.dashNavData,
-        shortLabel: s.dashNavData,
+        shortLabel: s.dashNavDataShort,
       ),
       _NavDestination(
         icon: Icons.sensors_outlined,
         label: s.dashNavSensors,
-        shortLabel: s.dashNavSensors,
+        shortLabel: s.dashNavSensorsShort,
       ),
       _NavDestination(
         icon: Icons.tune_outlined,
         label: s.dashNavSettings,
-        shortLabel: s.dashNavSettings,
+        shortLabel: s.dashNavSettingsShort,
       ),
     ];
   }

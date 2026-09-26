@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:local/domain/models/system_telemetry.dart';
 import 'package:local/presentation/handlers/dashboard_handler.dart';
@@ -51,39 +52,54 @@ class EdgeTelemetryHud extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 12,
-                    children: [
-                      _buildLatencyGauge(
-                        label: s.hudCpuMeanLabel,
-                        value: '${bench?.avgLatencyUs.toStringAsFixed(1) ?? "21.3"} µs',
-                        subtext: s.hudCpuMeanDetail,
-                        color: Colors.green,
-                        isDark: isDark,
-                      ),
-                      _buildLatencyGauge(
-                        label: s.hudP95Label,
-                        value: '${bench?.p95Us.toStringAsFixed(1) ?? "22.7"} µs',
-                        subtext: s.hudP95Detail,
-                        color: Colors.teal,
-                        isDark: isDark,
-                      ),
-                      _buildLatencyGauge(
-                        label: s.hudThesisCeilingLabel,
-                        value: '200.0 ms',
-                        subtext: s.hudThesisCeilingDetail,
-                        color: Colors.blueGrey,
-                        isDark: isDark,
-                      ),
-                      _buildLatencyGauge(
-                        label: s.hudRelativeSpeedLabel,
-                        value: '9.389x',
-                        subtext: s.hudRelativeSpeedDetail,
-                        color: Colors.amber.shade800,
-                        isDark: isDark,
-                      ),
-                    ],
+                  LayoutBuilder(
+                    builder: (context, gaugeConstraints) {
+                      // A fixed 175px tile only fits 1-per-row on a phone
+                      // (≈296px content width). Size tiles so 2 always fit
+                      // side by side, capped at 175 on wider containers.
+                      final gaugeWidth = math.min(
+                        175.0,
+                        (gaugeConstraints.maxWidth - 16) / 2,
+                      );
+                      return Wrap(
+                        spacing: 16,
+                        runSpacing: 12,
+                        children: [
+                          _buildLatencyGauge(
+                            width: gaugeWidth,
+                            label: s.hudCpuMeanLabel,
+                            value: '${bench?.avgLatencyUs.toStringAsFixed(1) ?? "21.3"} µs',
+                            subtext: s.hudCpuMeanDetail,
+                            color: Colors.green,
+                            isDark: isDark,
+                          ),
+                          _buildLatencyGauge(
+                            width: gaugeWidth,
+                            label: s.hudP95Label,
+                            value: '${bench?.p95Us.toStringAsFixed(1) ?? "22.7"} µs',
+                            subtext: s.hudP95Detail,
+                            color: Colors.teal,
+                            isDark: isDark,
+                          ),
+                          _buildLatencyGauge(
+                            width: gaugeWidth,
+                            label: s.hudThesisCeilingLabel,
+                            value: '200.0 ms',
+                            subtext: s.hudThesisCeilingDetail,
+                            color: Colors.blueGrey,
+                            isDark: isDark,
+                          ),
+                          _buildLatencyGauge(
+                            width: gaugeWidth,
+                            label: s.hudRelativeSpeedLabel,
+                            value: '9.389x',
+                            subtext: s.hudRelativeSpeedDetail,
+                            color: Colors.amber.shade800,
+                            isDark: isDark,
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -122,9 +138,10 @@ class EdgeTelemetryHud extends StatelessWidget {
     required String subtext,
     required Color color,
     required bool isDark,
+    double width = 175,
   }) {
     return Container(
-      width: 175,
+      width: width,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.02),
@@ -136,6 +153,8 @@ class EdgeTelemetryHud extends StatelessWidget {
         children: [
           Text(
             label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 9,
               fontWeight: FontWeight.w800,
@@ -146,6 +165,8 @@ class EdgeTelemetryHud extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w900,
@@ -227,24 +248,33 @@ class EdgeTelemetryHud extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 9.5,
-                fontWeight: FontWeight.w800,
-                fontFamily: 'Ubuntu Sans Mono',
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Ubuntu Sans Mono',
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
               ),
             ),
-            Text(
-              detail,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Ubuntu Sans Mono',
-                color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                detail,
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Ubuntu Sans Mono',
+                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                ),
               ),
             ),
           ],

@@ -237,6 +237,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Expanded(
                   child: Text(
                     AppSettings.activeBaseUrl,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontFamily: 'Ubuntu Sans Mono',
                       fontSize: 13,
@@ -525,23 +527,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildInfoRow(String label, String value, bool isDark) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontFamily: 'Ubuntu Sans',
-            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+        Flexible(
+          flex: 2,
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              fontFamily: 'Ubuntu Sans',
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+            ),
           ),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 12,
-            fontFamily: 'Ubuntu Sans Mono',
-            fontWeight: FontWeight.w700,
-            color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
+        const SizedBox(width: 10),
+        Flexible(
+          flex: 3,
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              fontFamily: 'Ubuntu Sans Mono',
+              fontWeight: FontWeight.w700,
+              color: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
+            ),
           ),
         ),
       ],

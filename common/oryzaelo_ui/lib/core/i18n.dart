@@ -811,6 +811,25 @@ class OryzaStrings {
   final String sensorIdHint;
   final String sensorNameHint;
 
+  // Short (single-word) nav labels for the mobile bottom nav bar, where
+  // labelBehavior:alwaysShow renders 5 destinations at once and the full
+  // sidebar labels ("Simulador & Previsão" etc) are too long to fit.
+  final String dashNavStatsShort;
+  final String dashNavSimShort;
+  final String dashNavDataShort;
+  final String dashNavSensorsShort;
+  final String dashNavSettingsShort;
+
+  // Biomet radar axis labels — backend only sends a stable `key` (e.g.
+  // "thermal_suitability") plus a Portuguese-only `label`/`description` that
+  // are never locale-aware; the frontend maps `key` through these instead,
+  // same pattern as the phenology stage names.
+  final String radarThermalSuitability;
+  final String radarRadiationEnergy;
+  final String radarWaterSecurity;
+  final String radarHumidityBalance;
+  final String radarThermalStability;
+
   const OryzaStrings({
     required this.navBrand,
     required this.navCoords,
@@ -1522,6 +1541,16 @@ class OryzaStrings {
     this.manualRecordSourceLabel = "Registro_Manual_Terminal",
     this.sensorIdHint = "ex: lora-node-station-01",
     this.sensorNameHint = "ex: Davis Vantage Pro2 Várzea",
+    this.dashNavStatsShort = "Visão",
+    this.dashNavSimShort = "Simular",
+    this.dashNavDataShort = "Dados",
+    this.dashNavSensorsShort = "Sensores",
+    this.dashNavSettingsShort = "Config",
+    this.radarThermalSuitability = "Adequação Térmica",
+    this.radarRadiationEnergy = "Energia Radiativa",
+    this.radarWaterSecurity = "Segurança Hídrica",
+    this.radarHumidityBalance = "Equilíbrio de Umidade",
+    this.radarThermalStability = "Estabilidade Térmica (DTR)",
   });
 
 }
@@ -2830,6 +2859,16 @@ class OryzaI18n {
     manualRecordSourceLabel: "Manual_Terminal_Entry",
     sensorIdHint: "e.g. lora-node-station-01",
     sensorNameHint: "e.g. Davis Vantage Pro2 Lowland",
+    dashNavStatsShort: "Stats",
+    dashNavSimShort: "Simulate",
+    dashNavDataShort: "Data",
+    dashNavSensorsShort: "Sensors",
+    dashNavSettingsShort: "Settings",
+    radarThermalSuitability: "Thermal Suitability",
+    radarRadiationEnergy: "Radiative Energy",
+    radarWaterSecurity: "Water Security",
+    radarHumidityBalance: "Humidity Balance",
+    radarThermalStability: "Thermal Stability (DTR)",
 
     settingsTitle: "Station Settings & Preferences",
     settingsSubtitle: "Edge network parameters, local SQLite database diagnostics, and interface visual preferences.",
@@ -3649,6 +3688,16 @@ class OryzaI18n {
     manualRecordSourceLabel: "ป้อนข้อมูลด้วยตนเอง",
     sensorIdHint: "เช่น lora-node-station-01",
     sensorNameHint: "เช่น Davis Vantage Pro2 นาลุ่ม",
+    dashNavStatsShort: "ภาพรวม",
+    dashNavSimShort: "จำลอง",
+    dashNavDataShort: "ข้อมูล",
+    dashNavSensorsShort: "เซ็นเซอร์",
+    dashNavSettingsShort: "ตั้งค่า",
+    radarThermalSuitability: "ความเหมาะสมทางความร้อน",
+    radarRadiationEnergy: "พลังงานรังสี",
+    radarWaterSecurity: "ความมั่นคงด้านน้ำ",
+    radarHumidityBalance: "สมดุลความชื้น",
+    radarThermalStability: "เสถียรภาพทางความร้อน (DTR)",
 
     settingsTitle: "การตั้งค่าสถานีและค่ากำหนด",
     settingsSubtitle: "พารามิเตอร์เครือข่าย ฐานข้อมูล SQLite ในเครื่อง และการปรับแต่งอินเทอร์เฟซ",

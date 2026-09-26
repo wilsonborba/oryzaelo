@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:local/domain/models/weather_record.dart';
@@ -114,7 +115,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             style: const TextStyle(fontWeight: FontWeight.w700),
           ),
           content: SizedBox(
-            width: 420,
+            width: math.min(420, MediaQuery.of(context).size.width * 0.86),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -182,19 +183,10 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _rhCtrl,
-                          decoration: InputDecoration(labelText: s.manualFieldRh),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      const Expanded(child: SizedBox()),
-                    ],
+                  TextField(
+                    controller: _rhCtrl,
+                    decoration: InputDecoration(labelText: s.manualFieldRh),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   ),
                 ],
               ),
@@ -589,8 +581,9 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             ),
 
           // Scrollable Table
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+          OryzaHorizontalScroller(
+            isDark: isDark,
+            step: 220,
             child: DataTable(
               showCheckboxColumn: false,
               headingRowColor: WidgetStateProperty.all(
@@ -703,10 +696,14 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             decoration: BoxDecoration(
               border: Border(top: BorderSide(color: borderColor, width: 1.0)),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       s.tablePaginationRows,
@@ -744,6 +741,8 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 ),
                 Text(
                   "${startIndex + 1} - $endIndex ${s.tablePaginationOf} ${sorted.length}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontFamily: OryzaTypography.monoFontFamily,
                     package: 'oryzaelo_ui',
@@ -751,6 +750,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                   ),
                 ),
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
                       style: IconButton.styleFrom(

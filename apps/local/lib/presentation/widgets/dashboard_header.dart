@@ -30,6 +30,10 @@ class DashboardHeader extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final isCompact = constraints.maxWidth < 768;
+          // Phone-tier: trims the header further so it never overflows on a
+          // real handset (menu + brand + status + refresh + theme + language
+          // all fit in ~300px once the badge/subtitle/text labels are cut).
+          final isNarrow = constraints.maxWidth < 480;
 
           return Row(
             children: [
@@ -74,28 +78,30 @@ class DashboardHeader extends StatelessWidget {
                             fontFamily: 'Ubuntu Sans',
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? Colors.amber.shade900.withValues(alpha: 0.35)
-                                : Colors.amber.shade100,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                              color: isDark ? Colors.amber.shade700 : Colors.amber.shade400,
+                        if (!isNarrow) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? Colors.amber.shade900.withValues(alpha: 0.35)
+                                  : Colors.amber.shade100,
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: isDark ? Colors.amber.shade700 : Colors.amber.shade400,
+                              ),
+                            ),
+                            child: Text(
+                              'LOCAL EDGE',
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800,
+                                color: isDark ? Colors.amber.shade300 : Colors.amber.shade900,
+                                fontFamily: 'Ubuntu Sans Mono',
+                              ),
                             ),
                           ),
-                          child: Text(
-                            'LOCAL EDGE',
-                            style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w800,
-                              color: isDark ? Colors.amber.shade300 : Colors.amber.shade900,
-                              fontFamily: 'Ubuntu Sans Mono',
-                            ),
-                          ),
-                        ),
+                        ],
                       ],
                     ),
                     if (!isCompact) ...[
@@ -115,44 +121,49 @@ class DashboardHeader extends StatelessWidget {
 
                 const Spacer(),
 
-                // Air-Gapped Status Indicator Pill
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: isOnline
-                        ? (isDark ? Colors.green.shade900.withValues(alpha: 0.3) : Colors.green.shade50)
-                        : (isDark ? Colors.red.shade900.withValues(alpha: 0.3) : Colors.red.shade50),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
+                // Air-Gapped Status Indicator Pill (dot-only on narrow phones)
+                Tooltip(
+                  message: isOnline ? s.headerOnlineStatus : s.headerOfflineStatus,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: isNarrow ? 6 : 10, vertical: 5),
+                    decoration: BoxDecoration(
                       color: isOnline
-                          ? (isDark ? Colors.green.shade700 : Colors.green.shade300)
-                          : (isDark ? Colors.red.shade700 : Colors.red.shade300),
+                          ? (isDark ? Colors.green.shade900.withValues(alpha: 0.3) : Colors.green.shade50)
+                          : (isDark ? Colors.red.shade900.withValues(alpha: 0.3) : Colors.red.shade50),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isOnline
+                            ? (isDark ? Colors.green.shade700 : Colors.green.shade300)
+                            : (isDark ? Colors.red.shade700 : Colors.red.shade300),
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isOnline ? Colors.greenAccent.shade700 : Colors.redAccent,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isOnline ? Colors.greenAccent.shade700 : Colors.redAccent,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        isOnline ? s.headerOnlineStatus : s.headerOfflineStatus,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                          color: isOnline
-                              ? (isDark ? Colors.green.shade300 : Colors.green.shade800)
-                              : (isDark ? Colors.red.shade300 : Colors.red.shade800),
-                          fontFamily: 'Ubuntu Sans Mono',
-                        ),
-                      ),
-                    ],
+                        if (!isNarrow) ...[
+                          const SizedBox(width: 6),
+                          Text(
+                            isOnline ? s.headerOnlineStatus : s.headerOfflineStatus,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              color: isOnline
+                                  ? (isDark ? Colors.green.shade300 : Colors.green.shade800)
+                                  : (isDark ? Colors.red.shade300 : Colors.red.shade800),
+                              fontFamily: 'Ubuntu Sans Mono',
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
 
@@ -176,7 +187,7 @@ class DashboardHeader extends StatelessWidget {
                 // Design System Controls
                 const ThemeToggle(),
                 const SizedBox(width: 6),
-                const LanguageSelector(),
+                LanguageSelector(compact: isNarrow),
               ],
             );
           },

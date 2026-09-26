@@ -255,6 +255,8 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                       children: [
                         Text(
                           s.simTitle.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontFamily: OryzaTypography.monoFontFamily,
                             package: 'oryzaelo_ui',
@@ -267,6 +269,8 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                         const SizedBox(height: 3),
                         Text(
                           s.simSubtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontFamily: OryzaTypography.fontFamily,
                             package: 'oryzaelo_ui',
@@ -277,6 +281,7 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
@@ -286,6 +291,8 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                     ),
                     child: Text(
                       s.simOnnxBadge,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontFamily: OryzaTypography.monoFontFamily,
                         package: 'oryzaelo_ui',
@@ -459,7 +466,9 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
             min: 0,
             max: 20,
             divisions: 40,
-            color: OryzaColors.mustardYellow,
+            // Mustard yellow reads fine on the dark canvas but is too low-
+            // contrast for small bold text on a white/light background.
+            color: isDark ? OryzaColors.mustardYellow : Colors.amber.shade900,
             isDark: isDark,
             onChanged: (v) => setState(() => _waterDepth = v),
           ),
@@ -641,8 +650,11 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header Badge Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -652,6 +664,8 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                 ),
                 child: Text(
                   res.bbchCode,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontFamily: OryzaTypography.monoFontFamily,
                     package: 'oryzaelo_ui',
@@ -663,6 +677,8 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
               ),
               Text(
                 "${s.simGddAccumulatedLabel}: ${res.accumulatedGdd.toStringAsFixed(1)} ${s.simGddDayUnit}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: OryzaTypography.monoFontFamily,
                   package: 'oryzaelo_ui',
@@ -707,7 +723,11 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
           // Combinatorial Actionable Insights List
           Row(
             children: [
-              const Icon(Icons.lightbulb_outline_rounded, size: 16, color: OryzaColors.mustardYellow),
+              Icon(
+                Icons.lightbulb_outline_rounded,
+                size: 16,
+                color: isDark ? OryzaColors.mustardYellow : Colors.brown.shade800,
+              ),
               const SizedBox(width: 8),
               Text(
                 s.simInsightsTitle.toUpperCase(),

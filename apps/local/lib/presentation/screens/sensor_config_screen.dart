@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:local/domain/models/device_mapping.dart';
 import 'package:local/presentation/handlers/dashboard_handler.dart';
@@ -98,7 +99,7 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
             style: const TextStyle(fontWeight: FontWeight.w700),
           ),
           content: SizedBox(
-            width: 480,
+            width: math.min(480, MediaQuery.of(context).size.width * 0.86),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -246,44 +247,70 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
     TextEditingController scaleCtrl,
     OryzaStrings s,
   ) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 64,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 14),
-            child: Text(
-              label,
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+    final unitField = TextField(
+      controller: unitCtrl,
+      decoration: InputDecoration(labelText: s.sensorUnitLabel, isDense: true),
+    );
+    final scaleField = TextField(
+      controller: scaleCtrl,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      decoration: InputDecoration(labelText: s.sensorScaleLabel, isDense: true),
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Below ~340px, three squeezed text fields become too narrow to use
+        // (floating labels clip). Stack "column" on its own row and pair
+        // unit/scale on a second row instead.
+        if (constraints.maxWidth < 340) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 4),
+              TextField(
+                controller: colCtrl,
+                decoration: InputDecoration(labelText: s.sensorColumnLabel, isDense: true),
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(child: unitField),
+                  const SizedBox(width: 8),
+                  Expanded(child: scaleField),
+                ],
+              ),
+            ],
+          );
+        }
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 64,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 14),
+                child: Text(
+                  label,
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                ),
+              ),
             ),
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: TextField(
-            controller: colCtrl,
-            decoration: InputDecoration(labelText: s.sensorColumnLabel, isDense: true),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Expanded(
-          flex: 2,
-          child: TextField(
-            controller: unitCtrl,
-            decoration: InputDecoration(labelText: s.sensorUnitLabel, isDense: true),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Expanded(
-          flex: 2,
-          child: TextField(
-            controller: scaleCtrl,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(labelText: s.sensorScaleLabel, isDense: true),
-          ),
-        ),
-      ],
+            Expanded(
+              flex: 3,
+              child: TextField(
+                controller: colCtrl,
+                decoration: InputDecoration(labelText: s.sensorColumnLabel, isDense: true),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Expanded(flex: 2, child: unitField),
+            const SizedBox(width: 6),
+            Expanded(flex: 2, child: scaleField),
+          ],
+        );
+      },
     );
   }
 
@@ -343,42 +370,57 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
           ),
         ],
       ),
-      child: Row(
+      child: Wrap(
+        spacing: 14,
+        runSpacing: 10,
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Image.asset(
-            'assets/icons3d/sheild-dynamic-color.png',
-            width: 36,
-            height: 36,
-            fit: BoxFit.contain,
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  s.sensorConfigTitle.toUpperCase(),
-                  style: TextStyle(
-                    fontFamily: OryzaTypography.monoFontFamily,
-                    package: 'oryzaelo_ui',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
-                    color: textColor,
-                  ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/icons3d/sheild-dynamic-color.png',
+                width: 36,
+                height: 36,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(width: 14),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 260),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      s.sensorConfigTitle.toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: OryzaTypography.monoFontFamily,
+                        package: 'oryzaelo_ui',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.8,
+                        color: textColor,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      s.sensorConfigSubtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: OryzaTypography.fontFamily,
+                        package: 'oryzaelo_ui',
+                        fontSize: 12,
+                        color: textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 3),
-                Text(
-                  s.sensorConfigSubtitle,
-                  style: TextStyle(
-                    fontFamily: OryzaTypography.fontFamily,
-                    package: 'oryzaelo_ui',
-                    fontSize: 12,
-                    color: textSecondary,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           ElevatedButton.icon(
             onPressed: _showAddSensorDialog,
@@ -544,13 +586,20 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
           ),
           const SizedBox(height: 14),
 
-          Wrap(
+          LayoutBuilder(
+            builder: (context, constraints) {
+              // Cap the card at 320px on wide screens, but never wider than
+              // the available space — a fixed 320px card doesn't fit inside
+              // a ~288px content area on the smallest (320px) phones.
+              final cardWidth = math.min(320.0, constraints.maxWidth);
+
+              return Wrap(
             spacing: 12,
             runSpacing: 12,
             children: presets.map((p) {
               final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
               return Container(
-                width: 320,
+                width: cardWidth,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: isDark ? OryzaColors.darkCanvas : const Color(0xFFF9F8F4),
@@ -626,6 +675,8 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
                 ),
               );
             }).toList(),
+              );
+            },
           ),
         ],
       ),

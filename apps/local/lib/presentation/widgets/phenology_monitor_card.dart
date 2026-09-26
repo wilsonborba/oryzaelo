@@ -110,9 +110,13 @@ class PhenologyMonitorCard extends StatelessWidget {
                   ],
                 ),
 
-                // Confidence Gauge & Predict Button
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+                // Confidence Gauge & Predict Button — Wrap (not Row) so the
+                // pill/badge/button reflow onto a second line instead of
+                // overflowing when all three are present on a narrow phone.
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     // Confidence Pill
                     Container(
@@ -136,11 +140,12 @@ class PhenologyMonitorCard extends StatelessWidget {
                     ),
 
                     if (pred.isTransitioning) ...[
-                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.amber.shade900.withValues(alpha: 0.2),
+                          color: isDark
+                              ? Colors.amber.shade900.withValues(alpha: 0.2)
+                              : Colors.amber.shade50,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.amber.shade700),
                         ),
@@ -150,13 +155,11 @@ class PhenologyMonitorCard extends StatelessWidget {
                             fontSize: 10,
                             fontWeight: FontWeight.w800,
                             fontFamily: 'Ubuntu Sans Mono',
-                            color: Colors.amber.shade300,
+                            color: isDark ? Colors.amber.shade300 : Colors.amber.shade900,
                           ),
                         ),
                       ),
                     ],
-
-                    const SizedBox(width: 10),
 
                     // Manual Predict CTA
                     ElevatedButton.icon(
@@ -183,7 +186,7 @@ class PhenologyMonitorCard extends StatelessWidget {
         const SizedBox(height: 18),
 
         // BBCH Stage Progression Timeline
-        _buildStageProgressionBar(pred.granularStage, isDark, s),
+        _StageProgressionBar(currentStage: pred.granularStage, isDark: isDark, s: s),
 
         const SizedBox(height: 18),
 
@@ -326,107 +329,6 @@ class PhenologyMonitorCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStageProgressionBar(String currentStage, bool isDark, OryzaStrings s) {
-    final stages = [
-      {'key': 'Seedling', 'label': s.phenoStageSeedling, 'bbch': '10-19'},
-      {'key': 'Tillering', 'label': s.phenoStageTillering, 'bbch': '20-29'},
-      {'key': 'Booting', 'label': s.phenoStageBooting, 'bbch': '40-49'},
-      {'key': 'Heading', 'label': s.phenoStageHeading, 'bbch': '50-59'},
-      {'key': 'Flowering', 'label': s.phenoStageFlowering, 'bbch': '60-69'},
-      {'key': 'PreHarvest', 'label': s.phenoStagePreHarvest, 'bbch': '70-89'},
-      {'key': 'HarvestReady', 'label': s.phenoStageHarvestReady, 'bbch': '90-99'},
-    ];
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: stages.asMap().entries.map((entry) {
-          final idx = entry.key;
-          final st = entry.value;
-          final isCurrent = st['key'] == currentStage;
-          final isPassed = _stageIndex(st['key']!) < _stageIndex(currentStage);
-
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: isCurrent
-                      ? (isDark ? Colors.green.shade800 : Colors.green.shade600)
-                      : (isPassed
-                          ? (isDark ? const Color(0xFF0C2612) : Colors.green.shade100)
-                          : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.04))),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: isCurrent
-                        ? Colors.greenAccent
-                        : (isPassed ? Colors.green.shade700 : Colors.transparent),
-                    width: isCurrent ? 1.5 : 1.0,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      st['label']!,
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        fontWeight: isCurrent ? FontWeight.w900 : FontWeight.w600,
-                        color: isCurrent
-                            ? Colors.white
-                            : (isDark ? Colors.grey.shade400 : Colors.grey.shade700),
-                        fontFamily: 'Ubuntu Sans',
-                      ),
-                    ),
-                    Text(
-                      'BBCH ${st['bbch']}',
-                      style: TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Ubuntu Sans Mono',
-                        color: isCurrent
-                            ? Colors.white70
-                            : (isDark ? Colors.grey.shade600 : Colors.grey.shade500),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (idx < stages.length - 1) ...[
-                Container(
-                  width: 14,
-                  height: 2,
-                  color: isPassed ? Colors.green.shade600 : (isDark ? Colors.white12 : Colors.black12),
-                ),
-              ],
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  int _stageIndex(String stage) {
-    switch (stage) {
-      case 'Seedling':
-        return 0;
-      case 'Tillering':
-        return 1;
-      case 'Booting':
-        return 2;
-      case 'Heading':
-        return 3;
-      case 'Flowering':
-        return 4;
-      case 'PreHarvest':
-        return 5;
-      case 'HarvestReady':
-        return 6;
-      default:
-        return 0;
-    }
-  }
-
   Color _getStageColor(String stage) {
     switch (stage) {
       case 'Seedling':
@@ -467,5 +369,157 @@ class PhenologyMonitorCard extends StatelessWidget {
       default:
         return stage;
     }
+  }
+}
+
+/// BBCH stage progression timeline. Stateful so it can auto-scroll to the
+/// current stage on first render and show a persistent scrollbar — on a
+/// phone there's otherwise no visual hint that the 7-stage row scrolls
+/// horizontally, and nothing guarantees the current stage starts on-screen.
+class _StageProgressionBar extends StatefulWidget {
+  final String currentStage;
+  final bool isDark;
+  final OryzaStrings s;
+
+  const _StageProgressionBar({
+    required this.currentStage,
+    required this.isDark,
+    required this.s,
+  });
+
+  @override
+  State<_StageProgressionBar> createState() => _StageProgressionBarState();
+}
+
+class _StageProgressionBarState extends State<_StageProgressionBar> {
+  final _scrollController = ScrollController();
+
+  static const _chipWidth = 96.0; // approx rendered width incl. connector
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+      final idx = _stageIndex(widget.currentStage);
+      final target = (idx * _chipWidth - _chipWidth)
+          .clamp(0.0, _scrollController.position.maxScrollExtent);
+      _scrollController.jumpTo(target);
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  int _stageIndex(String stage) {
+    switch (stage) {
+      case 'Seedling':
+        return 0;
+      case 'Tillering':
+        return 1;
+      case 'Booting':
+        return 2;
+      case 'Heading':
+        return 3;
+      case 'Flowering':
+        return 4;
+      case 'PreHarvest':
+        return 5;
+      case 'HarvestReady':
+        return 6;
+      default:
+        return 0;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = widget.s;
+    final isDark = widget.isDark;
+    final currentStage = widget.currentStage;
+
+    final stages = [
+      {'key': 'Seedling', 'label': s.phenoStageSeedling, 'bbch': '10-19'},
+      {'key': 'Tillering', 'label': s.phenoStageTillering, 'bbch': '20-29'},
+      {'key': 'Booting', 'label': s.phenoStageBooting, 'bbch': '40-49'},
+      {'key': 'Heading', 'label': s.phenoStageHeading, 'bbch': '50-59'},
+      {'key': 'Flowering', 'label': s.phenoStageFlowering, 'bbch': '60-69'},
+      {'key': 'PreHarvest', 'label': s.phenoStagePreHarvest, 'bbch': '70-89'},
+      {'key': 'HarvestReady', 'label': s.phenoStageHarvestReady, 'bbch': '90-99'},
+    ];
+
+    return OryzaHorizontalScroller(
+      isDark: isDark,
+      controller: _scrollController,
+      step: 140,
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+          children: stages.asMap().entries.map((entry) {
+            final idx = entry.key;
+            final st = entry.value;
+            final isCurrent = st['key'] == currentStage;
+            final isPassed = _stageIndex(st['key']!) < _stageIndex(currentStage);
+
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: isCurrent
+                        ? (isDark ? Colors.green.shade800 : Colors.green.shade600)
+                        : (isPassed
+                            ? (isDark ? const Color(0xFF0C2612) : Colors.green.shade100)
+                            : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.04))),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: isCurrent
+                          ? Colors.greenAccent
+                          : (isPassed ? Colors.green.shade700 : Colors.transparent),
+                      width: isCurrent ? 1.5 : 1.0,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        st['label']!,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: isCurrent ? FontWeight.w900 : FontWeight.w600,
+                          color: isCurrent
+                              ? Colors.white
+                              : (isDark ? Colors.grey.shade400 : Colors.grey.shade700),
+                          fontFamily: 'Ubuntu Sans',
+                        ),
+                      ),
+                      Text(
+                        'BBCH ${st['bbch']}',
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Ubuntu Sans Mono',
+                          color: isCurrent
+                              ? Colors.white70
+                              : (isDark ? Colors.grey.shade600 : Colors.grey.shade500),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (idx < stages.length - 1) ...[
+                  Container(
+                    width: 14,
+                    height: 2,
+                    color: isPassed ? Colors.green.shade600 : (isDark ? Colors.white12 : Colors.black12),
+                  ),
+                ],
+              ],
+            );
+          }).toList(),
+        ),
+    );
   }
 }
