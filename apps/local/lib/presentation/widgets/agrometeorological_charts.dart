@@ -17,7 +17,13 @@ class AgrometeorologicalCharts extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    if (records.isEmpty) {
+    // These trend charts plot continuous numeric series -- a day still
+    // waiting on one sensor can't contribute a point to any of them. The raw
+    // table (Data Management screen) is where partial-day visibility
+    // belongs; here we only ever plot complete days.
+    final completeRecords = records.where((r) => r.isComplete).toList();
+
+    if (completeRecords.isEmpty) {
       return ScrapbookCard(
         isDark: isDark,
         padding: const EdgeInsets.all(28.0),
@@ -87,7 +93,7 @@ class AgrometeorologicalCharts extends StatelessWidget {
           meaningText: s.chartGddMeaning,
           actionText: s.chartGddAction,
           isDark: isDark,
-          child: GddAccumulationChart(records: records, isDark: isDark, s: s),
+          child: GddAccumulationChart(records: completeRecords, isDark: isDark, s: s),
         );
 
         final thermalCard = _AgroChartCard(
@@ -98,7 +104,7 @@ class AgrometeorologicalCharts extends StatelessWidget {
           meaningText: s.chartThermalMeaning,
           actionText: s.chartThermalAction,
           isDark: isDark,
-          child: ThermalHumidityChart(records: records, isDark: isDark, s: s),
+          child: ThermalHumidityChart(records: completeRecords, isDark: isDark, s: s),
         );
 
         final waterCard = _AgroChartCard(
@@ -109,7 +115,7 @@ class AgrometeorologicalCharts extends StatelessWidget {
           meaningText: s.chartWaterMeaning,
           actionText: s.chartWaterAction,
           isDark: isDark,
-          child: WaterRadiationChart(records: records, isDark: isDark, s: s),
+          child: WaterRadiationChart(records: completeRecords, isDark: isDark, s: s),
         );
 
         final dtrCard = _AgroChartCard(
@@ -120,7 +126,7 @@ class AgrometeorologicalCharts extends StatelessWidget {
           meaningText: s.chartDtrMeaning,
           actionText: s.chartDtrAction,
           isDark: isDark,
-          child: DtrBandChart(records: records, isDark: isDark, s: s),
+          child: DtrBandChart(records: completeRecords, isDark: isDark, s: s),
         );
 
         return Column(
@@ -239,25 +245,27 @@ class _AgroChartCardState extends State<_AgroChartCard> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: widget.isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                              color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.botanicalGreenBorder,
+                        Flexible(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: widget.isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight,
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.botanicalGreenBorder,
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            widget.unitBadge,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: OryzaTypography.monoFontFamily,
-                              package: 'oryzaelo_ui',
-                              color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                            child: Text(
+                              widget.unitBadge,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: OryzaTypography.monoFontFamily,
+                                package: 'oryzaelo_ui',
+                                color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                              ),
                             ),
                           ),
                         ),
@@ -414,7 +422,7 @@ class GddAccumulationChart extends StatelessWidget {
     double cumGdd = 0.0;
     final List<double> cumSeries = [];
     for (final r in sorted) {
-      cumGdd += r.dailyGdd;
+      cumGdd += r.dailyGdd ?? 0.0;
       cumSeries.add(cumGdd);
     }
 
@@ -656,9 +664,9 @@ class _ThermalHumidityPainter extends CustomPainter {
       final r = records[i];
       final x = padL + (i * stepX);
 
-      final yMax = h - (h * ((r.tMax - minT) / (maxT - minT)).clamp(0.0, 1.0));
-      final yMin = h - (h * ((r.tMin - minT) / (maxT - minT)).clamp(0.0, 1.0));
-      final yRh = h - (h * ((r.relativeHumidityPct - minRh) / (maxRh - minRh)).clamp(0.0, 1.0));
+      final yMax = h - (h * ((r.tMax! - minT) / (maxT - minT)).clamp(0.0, 1.0));
+      final yMin = h - (h * ((r.tMin! - minT) / (maxT - minT)).clamp(0.0, 1.0));
+      final yRh = h - (h * ((r.relativeHumidityPct! - minRh) / (maxRh - minRh)).clamp(0.0, 1.0));
 
       if (i == 0) {
         pathTMax.moveTo(x, yMax);
@@ -766,7 +774,7 @@ class _WaterRadiationPainter extends CustomPainter {
 
     double maxRain = 20.0;
     for (final r in records) {
-      if (r.precipitationMm > maxRain) maxRain = r.precipitationMm;
+      if ((r.precipitationMm ?? 0.0) > maxRain) maxRain = r.precipitationMm ?? 0.0;
     }
     maxRain *= 1.1;
 
@@ -779,7 +787,7 @@ class _WaterRadiationPainter extends CustomPainter {
     for (int i = 0; i < n; i++) {
       final r = records[i];
       final x = padL + (i * stepX) + (stepX - barW) / 2;
-      final barH = h * (r.precipitationMm / maxRain);
+      final barH = h * ((r.precipitationMm ?? 0.0) / maxRain);
       final y = h - barH;
 
       canvas.drawRRect(
@@ -799,7 +807,7 @@ class _WaterRadiationPainter extends CustomPainter {
       for (int i = 0; i < n; i++) {
         final r = records[i];
         final x = padL + (i * stepX) + stepX / 2;
-        final y = h - (h * (r.radiationMjM2 / maxRad).clamp(0.0, 1.0));
+        final y = h - (h * ((r.radiationMjM2 ?? 0.0) / maxRad).clamp(0.0, 1.0));
 
         if (i == 0) {
           radPath.moveTo(x, y);
@@ -890,8 +898,8 @@ class _DtrBandPainter extends CustomPainter {
     for (int i = 0; i < n; i++) {
       final r = records[i];
       final x = padL + (i * stepX);
-      final yTop = h - (h * ((r.tMax - minT) / (maxT - minT)).clamp(0.0, 1.0));
-      final yBot = h - (h * ((r.tMin - minT) / (maxT - minT)).clamp(0.0, 1.0));
+      final yTop = h - (h * ((r.tMax! - minT) / (maxT - minT)).clamp(0.0, 1.0));
+      final yBot = h - (h * ((r.tMin! - minT) / (maxT - minT)).clamp(0.0, 1.0));
 
       upperPoints.add(Offset(x, yTop));
       lowerPoints.add(Offset(x, yBot));

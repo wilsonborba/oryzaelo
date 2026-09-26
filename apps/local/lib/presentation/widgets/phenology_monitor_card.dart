@@ -65,9 +65,13 @@ class PhenologyMonitorCard extends StatelessWidget {
           alignment: WrapAlignment.spaceBetween,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-                // Granular Stage Badge
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+                // Granular Stage Badge — Wrap (not Row) so a long localized
+                // stage name and the macro-phase tag reflow onto a second
+                // line instead of overflowing on a narrow phone.
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -89,7 +93,6 @@ class PhenologyMonitorCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
                     // Macro-Phase Tag
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

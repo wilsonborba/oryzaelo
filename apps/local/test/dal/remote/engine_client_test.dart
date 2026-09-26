@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:local/dal/remote/engine_client.dart';
 import 'package:local/domain/models/device_mapping.dart';
+import 'package:local/domain/models/metric_type.dart';
 import 'package:local/domain/models/weather_record.dart';
 
 /// Exercises EngineClient against a mocked HTTP transport — no real engine
@@ -24,16 +25,18 @@ void main() {
         }),
       );
 
-      final mapping = DeviceMapping.blank('sensor-01').copyWith(deviceName: 'Test Sensor');
+      final mapping = DeviceMapping.blankSingleMetric('sensor-01', MetricType.rainfall)
+          .copyWith(deviceName: 'Test Sensor');
       await client.createDeviceMapping(mapping);
 
       expect(capturedBody, isNotNull);
       expect(capturedBody!['id'], 'sensor-01');
       expect(capturedBody!['device_name'], 'Test Sensor');
-      expect(capturedBody!.containsKey('t_max_col'), isTrue);
-      // The old broken schema's keys must never be sent again.
+      expect(capturedBody!.containsKey('metrics'), isTrue);
+      // The old broken schemas' keys must never be sent again.
       expect(capturedBody!.containsKey('mappings'), isFalse);
       expect(capturedBody!.containsKey('model'), isFalse);
+      expect(capturedBody!.containsKey('t_max_col'), isFalse);
     });
 
     test('returns the created mapping on 201', () async {
@@ -43,7 +46,9 @@ void main() {
         }),
       );
 
-      final result = await client.createDeviceMapping(DeviceMapping.blank('sensor-02'));
+      final result = await client.createDeviceMapping(
+        DeviceMapping.blankSingleMetric('sensor-02', MetricType.rainfall),
+      );
 
       expect(result, isNotNull);
       expect(result!.id, 'sensor-02');
@@ -59,7 +64,9 @@ void main() {
         }),
       );
 
-      final result = await client.createDeviceMapping(DeviceMapping.blank('sensor-03'));
+      final result = await client.createDeviceMapping(
+        DeviceMapping.blankSingleMetric('sensor-03', MetricType.rainfall),
+      );
 
       expect(result, isNull);
     });
@@ -71,7 +78,9 @@ void main() {
         }),
       );
 
-      final result = await client.createDeviceMapping(DeviceMapping.blank('sensor-04'));
+      final result = await client.createDeviceMapping(
+        DeviceMapping.blankSingleMetric('sensor-04', MetricType.rainfall),
+      );
 
       expect(result, isNull);
     });
@@ -84,7 +93,9 @@ void main() {
       );
 
       // Must not throw a FormatException up into the caller.
-      final result = await client.createDeviceMapping(DeviceMapping.blank('sensor-05'));
+      final result = await client.createDeviceMapping(
+        DeviceMapping.blankSingleMetric('sensor-05', MetricType.rainfall),
+      );
       expect(result, isNull);
     });
   });
@@ -193,7 +204,7 @@ void main() {
         }),
       );
 
-      final record = DailyWeatherRecord(
+      final entry = ManualWeatherEntry(
         date: DateTime.utc(2026, 6, 6),
         tMax: 30.0,
         tMin: 20.0,
@@ -203,7 +214,7 @@ void main() {
         source: 'Manual_Terminal_Entry',
       );
 
-      final ok = await client.ingestSingleRecord(parcelId: 'p-1', record: record);
+      final ok = await client.ingestSingleRecord(parcelId: 'p-1', entry: entry);
 
       expect(ok, isTrue);
       expect(captured!['parcel_id'], 'p-1');
@@ -226,7 +237,7 @@ void main() {
 
       final ok = await client.ingestSingleRecord(
         parcelId: 'p-1',
-        record: DailyWeatherRecord(
+        entry: ManualWeatherEntry(
           date: DateTime.utc(2026, 6, 6),
           tMax: 20.0,
           tMin: 25.0,
@@ -247,7 +258,7 @@ void main() {
 
       final ok = await client.ingestSingleRecord(
         parcelId: 'p-1',
-        record: DailyWeatherRecord(
+        entry: ManualWeatherEntry(
           date: DateTime.utc(2026, 6, 6),
           tMax: 30.0,
           tMin: 20.0,
@@ -276,7 +287,7 @@ void main() {
                 'precipitation_mm': 0.0,
                 'radiation_mj_m2': 20.0,
                 'relative_humidity_pct': 70.0,
-                'source': 'A',
+                't_max_sensor_id': 'A',
                 'daily_gdd': 18.0,
               },
             ]),

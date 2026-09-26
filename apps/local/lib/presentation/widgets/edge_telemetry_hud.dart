@@ -214,13 +214,17 @@ class EdgeTelemetryHud extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                s.hudHardwareHeader,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Ubuntu Sans Mono',
-                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+              Flexible(
+                child: Text(
+                  s.hudHardwareHeader,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Ubuntu Sans Mono',
+                    color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                  ),
                 ),
               ),
               if (hostIdentity != null) ...[

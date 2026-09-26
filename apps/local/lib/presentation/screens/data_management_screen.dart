@@ -4,27 +4,55 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:local/domain/models/device_mapping.dart';
+import 'package:local/domain/models/metric_type.dart';
+import 'package:local/domain/models/sensor_reading.dart';
 import 'package:local/domain/models/weather_record.dart';
 import 'package:local/presentation/handlers/dashboard_handler.dart';
 import 'package:local/presentation/widgets/parcel_selector_bar.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
 
+enum DataViewMode {
+  dailySummary,
+  sensorHistory,
+}
+
 class DataManagementScreen extends StatefulWidget {
   final DashboardHandler handler;
 
-  const DataManagementScreen({
-    super.key,
-    required this.handler,
-  });
+  const DataManagementScreen({super.key, required this.handler});
 
   @override
   State<DataManagementScreen> createState() => _DataManagementScreenState();
 }
 
 class _DataManagementScreenState extends State<DataManagementScreen> {
+  DataViewMode _viewMode = DataViewMode.dailySummary;
+  MetricType _selectedHistoryMetric = MetricType.rainfall;
+  List<SensorReading>? _cachedReadings;
+  bool _isLoadingReadings = false;
+
   final Set<DateTime> _selectedDates = {};
   int _rowsPerPage = 10;
   int _currentPage = 0;
+
+  Future<void> _loadSensorReadings() async {
+    final parcelId = widget.handler.selectedParcel?.id;
+    if (parcelId == null) {
+      setState(() {
+        _cachedReadings = [];
+        _isLoadingReadings = false;
+      });
+      return;
+    }
+    setState(() => _isLoadingReadings = true);
+    final readings = await widget.handler.fetchSensorReadings(_selectedHistoryMetric);
+    if (mounted) {
+      setState(() {
+        _cachedReadings = readings;
+        _isLoadingReadings = false;
+      });
+    }
+  }
 
   // Manual entry controllers
   DateTime _manualDate = DateTime.now();
@@ -46,7 +74,9 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
 
   void _toggleSelectAll(List<DailyWeatherRecord> pageRecords) {
     setState(() {
-      final allSelected = pageRecords.every((r) => _selectedDates.contains(r.date));
+      final allSelected = pageRecords.every(
+        (r) => _selectedDates.contains(r.date),
+      );
       if (allSelected) {
         for (final r in pageRecords) {
           _selectedDates.remove(r.date);
@@ -68,9 +98,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(s.tableConfirmDeleteTitle),
-        content: Text(
-          s.deleteConfirmBody.replaceAll('{count}', '$count'),
-        ),
+        content: Text(s.deleteConfirmBody.replaceAll('{count}', '$count')),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -89,14 +117,18 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
     );
 
     if (confirmed == true) {
-      final success = await widget.handler.deleteRecords(_selectedDates.toList());
+      final success = await widget.handler.deleteRecords(
+        _selectedDates.toList(),
+      );
       if (success) {
         setState(() {
           _selectedDates.clear();
         });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(s.deleteSuccessMsg.replaceAll('{count}', '$count'))),
+            SnackBar(
+              content: Text(s.deleteSuccessMsg.replaceAll('{count}', '$count')),
+            ),
           );
         }
       }
@@ -111,8 +143,12 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          backgroundColor: isDark
+              ? OryzaColors.darkSurface
+              : OryzaColors.lightSurface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           title: Text(
             s.tableNewRecordBtn,
             style: const TextStyle(fontWeight: FontWeight.w700),
@@ -125,12 +161,18 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 children: [
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(s.manualRecordDateLabel, style: const TextStyle(fontSize: 12.5)),
+                    title: Text(
+                      s.manualRecordDateLabel,
+                      style: const TextStyle(fontSize: 12.5),
+                    ),
                     subtitle: Text(
                       DateFormat('yyyy-MM-dd').format(_manualDate),
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    trailing: const Icon(Icons.calendar_today_rounded, size: 20),
+                    trailing: const Icon(
+                      Icons.calendar_today_rounded,
+                      size: 20,
+                    ),
                     onTap: () async {
                       final picked = await showDatePicker(
                         context: context,
@@ -150,16 +192,24 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                       Expanded(
                         child: TextField(
                           controller: _tMaxCtrl,
-                          decoration: InputDecoration(labelText: s.manualFieldTMax),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: InputDecoration(
+                            labelText: s.manualFieldTMax,
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: TextField(
                           controller: _tMinCtrl,
-                          decoration: InputDecoration(labelText: s.manualFieldTMin),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: InputDecoration(
+                            labelText: s.manualFieldTMin,
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                         ),
                       ),
                     ],
@@ -171,16 +221,24 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                       Expanded(
                         child: TextField(
                           controller: _rainCtrl,
-                          decoration: InputDecoration(labelText: s.manualFieldRain),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: InputDecoration(
+                            labelText: s.manualFieldRain,
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: TextField(
                           controller: _radCtrl,
-                          decoration: InputDecoration(labelText: s.manualFieldRad),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: InputDecoration(
+                            labelText: s.manualFieldRad,
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                         ),
                       ),
                     ],
@@ -189,7 +247,9 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                   TextField(
                     controller: _rhCtrl,
                     decoration: InputDecoration(labelText: s.manualFieldRh),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ],
               ),
@@ -205,7 +265,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 final parcel = widget.handler.selectedParcel;
                 if (parcel == null) return;
 
-                final rec = DailyWeatherRecord(
+                final entry = ManualWeatherEntry(
                   date: _manualDate,
                   tMax: double.tryParse(_tMaxCtrl.text) ?? 30.0,
                   tMin: double.tryParse(_tMinCtrl.text) ?? 20.0,
@@ -216,12 +276,16 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 );
 
                 Navigator.of(ctx).pop();
-                final ok = await widget.handler.ingestSingleRecord(rec);
+                final ok = await widget.handler.ingestSingleRecord(entry);
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(ok ? s.manualRecordSavedMsg : s.manualRecordFailedMsg),
-                      backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
+                      content: Text(
+                        ok ? s.manualRecordSavedMsg : s.manualRecordFailedMsg,
+                      ),
+                      backgroundColor: ok
+                          ? Colors.green.shade800
+                          : Colors.red.shade800,
                     ),
                   );
                 }
@@ -252,8 +316,12 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          backgroundColor: isDark
+              ? OryzaColors.darkSurface
+              : OryzaColors.lightSurface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           title: Text(
             s.csvUploadDialogTitle,
             style: const TextStyle(fontWeight: FontWeight.w700),
@@ -264,7 +332,10 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(s.csvUploadDeviceLabel, style: const TextStyle(fontSize: 12.5)),
+                Text(
+                  s.csvUploadDeviceLabel,
+                  style: const TextStyle(fontSize: 12.5),
+                ),
                 const SizedBox(height: 6),
                 DropdownButtonFormField<DeviceMapping>(
                   initialValue: selectedDevice,
@@ -276,18 +347,19 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                         (d) => DropdownMenuItem(
                           value: d,
                           child: Text(
-                            d.deviceName,
+                            '${d.deviceName} (${d.metrics.map((m) => m.metricType.name).join(", ")})',
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       )
                       .toList(),
-                  onChanged: (val) => setDialogState(() => selectedDevice = val),
+                  onChanged: (val) =>
+                      setDialogState(() => selectedDevice = val),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    OutlinedButton.icon(
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final chooseButton = OutlinedButton.icon(
                       onPressed: () async {
                         final result = await FilePicker.platform.pickFiles(
                           type: FileType.custom,
@@ -304,16 +376,34 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                       },
                       icon: const Icon(Icons.upload_file_rounded, size: 16),
                       label: Text(s.csvUploadChooseFileBtn),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        pickedFileName ?? s.csvUploadNoFileSelected,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
-                  ],
+                    );
+                    final fileNameText = Text(
+                      pickedFileName ?? s.csvUploadNoFileSelected,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 12),
+                    );
+
+                    // Below ~300px the button alone can exceed the dialog's
+                    // content width; stack instead of forcing both onto one row.
+                    if (constraints.maxWidth < 300) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          chooseButton,
+                          const SizedBox(height: 8),
+                          fileNameText,
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      children: [
+                        chooseButton,
+                        const SizedBox(width: 10),
+                        Expanded(child: fileNameText),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
@@ -330,7 +420,9 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                       final s = OryzaI18n.of(context);
                       if (selectedDevice == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(s.csvUploadNoDeviceSelectedMsg)),
+                          SnackBar(
+                            content: Text(s.csvUploadNoDeviceSelectedMsg),
+                          ),
                         );
                         return;
                       }
@@ -364,7 +456,10 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                   ? const SizedBox(
                       width: 16,
                       height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
                     )
                   : Text(s.csvUploadSubmitBtn),
             ),
@@ -384,9 +479,14 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
+        backgroundColor: isDark
+            ? OryzaColors.darkSurface
+            : OryzaColors.lightSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: Text(s.csvUploadResultTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
+        title: Text(
+          s.csvUploadResultTitle,
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
         content: SizedBox(
           width: math.min(420, MediaQuery.of(context).size.width * 0.86),
           child: Column(
@@ -398,13 +498,21 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   color: report.failedRows > 0
-                      ? (report.successfulRows > 0 ? Colors.orange.shade800 : Colors.red.shade800)
+                      ? (report.successfulRows > 0
+                            ? Colors.orange.shade800
+                            : Colors.red.shade800)
                       : Colors.green.shade800,
                 ),
               ),
               if (report.errors.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                Text(s.csvUploadResultErrorsHeader, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
+                Text(
+                  s.csvUploadResultErrorsHeader,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                  ),
+                ),
                 const SizedBox(height: 6),
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 220),
@@ -415,7 +523,10 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                           .map(
                             (e) => Padding(
                               padding: const EdgeInsets.only(bottom: 6),
-                              child: Text(e, style: const TextStyle(fontSize: 11.5)),
+                              child: Text(
+                                e,
+                                style: const TextStyle(fontSize: 11.5),
+                              ),
                             ),
                           )
                           .toList(),
@@ -458,11 +569,18 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
               _buildIngestionActionsHeader(context, isDark, s),
               const SizedBox(height: 16),
 
-              // Data Table or Figma Empty State
-              if (records.isEmpty)
-                _buildEmptyState(context, isDark, s)
-              else
-                _buildDataTable(context, isDark, s, records),
+              // View Mode Switcher: Visão Diária vs Histórico por Sensor
+              _buildViewModeSwitcher(context, isDark, s),
+              const SizedBox(height: 12),
+
+              if (_viewMode == DataViewMode.dailySummary) ...[
+                if (records.isEmpty)
+                  _buildEmptyState(context, isDark, s)
+                else
+                  _buildDataTable(context, isDark, s, records),
+              ] else ...[
+                _buildSensorHistorySection(context, isDark, s),
+              ],
             ],
           ),
         ),
@@ -470,10 +588,20 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
     );
   }
 
-  Widget _buildIngestionActionsHeader(BuildContext context, bool isDark, OryzaStrings s) {
-    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
-    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
-    final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
+  Widget _buildIngestionActionsHeader(
+    BuildContext context,
+    bool isDark,
+    OryzaStrings s,
+  ) {
+    final surfaceColor = isDark
+        ? OryzaColors.darkSurface
+        : OryzaColors.lightSurface;
+    final borderColor = isDark
+        ? OryzaColors.darkBorder
+        : OryzaColors.lightBorder;
+    final textColor = isDark
+        ? OryzaColors.darkTextPrimary
+        : OryzaColors.lightTextPrimary;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -495,42 +623,54 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/icons3d/file-text-dynamic-color.png',
-                width: 32,
-                height: 32,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    s.dashNavData.toUpperCase(),
-                    style: TextStyle(
-                      fontFamily: OryzaTypography.monoFontFamily,
-                      package: 'oryzaelo_ui',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                      color: textColor,
-                    ),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 320),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/icons3d/file-text-dynamic-color.png',
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        s.dashNavData.toUpperCase(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                          color: textColor,
+                        ),
+                      ),
+                      Text(
+                        s.dataManagementSubtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: OryzaTypography.fontFamily,
+                          package: 'oryzaelo_ui',
+                          fontSize: 11,
+                          color: isDark
+                              ? OryzaColors.darkTextSecondary
+                              : OryzaColors.lightTextSecondary,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    s.dataManagementSubtitle,
-                    style: TextStyle(
-                      fontFamily: OryzaTypography.fontFamily,
-                      package: 'oryzaelo_ui',
-                      fontSize: 11,
-                      color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
 
           // Action Buttons
@@ -545,24 +685,35 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: textColor,
                   side: BorderSide(color: borderColor),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
               ),
               OutlinedButton.icon(
-                onPressed: widget.handler.selectedParcel == null ? null : _showCsvUploadDialog,
+                onPressed: widget.handler.selectedParcel == null
+                    ? null
+                    : _showCsvUploadDialog,
                 icon: const Icon(Icons.upload_file_rounded, size: 16),
                 label: Text(s.csvUploadBtn),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: textColor,
                   side: BorderSide(color: borderColor),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
               ),
               ElevatedButton.icon(
                 onPressed: widget.handler.isOperatingMock
                     ? null
                     : () async {
-                        final ok = await widget.handler.populateMockData(days: 75, parcels: 4);
+                        final ok = await widget.handler.populateMockData(
+                          days: 75,
+                          parcels: 4,
+                        );
                         if (!mounted) return;
                         if (ok) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -574,14 +725,20 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     ? const SizedBox(
                         width: 14,
                         height: 14,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : const Icon(Icons.cloud_sync_rounded, size: 16),
                 label: Text(s.loadDemoDataBtn),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: OryzaColors.botanicalGreen,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   elevation: 0,
                 ),
               ),
@@ -597,14 +754,23 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                           );
                         }
                       },
-                icon: const Icon(Icons.delete_sweep_rounded, size: 16, color: Colors.redAccent),
+                icon: const Icon(
+                  Icons.delete_sweep_rounded,
+                  size: 16,
+                  color: Colors.redAccent,
+                ),
                 label: Text(
                   s.cleanDemoDataBtn,
                   style: const TextStyle(color: Colors.redAccent),
                 ),
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.redAccent.withValues(alpha: 0.5)),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  side: BorderSide(
+                    color: Colors.redAccent.withValues(alpha: 0.5),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
               ),
             ],
@@ -615,9 +781,15 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
   }
 
   Widget _buildEmptyState(BuildContext context, bool isDark, OryzaStrings s) {
-    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
-    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
-    final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+    final surfaceColor = isDark
+        ? OryzaColors.darkSurface
+        : OryzaColors.lightSurface;
+    final borderColor = isDark
+        ? OryzaColors.darkBorder
+        : OryzaColors.lightBorder;
+    final textSecondary = isDark
+        ? OryzaColors.darkTextSecondary
+        : OryzaColors.lightTextSecondary;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
@@ -665,7 +837,9 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 package: 'oryzaelo_ui',
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary,
+                color: isDark
+                    ? OryzaColors.darkTextPrimary
+                    : OryzaColors.lightTextPrimary,
               ),
             ),
             const SizedBox(height: 6),
@@ -684,14 +858,20 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
-              onPressed: () => widget.handler.populateMockData(days: 75, parcels: 4),
+              onPressed: () =>
+                  widget.handler.populateMockData(days: 75, parcels: 4),
               icon: const Icon(Icons.flash_on_rounded, size: 16),
               label: Text(s.loadDemoDataBtn),
               style: ElevatedButton.styleFrom(
                 backgroundColor: OryzaColors.burntOrange,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 10,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
                 elevation: 0,
               ),
             ),
@@ -714,15 +894,52 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
     );
   }
 
+  Widget _buildMetricCell(double? val, String unit, String? sensorId, bool isDark) {
+    if (val == null) {
+      return const Text('—');
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          "${unit == '%' ? val.toStringAsFixed(0) : val.toStringAsFixed(1)} $unit",
+          style: const TextStyle(
+            fontFamily: OryzaTypography.monoFontFamily,
+            package: 'oryzaelo_ui',
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        if (sensorId != null && sensorId.isNotEmpty)
+          Text(
+            sensorId.replaceAll('preset_', '').replaceAll('mapping_', ''),
+            style: TextStyle(
+              fontSize: 8.5,
+              fontFamily: OryzaTypography.monoFontFamily,
+              package: 'oryzaelo_ui',
+              color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+            ),
+          ),
+      ],
+    );
+  }
+
   Widget _buildDataTable(
     BuildContext context,
     bool isDark,
     OryzaStrings s,
     List<DailyWeatherRecord> allRecords,
   ) {
-    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
-    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
-    final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
+    final surfaceColor = isDark
+        ? OryzaColors.darkSurface
+        : OryzaColors.lightSurface;
+    final borderColor = isDark
+        ? OryzaColors.darkBorder
+        : OryzaColors.lightBorder;
+    final textColor = isDark
+        ? OryzaColors.darkTextPrimary
+        : OryzaColors.lightTextPrimary;
 
     // Sort descending chronologically
     final sorted = [...allRecords]..sort((a, b) => b.date.compareTo(a.date));
@@ -737,7 +954,9 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
     final pageRecords = sorted.sublist(startIndex, endIndex);
 
     final hasSelection = _selectedDates.isNotEmpty;
-    final allPageSelected = pageRecords.isNotEmpty && pageRecords.every((r) => _selectedDates.contains(r.date));
+    final allPageSelected =
+        pageRecords.isNotEmpty &&
+        pageRecords.every((r) => _selectedDates.contains(r.date));
 
     return Container(
       decoration: BoxDecoration(
@@ -761,12 +980,19 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 color: OryzaColors.burntOrange.withValues(alpha: 0.12),
-                border: Border(bottom: BorderSide(color: OryzaColors.burntOrange.withValues(alpha: 0.4))),
+                border: Border(
+                  bottom: BorderSide(
+                    color: OryzaColors.burntOrange.withValues(alpha: 0.4),
+                  ),
+                ),
               ),
               child: Row(
                 children: [
                   Text(
-                    s.tableSelectedCount.replaceAll('{count}', '${_selectedDates.length}'),
+                    s.tableSelectedCount.replaceAll(
+                      '{count}',
+                      '${_selectedDates.length}',
+                    ),
                     style: const TextStyle(
                       fontFamily: OryzaTypography.monoFontFamily,
                       package: 'oryzaelo_ui',
@@ -783,7 +1009,10 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red.shade800,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       elevation: 0,
                     ),
                   ),
@@ -823,7 +1052,10 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 DataColumn(label: _headerLabel(s.tableColRain), numeric: true),
                 DataColumn(label: _headerLabel(s.tableColRad), numeric: true),
                 DataColumn(label: _headerLabel(s.tableColRh), numeric: true),
-                DataColumn(label: _headerLabel(s.chartUnitGdd.split(' ')[0]), numeric: true),
+                DataColumn(
+                  label: _headerLabel(s.chartUnitGdd.split(' ')[0]),
+                  numeric: true,
+                ),
                 DataColumn(label: _headerLabel(s.tableColSource)),
               ],
               rows: pageRecords.map((r) {
@@ -857,24 +1089,40 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                       ),
                     ),
                     DataCell(
-                      Text(
-                        DateFormat('yyyy-MM-dd').format(r.date),
-                        style: const TextStyle(
-                          fontFamily: OryzaTypography.monoFontFamily,
-                          package: 'oryzaelo_ui',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            DateFormat('yyyy-MM-dd').format(r.date),
+                            style: const TextStyle(
+                              fontFamily: OryzaTypography.monoFontFamily,
+                              package: 'oryzaelo_ui',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if (r.isPartial) ...[
+                            const SizedBox(width: 6),
+                            Tooltip(
+                              message: s.tablePartialDayTooltip,
+                              child: Icon(
+                                Icons.warning_amber_rounded,
+                                size: 14,
+                                color: Colors.amber.shade700,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
-                    DataCell(Text("${r.tMax.toStringAsFixed(1)} °C")),
-                    DataCell(Text("${r.tMin.toStringAsFixed(1)} °C")),
-                    DataCell(Text("${r.precipitationMm.toStringAsFixed(1)} mm")),
-                    DataCell(Text("${r.radiationMjM2.toStringAsFixed(1)} MJ/m²")),
-                    DataCell(Text("${r.relativeHumidityPct.toStringAsFixed(0)} %")),
+                    DataCell(_buildMetricCell(r.tMax, '°C', r.tMaxSensorId, isDark)),
+                    DataCell(_buildMetricCell(r.tMin, '°C', r.tMinSensorId, isDark)),
+                    DataCell(_buildMetricCell(r.precipitationMm, 'mm', r.rainfallSensorId, isDark)),
+                    DataCell(_buildMetricCell(r.radiationMjM2, 'MJ/m²', r.radiationSensorId, isDark)),
+                    DataCell(_buildMetricCell(r.relativeHumidityPct, '%', r.humiditySensorId, isDark)),
                     DataCell(
                       Text(
-                        "${gdd.toStringAsFixed(1)} °C·d",
+                        gdd != null ? "${gdd.toStringAsFixed(1)} °C·d" : '—',
                         style: const TextStyle(
                           fontFamily: OryzaTypography.monoFontFamily,
                           package: 'oryzaelo_ui',
@@ -884,18 +1132,25 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     ),
                     DataCell(
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
-                          color: isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight,
+                          color: isDark
+                              ? OryzaColors.darkCanvas
+                              : OryzaColors.botanicalGreenLight,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          r.source,
+                          r.sourceDisplay,
                           style: TextStyle(
                             fontSize: 10,
                             fontFamily: OryzaTypography.monoFontFamily,
                             package: 'oryzaelo_ui',
-                            color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                            color: isDark
+                                ? OryzaColors.mustardYellow
+                                : OryzaColors.botanicalGreen,
                           ),
                         ),
                       ),
@@ -918,42 +1173,49 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      s.tablePaginationRows,
-                      style: TextStyle(fontSize: 11, color: textColor),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: borderColor),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<int>(
-                          value: _rowsPerPage,
-                          isDense: true,
-                          dropdownColor: surfaceColor,
-                          items: const [
-                            DropdownMenuItem(value: 10, child: Text("10")),
-                            DropdownMenuItem(value: 25, child: Text("25")),
-                            DropdownMenuItem(value: 50, child: Text("50")),
-                          ],
-                          onChanged: (val) {
-                            if (val != null) {
-                              setState(() {
-                                _rowsPerPage = val;
-                                _currentPage = 0;
-                              });
-                            }
-                          },
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 220),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          s.tablePaginationRows,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 11, color: textColor),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: borderColor),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<int>(
+                            value: _rowsPerPage,
+                            isDense: true,
+                            dropdownColor: surfaceColor,
+                            items: const [
+                              DropdownMenuItem(value: 10, child: Text("10")),
+                              DropdownMenuItem(value: 25, child: Text("25")),
+                              DropdownMenuItem(value: 50, child: Text("50")),
+                            ],
+                            onChanged: (val) {
+                              if (val != null) {
+                                setState(() {
+                                  _rowsPerPage = val;
+                                  _currentPage = 0;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Text(
                   "${startIndex + 1} - $endIndex ${s.tablePaginationOf} ${sorted.length}",
@@ -971,7 +1233,9 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     IconButton(
                       style: IconButton.styleFrom(
                         side: BorderSide(color: borderColor),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
                       ),
                       onPressed: _currentPage > 0
                           ? () => setState(() => _currentPage--)
@@ -982,7 +1246,9 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     IconButton(
                       style: IconButton.styleFrom(
                         side: BorderSide(color: borderColor),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
                       ),
                       onPressed: _currentPage < totalPages - 1
                           ? () => setState(() => _currentPage++)
@@ -994,6 +1260,301 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildViewModeSwitcher(BuildContext context, bool isDark, OryzaStrings s) {
+    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
+    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
+
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: borderColor),
+        ),
+        padding: const EdgeInsets.all(4),
+        child: Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: [
+            _buildModeTab(
+              title: s.dataTabDaily,
+              icon: Icons.calendar_today_rounded,
+              isSelected: _viewMode == DataViewMode.dailySummary,
+              isDark: isDark,
+              onTap: () => setState(() => _viewMode = DataViewMode.dailySummary),
+            ),
+            _buildModeTab(
+              title: s.dataTabReadings,
+              icon: Icons.history_rounded,
+              isSelected: _viewMode == DataViewMode.sensorHistory,
+              isDark: isDark,
+              onTap: () {
+                setState(() => _viewMode = DataViewMode.sensorHistory);
+                _loadSensorReadings();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModeTab({
+    required String title,
+    required IconData icon,
+    required bool isSelected,
+    required bool isDark,
+    required VoidCallback onTap,
+  }) {
+    final activeBg = isDark
+        ? OryzaColors.botanicalGreen.withValues(alpha: 0.25)
+        : OryzaColors.botanicalGreen.withValues(alpha: 0.12);
+    final activeColor = isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen;
+    final inactiveColor = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? activeBg : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          border: isSelected
+              ? Border.all(color: activeColor.withValues(alpha: 0.4))
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: isSelected ? activeColor : inactiveColor),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.monoFontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 11,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  color: isSelected ? activeColor : inactiveColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSensorHistorySection(BuildContext context, bool isDark, OryzaStrings s) {
+    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
+    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
+
+    final metrics = [
+      (MetricType.rainfall, s.tableColRain),
+      (MetricType.tMax, s.tableColTmax),
+      (MetricType.tMin, s.tableColTmin),
+      (MetricType.radiation, s.tableColRad),
+      (MetricType.humidity, s.tableColRh),
+    ];
+
+    final readings = _cachedReadings ?? [];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: borderColor, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
+            offset: const Offset(3, 4),
+            blurRadius: 0,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Metric selector chips header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: borderColor)),
+            ),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(
+                  s.tableColMetric.toUpperCase(),
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ...metrics.map((m) {
+                  final isSelected = _selectedHistoryMetric == m.$1;
+                  return ChoiceChip(
+                    label: Text(
+                      m.$2,
+                      style: TextStyle(
+                        fontFamily: OryzaTypography.monoFontFamily,
+                        package: 'oryzaelo_ui',
+                        fontSize: 11,
+                        fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                      ),
+                    ),
+                    selected: isSelected,
+                    selectedColor: OryzaColors.botanicalGreen.withValues(alpha: 0.2),
+                    backgroundColor: isDark ? OryzaColors.darkCanvas : OryzaColors.lightCanvas,
+                    onSelected: (val) {
+                      if (val) {
+                        setState(() => _selectedHistoryMetric = m.$1);
+                        _loadSensorReadings();
+                      }
+                    },
+                  );
+                }),
+              ],
+            ),
+          ),
+
+          if (_isLoadingReadings)
+            const Padding(
+              padding: EdgeInsets.all(40),
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+            )
+          else if (readings.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(36),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.sensors_off_outlined,
+                      size: 36,
+                      color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      s.sensorReadingsEmpty,
+                      style: TextStyle(
+                        fontFamily: OryzaTypography.fontFamily,
+                        package: 'oryzaelo_ui',
+                        fontSize: 13,
+                        color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            OryzaHorizontalScroller(
+              isDark: isDark,
+              step: 220,
+              child: DataTable(
+                headingRowColor: WidgetStateProperty.all(
+                  isDark ? const Color(0xFF1B201A) : const Color(0xFFF2EFE6),
+                ),
+                headingRowHeight: 40,
+                dataRowMinHeight: 38,
+                dataRowMaxHeight: 42,
+                columnSpacing: 24,
+                horizontalMargin: 16,
+                columns: [
+                  DataColumn(label: _headerLabel(s.tableColTimestamp)),
+                  DataColumn(label: _headerLabel(s.tableColSource)),
+                  DataColumn(label: _headerLabel(s.tableColValue), numeric: true),
+                  DataColumn(label: _headerLabel(s.tableColActions)),
+                ],
+                rows: readings.map((r) {
+                  return DataRow(
+                    cells: [
+                      DataCell(
+                        Text(
+                          DateFormat('yyyy-MM-dd HH:mm').format(r.recordedAt),
+                          style: const TextStyle(
+                            fontFamily: OryzaTypography.monoFontFamily,
+                            package: 'oryzaelo_ui',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            r.sensorId,
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontFamily: OryzaTypography.monoFontFamily,
+                              package: 'oryzaelo_ui',
+                              color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                            ),
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          "${r.value.toStringAsFixed(1)} ${r.metricType.canonicalUnit}",
+                          style: const TextStyle(
+                            fontFamily: OryzaTypography.monoFontFamily,
+                            package: 'oryzaelo_ui',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Colors.redAccent),
+                          tooltip: s.tableColActions,
+                          onPressed: () async {
+                            final ok = await widget.handler.deleteSensorReading(
+                              id: r.id,
+                              metricType: r.metricType,
+                            );
+                            if (ok) {
+                              await _loadSensorReadings();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
         ],
       ),
     );

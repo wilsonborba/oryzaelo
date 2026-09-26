@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:local/domain/models/device_mapping.dart';
+import 'package:local/domain/models/metric_type.dart';
 import 'package:local/presentation/handlers/dashboard_handler.dart';
 import 'package:local/presentation/widgets/parcel_selector_bar.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
@@ -17,76 +19,97 @@ class SensorConfigScreen extends StatefulWidget {
   State<SensorConfigScreen> createState() => _SensorConfigScreenState();
 }
 
+/// Per-metric column/unit/scale text controllers, live only while its
+/// checkbox is selected in the add/edit dialog.
+class _MetricFieldControllers {
+  final colCtrl = TextEditingController();
+  final unitCtrl = TextEditingController();
+  final scaleCtrl = TextEditingController(text: '1.0');
+
+  void applyFrom(MetricColumnMapping? m, MetricType type) {
+    colCtrl.text = m?.columnName ?? '';
+    unitCtrl.text = m?.unit ?? type.canonicalUnit;
+    scaleCtrl.text = (m?.scale ?? 1.0).toString();
+  }
+
+  MetricColumnMapping toMapping(MetricType type) {
+    return MetricColumnMapping(
+      metricType: type,
+      columnName: colCtrl.text.trim(),
+      unit: unitCtrl.text.trim(),
+      scale: double.tryParse(scaleCtrl.text) ?? 1.0,
+    );
+  }
+
+  void dispose() {
+    colCtrl.dispose();
+    unitCtrl.dispose();
+    scaleCtrl.dispose();
+  }
+}
+
 class _SensorConfigScreenState extends State<SensorConfigScreen> {
   final _deviceIdCtrl = TextEditingController();
   final _deviceNameCtrl = TextEditingController();
   final _dateColCtrl = TextEditingController();
   final _dateFormatCtrl = TextEditingController(text: 'yyyy-MM-dd');
 
-  final _tMaxColCtrl = TextEditingController();
-  final _tMaxUnitCtrl = TextEditingController(text: 'C');
-  final _tMaxScaleCtrl = TextEditingController(text: '1.0');
-
-  final _tMinColCtrl = TextEditingController();
-  final _tMinUnitCtrl = TextEditingController(text: 'C');
-  final _tMinScaleCtrl = TextEditingController(text: '1.0');
-
-  final _rainColCtrl = TextEditingController();
-  final _rainUnitCtrl = TextEditingController(text: 'mm');
-  final _rainScaleCtrl = TextEditingController(text: '1.0');
-
-  final _radColCtrl = TextEditingController();
-  final _radUnitCtrl = TextEditingController(text: 'MJ/m2');
-  final _radScaleCtrl = TextEditingController(text: '1.0');
-
-  final _rhColCtrl = TextEditingController();
-  final _rhUnitCtrl = TextEditingController(text: '%');
-  final _rhScaleCtrl = TextEditingController(text: '1.0');
+  final Map<MetricType, _MetricFieldControllers> _metricCtrls = {
+    for (final t in MetricType.values) t: _MetricFieldControllers(),
+  };
+  final Set<MetricType> _selectedMetrics = {};
 
   @override
   void dispose() {
-    for (final c in [
-      _deviceIdCtrl, _deviceNameCtrl, _dateColCtrl, _dateFormatCtrl,
-      _tMaxColCtrl, _tMaxUnitCtrl, _tMaxScaleCtrl,
-      _tMinColCtrl, _tMinUnitCtrl, _tMinScaleCtrl,
-      _rainColCtrl, _rainUnitCtrl, _rainScaleCtrl,
-      _radColCtrl, _radUnitCtrl, _radScaleCtrl,
-      _rhColCtrl, _rhUnitCtrl, _rhScaleCtrl,
-    ]) {
+    _deviceIdCtrl.dispose();
+    _deviceNameCtrl.dispose();
+    _dateColCtrl.dispose();
+    _dateFormatCtrl.dispose();
+    for (final c in _metricCtrls.values) {
       c.dispose();
     }
     super.dispose();
   }
 
+  String _metricLabel(MetricType type, OryzaStrings s) {
+    switch (type) {
+      case MetricType.tMax:
+        return s.tableColTmax;
+      case MetricType.tMin:
+        return s.tableColTmin;
+      case MetricType.rainfall:
+        return s.tableColRain;
+      case MetricType.radiation:
+        return s.tableColRad;
+      case MetricType.humidity:
+        return s.tableColRh;
+    }
+  }
+
   void _applyBase(DeviceMapping? base) {
     _dateColCtrl.text = base?.dateCol ?? '';
     _dateFormatCtrl.text = base?.dateFormat ?? 'yyyy-MM-dd';
-    _tMaxColCtrl.text = base?.tMaxCol ?? '';
-    _tMaxUnitCtrl.text = base?.tMaxUnit ?? 'C';
-    _tMaxScaleCtrl.text = (base?.tMaxScale ?? 1.0).toString();
-    _tMinColCtrl.text = base?.tMinCol ?? '';
-    _tMinUnitCtrl.text = base?.tMinUnit ?? 'C';
-    _tMinScaleCtrl.text = (base?.tMinScale ?? 1.0).toString();
-    _rainColCtrl.text = base?.rainCol ?? '';
-    _rainUnitCtrl.text = base?.rainUnit ?? 'mm';
-    _rainScaleCtrl.text = (base?.rainScale ?? 1.0).toString();
-    _radColCtrl.text = base?.radCol ?? '';
-    _radUnitCtrl.text = base?.radUnit ?? 'MJ/m2';
-    _radScaleCtrl.text = (base?.radScale ?? 1.0).toString();
-    _rhColCtrl.text = base?.rhCol ?? '';
-    _rhUnitCtrl.text = base?.rhUnit ?? '%';
-    _rhScaleCtrl.text = (base?.rhScale ?? 1.0).toString();
+    _selectedMetrics
+      ..clear()
+      ..addAll(base?.metricTypes() ?? []);
+    for (final type in MetricType.values) {
+      _metricCtrls[type]!.applyFrom(base?.metric(type), type);
+    }
   }
 
-  void _showAddSensorDialog() {
+  /// Opens the add/edit dialog. `existing` is null when registering a brand
+  /// new sensor; when editing, the dialog is pre-filled and the id field is
+  /// locked (the backend id is the primary key).
+  void _showSensorDialog({DeviceMapping? existing}) {
     final s = OryzaI18n.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final presets = widget.handler.devicePresets;
+    final isEditing = existing != null;
 
-    _deviceIdCtrl.clear();
-    _deviceNameCtrl.clear();
-    _applyBase(null);
-    String? baseId; // null == "Outro / Custom" (blank slate)
+    _deviceIdCtrl.text = existing?.id ?? '';
+    _deviceNameCtrl.text = existing?.deviceName ?? '';
+    _applyBase(existing);
+    String? baseId;
 
     showDialog(
       context: context,
@@ -95,49 +118,51 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
           backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           title: Text(
-            s.sensorNewMappingBtn,
+            isEditing ? s.sensorEditMappingTitle : s.sensorNewMappingBtn,
             style: const TextStyle(fontWeight: FontWeight.w700),
           ),
           content: SizedBox(
-            width: math.min(480, MediaQuery.of(context).size.width * 0.86),
+            width: math.min(520, MediaQuery.of(context).size.width * 0.9),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    s.sensorBaseLabel,
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 6),
-                  DropdownButtonFormField<String?>(
-                    initialValue: baseId,
-                    decoration: const InputDecoration(isDense: true),
-                    items: [
-                      DropdownMenuItem<String?>(
-                        value: null,
-                        child: Text(s.sensorBaseCustomOption),
-                      ),
-                      ...presets.map(
-                        (p) => DropdownMenuItem<String?>(
-                          value: p.id,
-                          child: Text(p.deviceName, overflow: TextOverflow.ellipsis),
+                  if (!isEditing) ...[
+                    Text(
+                      s.sensorBaseLabel,
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 6),
+                    DropdownButtonFormField<String?>(
+                      initialValue: baseId,
+                      decoration: const InputDecoration(isDense: true),
+                      items: [
+                        DropdownMenuItem<String?>(
+                          value: null,
+                          child: Text(s.sensorBaseCustomOption),
                         ),
-                      ),
-                    ],
-                    onChanged: (val) {
-                      setDialogState(() {
-                        baseId = val;
-                        final base = val == null
-                            ? null
-                            : presets.firstWhere((p) => p.id == val);
-                        _applyBase(base);
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 14),
+                        ...presets.map(
+                          (p) => DropdownMenuItem<String?>(
+                            value: p.id,
+                            child: Text(p.deviceName, overflow: TextOverflow.ellipsis),
+                          ),
+                        ),
+                      ],
+                      onChanged: (val) {
+                        setDialogState(() {
+                          baseId = val;
+                          final base = val == null ? null : presets.firstWhere((p) => p.id == val);
+                          _deviceNameCtrl.text = base?.deviceName ?? '';
+                          _applyBase(base);
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 14),
+                  ],
                   TextField(
                     controller: _deviceIdCtrl,
+                    enabled: !isEditing,
                     decoration: InputDecoration(
                       labelText: s.sensorIdLabel,
                       hintText: s.sensorIdHint,
@@ -170,16 +195,52 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 14),
-                  _variableMappingRow(s.tableColTmax, _tMaxColCtrl, _tMaxUnitCtrl, _tMaxScaleCtrl, s),
+                  const SizedBox(height: 16),
+                  Text(
+                    s.sensorMetricsPickLabel,
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    s.sensorMetricsPickHint,
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  _variableMappingRow(s.tableColTmin, _tMinColCtrl, _tMinUnitCtrl, _tMinScaleCtrl, s),
-                  const SizedBox(height: 8),
-                  _variableMappingRow(s.tableColRain, _rainColCtrl, _rainUnitCtrl, _rainScaleCtrl, s),
-                  const SizedBox(height: 8),
-                  _variableMappingRow(s.tableColRad, _radColCtrl, _radUnitCtrl, _radScaleCtrl, s),
-                  const SizedBox(height: 8),
-                  _variableMappingRow(s.tableColRh, _rhColCtrl, _rhUnitCtrl, _rhScaleCtrl, s),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: MetricType.values.map((type) {
+                      final selected = _selectedMetrics.contains(type);
+                      return FilterChip(
+                        label: Text(_metricLabel(type, s)),
+                        selected: selected,
+                        onSelected: (val) {
+                          setDialogState(() {
+                            if (val) {
+                              _selectedMetrics.add(type);
+                            } else {
+                              _selectedMetrics.remove(type);
+                            }
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 12),
+                  ...MetricType.values.where((t) => _selectedMetrics.contains(t)).map(
+                        (type) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: _variableMappingRow(
+                            _metricLabel(type, s),
+                            _metricCtrls[type]!.colCtrl,
+                            _metricCtrls[type]!.unitCtrl,
+                            _metricCtrls[type]!.scaleCtrl,
+                            s,
+                          ),
+                        ),
+                      ),
                 ],
               ),
             ),
@@ -191,33 +252,19 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if (_deviceIdCtrl.text.trim().isEmpty) return;
+                if (_deviceIdCtrl.text.trim().isEmpty || _selectedMetrics.isEmpty) return;
 
                 final mapping = DeviceMapping(
                   id: _deviceIdCtrl.text.trim(),
                   deviceName: _deviceNameCtrl.text.trim().isEmpty
                       ? _deviceIdCtrl.text.trim()
                       : _deviceNameCtrl.text.trim(),
-                  manufacturer: 'Custom',
+                  manufacturer: existing?.manufacturer ?? 'Custom',
                   isPreset: false,
                   dateCol: _dateColCtrl.text.trim(),
                   dateFormat: _dateFormatCtrl.text.trim(),
-                  tMaxCol: _tMaxColCtrl.text.trim(),
-                  tMaxUnit: _tMaxUnitCtrl.text.trim(),
-                  tMaxScale: double.tryParse(_tMaxScaleCtrl.text) ?? 1.0,
-                  tMinCol: _tMinColCtrl.text.trim(),
-                  tMinUnit: _tMinUnitCtrl.text.trim(),
-                  tMinScale: double.tryParse(_tMinScaleCtrl.text) ?? 1.0,
-                  rainCol: _rainColCtrl.text.trim(),
-                  rainUnit: _rainUnitCtrl.text.trim(),
-                  rainScale: double.tryParse(_rainScaleCtrl.text) ?? 1.0,
-                  radCol: _radColCtrl.text.trim(),
-                  radUnit: _radUnitCtrl.text.trim(),
-                  radScale: double.tryParse(_radScaleCtrl.text) ?? 1.0,
-                  rhCol: _rhColCtrl.text.trim(),
-                  rhUnit: _rhUnitCtrl.text.trim(),
-                  rhScale: double.tryParse(_rhScaleCtrl.text) ?? 1.0,
-                  createdAt: DateTime.now(),
+                  metrics: _selectedMetrics.map((t) => _metricCtrls[t]!.toMapping(t)).toList(),
+                  createdAt: existing?.createdAt ?? DateTime.now(),
                 );
 
                 Navigator.of(ctx).pop();
@@ -239,6 +286,111 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _confirmDelete(DeviceMapping mapping) {
+    final s = OryzaI18n.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text(s.sensorDeleteConfirmTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
+        content: Text(s.sensorDeleteConfirmBody.replaceAll('{name}', mapping.deviceName)),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(s.cancelBtn)),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade700, foregroundColor: Colors.white),
+            onPressed: () async {
+              Navigator.of(ctx).pop();
+              final ok = await widget.handler.deleteCustomMapping(mapping.id);
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(ok ? s.sensorDeletedSuccess : s.sensorDeleteFailedMsg),
+                    backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
+                  ),
+                );
+              }
+            },
+            child: Text(s.confirmBtn),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Full CRUD over one metric's own raw reading history for the currently
+  /// selected parcel: list what this specific sensor has reported, and
+  /// delete an individual bad reading (the day's aggregate is recomputed
+  /// automatically afterward).
+  void _showReadingsDialog(MetricType metricType) {
+    final s = OryzaI18n.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          void reload() => setDialogState(() {});
+
+          return AlertDialog(
+            backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            title: Text(
+              s.sensorReadingsHistoryTitle.replaceAll('{metric}', _metricLabel(metricType, s)),
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+            content: SizedBox(
+              width: math.min(420, MediaQuery.of(context).size.width * 0.86),
+              height: 360,
+              child: FutureBuilder(
+                future: widget.handler.fetchSensorReadings(metricType),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final readings = snapshot.data ?? [];
+                  if (readings.isEmpty) {
+                    return Center(child: Text(s.sensorReadingsEmpty));
+                  }
+                  return ListView.separated(
+                    itemCount: readings.length,
+                    separatorBuilder: (_, _) => const Divider(height: 1),
+                    itemBuilder: (context, i) {
+                      final r = readings[i];
+                      return ListTile(
+                        dense: true,
+                        title: Text(
+                          '${r.value.toStringAsFixed(2)} ${metricType.canonicalUnit}',
+                          style: const TextStyle(fontFamily: 'Ubuntu Sans Mono', fontWeight: FontWeight.w700),
+                        ),
+                        subtitle: Text(
+                          '${DateFormat('yyyy-MM-dd HH:mm').format(r.recordedAt)} • ${r.sensorId}',
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete_outline, size: 18, color: Colors.redAccent),
+                          onPressed: () async {
+                            final ok = await widget.handler.deleteSensorReading(id: r.id, metricType: metricType);
+                            if (ok) reload();
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            actions: [
+              ElevatedButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(s.sensorReadingsCloseBtn)),
+            ],
+          );
+        },
       ),
     );
   }
@@ -426,7 +578,7 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
             ],
           ),
           ElevatedButton.icon(
-            onPressed: _showAddSensorDialog,
+            onPressed: () => _showSensorDialog(),
             icon: const Icon(Icons.add_rounded, size: 16),
             label: Text(
               s.sensorNewMappingBtn,
@@ -458,6 +610,7 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
     final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
     final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
     final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
+    final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -507,7 +660,7 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
                     fontFamily: OryzaTypography.fontFamily,
                     package: 'oryzaelo_ui',
                     fontSize: 12,
-                    color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+                    color: textSecondary,
                   ),
                 ),
               ),
@@ -536,12 +689,46 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
                             "ID: ${m.id} • ${s.sensorProtocolLabel}: ${m.manufacturer}",
                             style: const TextStyle(fontSize: 11, fontFamily: 'Ubuntu Sans Mono'),
                           ),
+                          const SizedBox(height: 4),
+                          Wrap(
+                            spacing: 4,
+                            runSpacing: 4,
+                            children: m.metrics
+                                .map(
+                                  (metric) => InkWell(
+                                    borderRadius: BorderRadius.circular(4),
+                                    onTap: () => _showReadingsDialog(metric.metricType),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: OryzaColors.botanicalGreen.withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        _metricLabel(metric.metricType, s),
+                                        style: const TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w800,
+                                          fontFamily: 'Ubuntu Sans Mono',
+                                          color: OryzaColors.botanicalGreen,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
                         ],
                       ),
                     ),
                     IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 18),
+                      tooltip: s.sensorEditMappingTitle,
+                      onPressed: () => _showSensorDialog(existing: m),
+                    ),
+                    IconButton(
                       icon: const Icon(Icons.delete_outline, size: 18, color: Colors.redAccent),
-                      onPressed: () => widget.handler.deleteCustomMapping(m.id),
+                      onPressed: () => _confirmDelete(m),
                     ),
                   ],
                 ),
@@ -597,87 +784,91 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
               final cardWidth = math.min(320.0, constraints.maxWidth);
 
               return Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: presets.map((p) {
-              final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
-              return Container(
-                width: cardWidth,
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: isDark ? OryzaColors.darkCanvas : const Color(0xFFF9F8F4),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: borderColor),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                spacing: 12,
+                runSpacing: 12,
+                children: presets.map((p) {
+                  final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+                  return Container(
+                    width: cardWidth,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: isDark ? OryzaColors.darkCanvas : const Color(0xFFF9F8F4),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: borderColor),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            p.manufacturer,
-                            style: const TextStyle(
-                              fontFamily: OryzaTypography.monoFontFamily,
-                              package: 'oryzaelo_ui',
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              color: OryzaColors.burntOrange,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                p.manufacturer,
+                                style: const TextStyle(
+                                  fontFamily: OryzaTypography.monoFontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: OryzaColors.burntOrange,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: OryzaColors.botanicalGreen.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                s.sensorOfficialBadge,
+                                style: const TextStyle(
+                                  fontSize: 8.5,
+                                  fontWeight: FontWeight.w800,
+                                  fontFamily: 'Ubuntu Sans Mono',
+                                  color: OryzaColors.botanicalGreen,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 6),
+                        Text(
+                          p.deviceName,
+                          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          "${s.tableColDate}: ${p.dateCol} (${p.dateFormat})",
+                          style: TextStyle(fontSize: 10.5, color: textSecondary),
+                        ),
+                        const SizedBox(height: 10),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                           decoration: BoxDecoration(
-                            color: OryzaColors.botanicalGreen.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(4),
+                            color: isDark ? Colors.black26 : Colors.white,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: borderColor.withValues(alpha: 0.6)),
                           ),
-                          child: Text(
-                            s.sensorOfficialBadge,
-                            style: const TextStyle(
-                              fontSize: 8.5,
-                              fontWeight: FontWeight.w800,
-                              fontFamily: 'Ubuntu Sans Mono',
-                              color: OryzaColors.botanicalGreen,
-                            ),
+                          child: Column(
+                            children: p.metrics
+                                .map(
+                                  (m) => _presetVariableRow(
+                                    _metricLabel(m.metricType, s),
+                                    m.columnName,
+                                    m.unit,
+                                    m.scale,
+                                    textSecondary,
+                                  ),
+                                )
+                                .toList(),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      p.deviceName,
-                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      "${s.tableColDate}: ${p.dateCol} (${p.dateFormat})",
-                      style: TextStyle(fontSize: 10.5, color: textSecondary),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: isDark ? Colors.black26 : Colors.white,
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: borderColor.withValues(alpha: 0.6)),
-                      ),
-                      child: Column(
-                        children: [
-                          _presetVariableRow(s.tableColTmax, p.tMaxCol, p.tMaxUnit, p.tMaxScale, textSecondary),
-                          _presetVariableRow(s.tableColTmin, p.tMinCol, p.tMinUnit, p.tMinScale, textSecondary),
-                          _presetVariableRow(s.tableColRain, p.rainCol, p.rainUnit, p.rainScale, textSecondary),
-                          _presetVariableRow(s.tableColRad, p.radCol, p.radUnit, p.radScale, textSecondary),
-                          _presetVariableRow(s.tableColRh, p.rhCol, p.rhUnit, p.rhScale, textSecondary),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
+                  );
+                }).toList(),
               );
             },
           ),

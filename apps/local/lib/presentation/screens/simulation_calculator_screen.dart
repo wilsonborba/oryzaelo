@@ -15,10 +15,22 @@ class SimulationCalculatorScreen extends StatefulWidget {
   });
 
   @override
-  State<SimulationCalculatorScreen> createState() => _SimulationCalculatorScreenState();
+  State<SimulationCalculatorScreen> createState() =>
+      _SimulationCalculatorScreenState();
 }
 
-class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen> {
+/// The only 4 cultivars this simulator actually models -- must match the
+/// dropdown's item list exactly, since DropdownButton asserts its `value`
+/// matches exactly one item.
+const _supportedCultivars = [
+  'BRS Querência',
+  'IR64',
+  'Hom Mali (Jasmine)',
+  'Epagri 109',
+];
+
+class _SimulationCalculatorScreenState
+    extends State<SimulationCalculatorScreen> {
   String _cultivar = 'BRS Querência';
   double _das = 42;
   double _tempMin = 19.5;
@@ -43,7 +55,12 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
 
     if (parcel != null && !_hasInitializedFromParcel) {
       _hasInitializedFromParcel = true;
-      if (parcel.riceVariety.isNotEmpty) {
+      // The simulator only models 4 fixed cultivars -- a real parcel's
+      // variety (often a Thai-script name, or free text the farmer typed
+      // when registering the parcel) is very unlikely to be one of them.
+      // Blindly assigning it used to crash this whole screen (DropdownButton
+      // asserts its value must match exactly one item).
+      if (_supportedCultivars.contains(parcel.riceVariety)) {
         _cultivar = parcel.riceVariety;
       }
       final now = DateTime.now();
@@ -52,13 +69,14 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
         _das = diff.toDouble();
       }
 
-      if (records.isNotEmpty) {
-        final latest = records.last;
-        _tempMin = latest.tMin;
-        _tempMax = latest.tMax;
-        _humidity = latest.relativeHumidityPct;
-        _radiation = latest.radiationMjM2;
-        _rain = latest.precipitationMm;
+      final completeRecords = records.where((r) => r.isComplete);
+      if (completeRecords.isNotEmpty) {
+        final latest = completeRecords.last;
+        _tempMin = latest.tMin!;
+        _tempMax = latest.tMax!;
+        _humidity = latest.relativeHumidityPct!;
+        _radiation = latest.radiationMjM2!;
+        _rain = latest.precipitationMm!;
       }
     }
   }
@@ -118,9 +136,15 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
   }
 
   Widget _buildEmptyState(BuildContext context, bool isDark, OryzaStrings s) {
-    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
-    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
-    final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+    final surfaceColor = isDark
+        ? OryzaColors.darkSurface
+        : OryzaColors.lightSurface;
+    final borderColor = isDark
+        ? OryzaColors.darkBorder
+        : OryzaColors.lightBorder;
+    final textSecondary = isDark
+        ? OryzaColors.darkTextSecondary
+        : OryzaColors.lightTextSecondary;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
@@ -168,7 +192,9 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                 package: 'oryzaelo_ui',
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary,
+                color: isDark
+                    ? OryzaColors.darkTextPrimary
+                    : OryzaColors.lightTextPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -201,8 +227,13 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: OryzaColors.burntOrange,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 elevation: 0,
               ),
             ),
@@ -212,11 +243,23 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
     );
   }
 
-  Widget _buildSimulatorContent(BuildContext context, bool isDark, OryzaStrings s) {
-    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
-    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
-    final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
-    final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+  Widget _buildSimulatorContent(
+    BuildContext context,
+    bool isDark,
+    OryzaStrings s,
+  ) {
+    final surfaceColor = isDark
+        ? OryzaColors.darkSurface
+        : OryzaColors.lightSurface;
+    final borderColor = isDark
+        ? OryzaColors.darkBorder
+        : OryzaColors.lightBorder;
+    final textColor = isDark
+        ? OryzaColors.darkTextPrimary
+        : OryzaColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? OryzaColors.darkTextSecondary
+        : OryzaColors.lightTextSecondary;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -283,11 +326,16 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                   ),
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: OryzaColors.burntOrange.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: OryzaColors.burntOrange.withValues(alpha: 0.4)),
+                      border: Border.all(
+                        color: OryzaColors.burntOrange.withValues(alpha: 0.4),
+                      ),
                     ),
                     child: Text(
                       s.simOnnxBadge,
@@ -335,10 +383,18 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
   }
 
   Widget _buildInputPanel(BuildContext context, bool isDark, OryzaStrings s) {
-    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
-    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
-    final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
-    final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+    final surfaceColor = isDark
+        ? OryzaColors.darkSurface
+        : OryzaColors.lightSurface;
+    final borderColor = isDark
+        ? OryzaColors.darkBorder
+        : OryzaColors.lightBorder;
+    final textColor = isDark
+        ? OryzaColors.darkTextPrimary
+        : OryzaColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? OryzaColors.darkTextSecondary
+        : OryzaColors.lightTextSecondary;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -359,17 +415,25 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
         children: [
           Row(
             children: [
-              const Icon(Icons.tune_rounded, size: 18, color: OryzaColors.burntOrange),
+              const Icon(
+                Icons.tune_rounded,
+                size: 18,
+                color: OryzaColors.burntOrange,
+              ),
               const SizedBox(width: 8),
-              Text(
-                s.simBaselineHeader.toUpperCase(),
-                style: TextStyle(
-                  fontFamily: OryzaTypography.monoFontFamily,
-                  package: 'oryzaelo_ui',
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.6,
-                  color: textColor,
+              Flexible(
+                child: Text(
+                  s.simBaselineHeader.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.monoFontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: textColor,
+                  ),
                 ),
               ),
             ],
@@ -406,10 +470,22 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                   color: textColor,
                 ),
                 items: [
-                  DropdownMenuItem(value: 'BRS Querência', child: Text(s.simCultivarOptionBrs)),
-                  DropdownMenuItem(value: 'IR64', child: Text(s.simCultivarOptionIr64)),
-                  DropdownMenuItem(value: 'Hom Mali (Jasmine)', child: Text(s.simCultivarOptionJasmine)),
-                  DropdownMenuItem(value: 'Epagri 109', child: Text(s.simCultivarOptionEpagri)),
+                  DropdownMenuItem(
+                    value: 'BRS Querência',
+                    child: Text(s.simCultivarOptionBrs),
+                  ),
+                  DropdownMenuItem(
+                    value: 'IR64',
+                    child: Text(s.simCultivarOptionIr64),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Hom Mali (Jasmine)',
+                    child: Text(s.simCultivarOptionJasmine),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Epagri 109',
+                    child: Text(s.simCultivarOptionEpagri),
+                  ),
                 ],
                 onChanged: (val) {
                   if (val != null) setState(() => _cultivar = val);
@@ -495,11 +571,16 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                 ? const SizedBox(
                     width: 16,
                     height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
                   )
                 : const Icon(Icons.play_arrow_rounded, size: 20),
             label: Text(
-              widget.handler.isAnalyzing ? s.simRunningLabel : s.simApplyBtn.toUpperCase(),
+              widget.handler.isAnalyzing
+                  ? s.simRunningLabel
+                  : s.simApplyBtn.toUpperCase(),
               style: const TextStyle(
                 fontFamily: OryzaTypography.monoFontFamily,
                 package: 'oryzaelo_ui',
@@ -512,7 +593,9 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
               backgroundColor: OryzaColors.burntOrange,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
               elevation: 0,
             ),
           ),
@@ -532,7 +615,9 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
     required bool isDark,
     required ValueChanged<double> onChanged,
   }) {
-    final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+    final textSecondary = isDark
+        ? OryzaColors.darkTextSecondary
+        : OryzaColors.lightTextSecondary;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -576,10 +661,18 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
   }
 
   Widget _buildOutputPanel(BuildContext context, bool isDark, OryzaStrings s) {
-    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
-    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
-    final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
-    final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+    final surfaceColor = isDark
+        ? OryzaColors.darkSurface
+        : OryzaColors.lightSurface;
+    final borderColor = isDark
+        ? OryzaColors.darkBorder
+        : OryzaColors.lightBorder;
+    final textColor = isDark
+        ? OryzaColors.darkTextPrimary
+        : OryzaColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? OryzaColors.darkTextSecondary
+        : OryzaColors.lightTextSecondary;
 
     if (_simulationResult == null) {
       return Container(
@@ -637,7 +730,10 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
       decoration: BoxDecoration(
         color: surfaceColor,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: OryzaColors.burntOrange.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(
+          color: OryzaColors.burntOrange.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
@@ -684,7 +780,9 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                   package: 'oryzaelo_ui',
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                  color: isDark
+                      ? OryzaColors.mustardYellow
+                      : OryzaColors.botanicalGreen,
                 ),
               ),
             ],
@@ -726,7 +824,9 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
               Icon(
                 Icons.lightbulb_outline_rounded,
                 size: 16,
-                color: isDark ? OryzaColors.mustardYellow : Colors.brown.shade800,
+                color: isDark
+                    ? OryzaColors.mustardYellow
+                    : Colors.brown.shade800,
               ),
               const SizedBox(width: 8),
               Text(
@@ -737,7 +837,9 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.6,
-                  color: isDark ? OryzaColors.mustardYellow : Colors.brown.shade800,
+                  color: isDark
+                      ? OryzaColors.mustardYellow
+                      : Colors.brown.shade800,
                 ),
               ),
             ],

@@ -1,11 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:local/domain/models/metric_type.dart';
 import 'package:local/domain/models/weather_record.dart';
 
 void main() {
   group('DailyWeatherRecord', () {
-    test('fromJson parses the backend WeatherRecordResponse shape, including daily_gdd', () {
-      // Exact shape of oryzaelo_engine's WeatherRecordResponse (added this
-      // session so the chart/table stop recomputing GDD client-side).
+    test('fromJson parses the backend WeatherRecordResponse shape, including daily_gdd and provenance', () {
       final json = {
         'date': '2026-06-06',
         't_max': 34.0,
@@ -13,7 +12,13 @@ void main() {
         'precipitation_mm': 0.0,
         'radiation_mj_m2': 20.0,
         'relative_humidity_pct': 70.0,
-        'source': 'LoRaWAN_Station_A',
+        't_max_sensor_id': 'LoRaWAN_Station_A',
+        't_min_sensor_id': 'LoRaWAN_Station_A',
+        'rainfall_sensor_id': 'LoRaWAN_Station_A',
+        'radiation_sensor_id': 'LoRaWAN_Station_A',
+        'humidity_sensor_id': 'LoRaWAN_Station_A',
+        'is_partial': false,
+        'missing_metrics': [],
         'daily_gdd': 18.0,
       };
 
@@ -21,43 +26,52 @@ void main() {
 
       expect(record.tMax, 34.0);
       expect(record.tMin, 22.0);
-      expect(record.source, 'LoRaWAN_Station_A');
+      expect(record.tMaxSensorId, 'LoRaWAN_Station_A');
       expect(record.dailyGdd, 18.0);
+      expect(record.isComplete, isTrue);
+      expect(record.sourceDisplay, 'LoRaWAN_Station_A');
       expect(record.date.year, 2026);
       expect(record.date.month, 6);
       expect(record.date.day, 6);
     });
 
-    test('fromJson defaults daily_gdd to 0.0 when the backend omits it (older/mocked responses)', () {
+    test('a day missing some metrics is partial, has no daily_gdd, and lists what is missing', () {
       final record = DailyWeatherRecord.fromJson({
         'date': '2026-06-06',
-        't_max': 30.0,
-        't_min': 20.0,
-        'precipitation_mm': 0.0,
-        'radiation_mj_m2': 18.0,
-        'relative_humidity_pct': 70.0,
-        'source': 'Manual',
+        't_max': null,
+        't_min': null,
+        'precipitation_mm': 5.0,
+        'radiation_mj_m2': null,
+        'relative_humidity_pct': null,
+        'rainfall_sensor_id': 'rain-gauge-01',
       });
 
-      expect(record.dailyGdd, 0.0);
+      expect(record.isPartial, isTrue);
+      expect(record.dailyGdd, isNull);
+      expect(record.dtr, isNull);
+      expect(record.sourceDisplay, 'rain-gauge-01');
+      expect(
+        record.missingMetrics,
+        containsAll([MetricType.tMax, MetricType.tMin, MetricType.radiation, MetricType.humidity]),
+      );
     });
 
-    test('toJson never sends daily_gdd back to the server (it is server-computed, read-only)', () {
-      final record = DailyWeatherRecord(
-        date: _fixedDate,
-        tMax: 30.0,
-        tMin: 20.0,
-        precipitationMm: 5.0,
-        radiationMjM2: 18.0,
-        relativeHumidityPct: 70.0,
-        source: 'Manual_Terminal_Entry',
-        dailyGdd: 999.0, // even if populated, must not round-trip out
-      );
+    test('sourceDisplay shows a count when multiple distinct sensors contributed to the same day', () {
+      final record = DailyWeatherRecord.fromJson({
+        'date': '2026-06-06',
+        't_max': 34.0,
+        't_min': 22.0,
+        'precipitation_mm': 0.0,
+        'radiation_mj_m2': 20.0,
+        'relative_humidity_pct': 70.0,
+        't_max_sensor_id': 'station-A',
+        't_min_sensor_id': 'station-A',
+        'rainfall_sensor_id': 'rain-gauge-02',
+        'radiation_sensor_id': 'station-A',
+        'humidity_sensor_id': 'station-A',
+      });
 
-      final json = record.toJson();
-
-      expect(json.containsKey('daily_gdd'), isFalse);
-      expect(json['date'], '2026-06-06');
+      expect(record.sourceDisplay, '2 sensors');
     });
 
     test('dtr getter computes and clamps correctly', () {
@@ -68,7 +82,6 @@ void main() {
         precipitationMm: 0.0,
         radiationMjM2: 20.0,
         relativeHumidityPct: 60.0,
-        source: 'x',
       );
       expect(hot.dtr, 25.0);
 
@@ -81,9 +94,29 @@ void main() {
         precipitationMm: 0.0,
         radiationMjM2: 20.0,
         relativeHumidityPct: 60.0,
-        source: 'x',
       );
       expect(inverted.dtr, 0.0);
+    });
+  });
+
+  group('ManualWeatherEntry', () {
+    test('toJson sends every field, but never daily_gdd (it is server-computed, read-only)', () {
+      final entry = ManualWeatherEntry(
+        date: _fixedDate,
+        tMax: 30.0,
+        tMin: 20.0,
+        precipitationMm: 5.0,
+        radiationMjM2: 18.0,
+        relativeHumidityPct: 70.0,
+        source: 'Manual_Terminal_Entry',
+      );
+
+      final json = entry.toJson();
+
+      expect(json.containsKey('daily_gdd'), isFalse);
+      expect(json['date'], '2026-06-06');
+      expect(json['t_max'], 30.0);
+      expect(json['source'], 'Manual_Terminal_Entry');
     });
   });
 
@@ -96,7 +129,7 @@ void main() {
           'total_rows': 3,
           'successful_rows': 2,
           'failed_rows': 1,
-          'records': [],
+          'readings': [],
           'errors': ["Row 2: physical violation: T_min (25.00°C) cannot exceed T_max (20.00°C)"],
         },
       };

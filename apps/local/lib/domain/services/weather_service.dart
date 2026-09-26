@@ -21,11 +21,11 @@ class WeatherService {
 
   Future<bool> ingestSingleRecord({
     required String parcelId,
-    required DailyWeatherRecord record,
+    required ManualWeatherEntry entry,
   }) =>
       _client.ingestSingleRecord(
         parcelId: parcelId,
-        record: record,
+        entry: entry,
       );
 
   Future<List<DailyWeatherRecord>> fetchRecords(

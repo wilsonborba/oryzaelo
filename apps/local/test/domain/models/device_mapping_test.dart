@@ -1,14 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:local/domain/models/device_mapping.dart';
+import 'package:local/domain/models/metric_type.dart';
 
 /// Locks the exact JSON shape DeviceMapping sends/receives against the Rust
 /// backend's `DeviceMapping` struct (oryzaelo_engine/src/domain/models/
-/// device_mapping.rs). This schema mismatch was a real, previously-shipped
-/// bug this session: the old Dart model sent a completely different shape
-/// (`{id, name, model, description, mappings: [...]}`) that the backend
-/// could never deserialize, so "add custom sensor" silently failed with no
-/// error surfaced anywhere. If this test ever fails after an edit to either
-/// side, the two are drifting apart again.
+/// device_mapping.rs). A sensor profile declares 1..5 metric mappings, not
+/// a fixed 5-field shape -- a standalone single-metric sensor only ever
+/// declares the one metric it measures.
 void main() {
   group('DeviceMapping JSON schema', () {
     test('toJson produces exactly the field names the backend expects', () {
@@ -19,21 +17,13 @@ void main() {
         isPreset: false,
         dateCol: 'date',
         dateFormat: 'yyyy-MM-dd',
-        tMaxCol: 't_max',
-        tMaxUnit: 'C',
-        tMaxScale: 1.0,
-        tMinCol: 't_min',
-        tMinUnit: 'C',
-        tMinScale: 1.0,
-        rainCol: 'rain',
-        rainUnit: 'mm',
-        rainScale: 1.0,
-        radCol: 'rad',
-        radUnit: 'MJ/m2',
-        radScale: 1.0,
-        rhCol: 'rh',
-        rhUnit: '%',
-        rhScale: 1.0,
+        metrics: const [
+          MetricColumnMapping(metricType: MetricType.tMax, columnName: 't_max', unit: 'C', scale: 1.0),
+          MetricColumnMapping(metricType: MetricType.tMin, columnName: 't_min', unit: 'C', scale: 1.0),
+          MetricColumnMapping(metricType: MetricType.rainfall, columnName: 'rain', unit: 'mm', scale: 1.0),
+          MetricColumnMapping(metricType: MetricType.radiation, columnName: 'rad', unit: 'MJ/m2', scale: 1.0),
+          MetricColumnMapping(metricType: MetricType.humidity, columnName: 'rh', unit: '%', scale: 1.0),
+        ],
         createdAt: DateTime.utc(2026, 6, 6),
       );
 
@@ -43,21 +33,15 @@ void main() {
       // no less. A stray/missing key here means the schema drifted again.
       expect(
         json.keys.toSet(),
-        {
-          'id', 'device_name', 'manufacturer', 'is_preset',
-          'date_col', 'date_format',
-          't_max_col', 't_max_unit', 't_max_scale',
-          't_min_col', 't_min_unit', 't_min_scale',
-          'rain_col', 'rain_unit', 'rain_scale',
-          'rad_col', 'rad_unit', 'rad_scale',
-          'rh_col', 'rh_unit', 'rh_scale',
-          'created_at',
-        },
+        {'id', 'device_name', 'manufacturer', 'is_preset', 'date_col', 'date_format', 'metrics', 'created_at'},
       );
       expect(json['device_name'], 'Field Station 01');
       expect(json['is_preset'], false);
-      expect(json['t_max_scale'], 1.0);
       expect(json['created_at'], '2026-06-06T00:00:00.000Z');
+
+      final metrics = json['metrics'] as List<dynamic>;
+      expect(metrics, hasLength(5));
+      expect(metrics[0], {'metric_type': 't_max', 'column_name': 't_max', 'unit': 'C', 'scale': 1.0});
     });
 
     test('fromJson parses a backend-shaped preset response correctly', () {
@@ -69,11 +53,13 @@ void main() {
         'is_preset': true,
         'date_col': 'Timestamp',
         'date_format': '%Y-%m-%d',
-        't_max_col': 'AirTemp_Max', 't_max_unit': 'C', 't_max_scale': 1.0,
-        't_min_col': 'AirTemp_Min', 't_min_unit': 'C', 't_min_scale': 1.0,
-        'rain_col': 'Precipitation', 'rain_unit': 'mm', 'rain_scale': 1.0,
-        'rad_col': 'SolarRad', 'rad_unit': 'W/m2', 'rad_scale': 1.0,
-        'rh_col': 'RelHumidity', 'rh_unit': '%', 'rh_scale': 1.0,
+        'metrics': [
+          {'metric_type': 't_max', 'column_name': 'AirTemp_Max', 'unit': 'C', 'scale': 1.0},
+          {'metric_type': 't_min', 'column_name': 'AirTemp_Min', 'unit': 'C', 'scale': 1.0},
+          {'metric_type': 'rainfall', 'column_name': 'Precipitation', 'unit': 'mm', 'scale': 1.0},
+          {'metric_type': 'radiation', 'column_name': 'SolarRad', 'unit': 'W/m2', 'scale': 1.0},
+          {'metric_type': 'humidity', 'column_name': 'RelHumidity', 'unit': '%', 'scale': 1.0},
+        ],
         'created_at': '2026-01-01T00:00:00Z',
       };
 
@@ -82,8 +68,9 @@ void main() {
       expect(mapping.id, 'preset_pessl_imetos');
       expect(mapping.deviceName, 'Pessl iMetos 3.3 (Standard Agro)');
       expect(mapping.isPreset, isTrue);
-      expect(mapping.tMaxCol, 'AirTemp_Max');
-      expect(mapping.radUnit, 'W/m2');
+      expect(mapping.metric(MetricType.tMax)!.columnName, 'AirTemp_Max');
+      expect(mapping.metric(MetricType.radiation)!.unit, 'W/m2');
+      expect(mapping.metricTypes(), hasLength(5));
     });
 
     test('round trip preserves every field', () {
@@ -94,11 +81,10 @@ void main() {
         isPreset: false,
         dateCol: 'd',
         dateFormat: '%Y-%m-%d',
-        tMaxCol: 'tmax', tMaxUnit: 'F', tMaxScale: 1.8,
-        tMinCol: 'tmin', tMinUnit: 'F', tMinScale: 1.8,
-        rainCol: 'r', rainUnit: 'in', rainScale: 0.1,
-        radCol: 'rd', radUnit: 'W/m2', radScale: 2.0,
-        rhCol: 'h', rhUnit: '%', rhScale: 0.5,
+        metrics: const [
+          MetricColumnMapping(metricType: MetricType.tMax, columnName: 'tmax', unit: 'F', scale: 1.8),
+          MetricColumnMapping(metricType: MetricType.rainfall, columnName: 'r', unit: 'in', scale: 0.1),
+        ],
         createdAt: DateTime.utc(2026, 3, 15, 10, 30),
       );
 
@@ -106,25 +92,21 @@ void main() {
 
       expect(restored.id, original.id);
       expect(restored.deviceName, original.deviceName);
-      expect(restored.tMaxScale, original.tMaxScale);
-      expect(restored.rainScale, original.rainScale);
-      expect(restored.rhScale, original.rhScale);
+      expect(restored.metric(MetricType.tMax)!.scale, 1.8);
+      expect(restored.metric(MetricType.rainfall)!.scale, 0.1);
       expect(restored.createdAt, original.createdAt);
     });
 
-    test('blank() gives every column an empty string, ready for the "Outro" flow', () {
-      final blank = DeviceMapping.blank('new-sensor');
+    test('blankSingleMetric() gives a standalone sensor exactly one metric mapping', () {
+      final blank = DeviceMapping.blankSingleMetric('new-sensor', MetricType.rainfall);
 
       expect(blank.id, 'new-sensor');
       expect(blank.isPreset, isFalse);
-      expect(blank.tMaxCol, isEmpty);
-      expect(blank.tMinCol, isEmpty);
-      expect(blank.rainCol, isEmpty);
-      expect(blank.radCol, isEmpty);
-      expect(blank.rhCol, isEmpty);
-      // Units still get sane defaults so the form isn't blank in that column.
-      expect(blank.tMaxUnit, 'C');
-      expect(blank.rhUnit, '%');
+      expect(blank.metricTypes(), [MetricType.rainfall]);
+      expect(blank.metric(MetricType.rainfall)!.columnName, isEmpty);
+      // Unit still gets a sane default so the form isn't blank in that column.
+      expect(blank.metric(MetricType.rainfall)!.unit, 'mm');
+      expect(blank.metric(MetricType.tMax), isNull);
     });
 
     test('fromJson tolerates a missing field with sane defaults instead of throwing', () {
@@ -132,7 +114,7 @@ void main() {
 
       expect(mapping.id, 'partial');
       expect(mapping.deviceName, isEmpty);
-      expect(mapping.tMaxScale, 1.0);
+      expect(mapping.metrics, isEmpty);
       expect(mapping.isPreset, isFalse);
     });
   });

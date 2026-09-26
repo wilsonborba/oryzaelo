@@ -616,6 +616,11 @@ class OryzaStrings {
   final String noRecordsFoundTitle;
   final String noRecordsFoundBody;
   final String deselectAllBtn;
+  final String dataTabDaily;
+  final String dataTabReadings;
+  final String tableColTimestamp;
+  final String tableColMetric;
+  final String tableColValue;
 
   // Sensor config screen extras
   final String sensorActiveCount;
@@ -844,6 +849,17 @@ class OryzaStrings {
 
   // Failure-path feedback for actions that previously only handled success
   final String sensorSaveFailedMsg;
+  final String sensorEditMappingTitle;
+  final String sensorMetricsPickLabel;
+  final String sensorMetricsPickHint;
+  final String sensorDeleteConfirmTitle;
+  final String sensorDeleteConfirmBody;
+  final String sensorDeletedSuccess;
+  final String sensorDeleteFailedMsg;
+  final String tablePartialDayTooltip;
+  final String sensorReadingsHistoryTitle;
+  final String sensorReadingsEmpty;
+  final String sensorReadingsCloseBtn;
   final String manualRecordFailedMsg;
   final String parcelCreateFailedMsg;
   final String parcelUpdateFailedMsg;
@@ -1392,6 +1408,11 @@ class OryzaStrings {
     this.noRecordsFoundTitle = "Nenhum Registro Meteorológico Encontrado",
     this.noRecordsFoundBody = "A base deste talhão está vazia. Adicione registros manualmente, importe um arquivo CSV ou clique no botão 'Carregar Dados de Teste' acima para popular as séries de referência.",
     this.deselectAllBtn = "Desselecionar Todos",
+    this.dataTabDaily = "Visão Diária (Manejo & Fenologia)",
+    this.dataTabReadings = "Histórico de Coletas por Sensor",
+    this.tableColTimestamp = "Data/Hora de Coleta",
+    this.tableColMetric = "Métrica",
+    this.tableColValue = "Valor Medido",
 
     this.sensorActiveCount = "{count} ativos",
     this.sensorNoCustomMappings = "Nenhum sensor customizado registrado no nó de borda.",
@@ -1596,6 +1617,17 @@ class OryzaStrings {
     this.radarHumidityBalance = "Equilíbrio de Umidade",
     this.radarThermalStability = "Estabilidade Térmica (DTR)",
     this.sensorSaveFailedMsg = "Falha ao salvar mapeamento de sensor. Verifique a conexão com o nó de borda.",
+    this.sensorEditMappingTitle = "Editar Sensor",
+    this.sensorMetricsPickLabel = "Métricas Medidas por Este Sensor",
+    this.sensorMetricsPickHint = "Selecione apenas as grandezas que este sensor realmente mede. Um sensor avulso mede uma; uma estação combinada pode medir todas.",
+    this.sensorDeleteConfirmTitle = "Remover Sensor",
+    this.sensorDeleteConfirmBody = "Remover o sensor '{name}'? O histórico de leituras já recebidas dele será mantido para auditoria.",
+    this.sensorDeletedSuccess = "Sensor removido com sucesso.",
+    this.sensorDeleteFailedMsg = "Falha ao remover sensor. Verifique a conexão com o nó de borda.",
+    this.tablePartialDayTooltip = "Dia incompleto: aguardando dados de um ou mais sensores.",
+    this.sensorReadingsHistoryTitle = "Histórico de Leituras: {metric}",
+    this.sensorReadingsEmpty = "Nenhuma leitura recebida ainda deste sensor.",
+    this.sensorReadingsCloseBtn = "Fechar",
     this.manualRecordFailedMsg = "Falha ao gravar registro manual. Verifique a conexão com o nó de borda.",
     this.parcelCreateFailedMsg = "Falha ao cadastrar talhão. Verifique a conexão com o nó de borda.",
     this.parcelUpdateFailedMsg = "Falha ao atualizar talhão. Verifique a conexão com o nó de borda.",
@@ -2738,6 +2770,11 @@ class OryzaI18n {
     noRecordsFoundTitle: "No Weather Records Found",
     noRecordsFoundBody: "This parcel's database is empty. Add records manually, import a CSV file, or click 'Load Test Data' above to populate reference series.",
     deselectAllBtn: "Deselect All",
+    dataTabDaily: "Daily View (Agronomic Management)",
+    dataTabReadings: "Sensor Reading History",
+    tableColTimestamp: "Collection Timestamp",
+    tableColMetric: "Metric",
+    tableColValue: "Measured Value",
 
     sensorActiveCount: "{count} active",
     sensorNoCustomMappings: "No custom sensor registered on this edge node.",
@@ -2942,6 +2979,17 @@ class OryzaI18n {
     radarHumidityBalance: "Humidity Balance",
     radarThermalStability: "Thermal Stability (DTR)",
     sensorSaveFailedMsg: "Failed to save sensor mapping. Check the connection to the edge node.",
+    sensorEditMappingTitle: "Edit Sensor",
+    sensorMetricsPickLabel: "Metrics This Sensor Measures",
+    sensorMetricsPickHint: "Select only the variables this sensor actually measures. A standalone sensor measures one; a bundled station may measure all of them.",
+    sensorDeleteConfirmTitle: "Remove Sensor",
+    sensorDeleteConfirmBody: "Remove sensor '{name}'? Its already-received reading history is kept for auditing.",
+    sensorDeletedSuccess: "Sensor removed successfully.",
+    sensorDeleteFailedMsg: "Failed to remove sensor. Check the connection to the edge node.",
+    tablePartialDayTooltip: "Incomplete day: waiting on data from one or more sensors.",
+    sensorReadingsHistoryTitle: "Reading History: {metric}",
+    sensorReadingsEmpty: "No readings received yet from this sensor.",
+    sensorReadingsCloseBtn: "Close",
     manualRecordFailedMsg: "Failed to save manual record. Check the connection to the edge node.",
     parcelCreateFailedMsg: "Failed to register parcel. Check the connection to the edge node.",
     parcelUpdateFailedMsg: "Failed to update parcel. Check the connection to the edge node.",
@@ -3595,6 +3643,11 @@ class OryzaI18n {
     noRecordsFoundTitle: "ไม่พบข้อมูลสภาพอากาศ",
     noRecordsFoundBody: "ฐานข้อมูลของแปลงนี้ว่างเปล่า เพิ่มข้อมูลด้วยตนเอง นำเข้าไฟล์ CSV หรือคลิก 'โหลดข้อมูลทดสอบ' ด้านบนเพื่อเติมชุดข้อมูลอ้างอิง",
     deselectAllBtn: "ยกเลิกการเลือกทั้งหมด",
+    dataTabDaily: "มุมมองรายวัน (การจัดการเกษตร)",
+    dataTabReadings: "ประวัติการวัดของเซ็นเซอร์",
+    tableColTimestamp: "เวลาที่เก็บข้อมูล",
+    tableColMetric: "ตัวชี้วัด",
+    tableColValue: "ค่าที่วัดได้",
 
     sensorActiveCount: "ใช้งานอยู่ {count} รายการ",
     sensorNoCustomMappings: "ยังไม่มีเซ็นเซอร์กำหนดเองที่ลงทะเบียนบนโหนดขอบนี้",
@@ -3799,6 +3852,17 @@ class OryzaI18n {
     radarHumidityBalance: "สมดุลความชื้น",
     radarThermalStability: "เสถียรภาพทางความร้อน (DTR)",
     sensorSaveFailedMsg: "บันทึกการแมปเซ็นเซอร์ล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
+    sensorEditMappingTitle: "แก้ไขเซ็นเซอร์",
+    sensorMetricsPickLabel: "ตัวชี้วัดที่เซ็นเซอร์นี้วัด",
+    sensorMetricsPickHint: "เลือกเฉพาะตัวแปรที่เซ็นเซอร์นี้วัดได้จริง เซ็นเซอร์เดี่ยววัดได้หนึ่งตัว ส่วนสถานีรวมอาจวัดได้ทั้งหมด",
+    sensorDeleteConfirmTitle: "ลบเซ็นเซอร์",
+    sensorDeleteConfirmBody: "ลบเซ็นเซอร์ '{name}' หรือไม่? ประวัติการอ่านค่าที่ได้รับแล้วจะยังคงถูกเก็บไว้เพื่อการตรวจสอบ",
+    sensorDeletedSuccess: "ลบเซ็นเซอร์สำเร็จแล้ว",
+    sensorDeleteFailedMsg: "ลบเซ็นเซอร์ล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
+    tablePartialDayTooltip: "วันข้อมูลไม่ครบ: กำลังรอข้อมูลจากเซ็นเซอร์อย่างน้อยหนึ่งตัว",
+    sensorReadingsHistoryTitle: "ประวัติการอ่านค่า: {metric}",
+    sensorReadingsEmpty: "ยังไม่มีข้อมูลที่ได้รับจากเซ็นเซอร์นี้",
+    sensorReadingsCloseBtn: "ปิด",
     manualRecordFailedMsg: "บันทึกข้อมูลด้วยตนเองล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
     parcelCreateFailedMsg: "ลงทะเบียนแปลงล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
     parcelUpdateFailedMsg: "อัปเดตแปลงล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",

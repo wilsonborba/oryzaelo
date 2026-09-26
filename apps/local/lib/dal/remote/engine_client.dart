@@ -3,8 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:local/core/logs.dart';
 import 'package:local/core/settings.dart';
 import 'package:local/domain/models/device_mapping.dart';
+import 'package:local/domain/models/metric_type.dart';
 import 'package:local/domain/models/parcel.dart';
 import 'package:local/domain/models/phenology_prediction.dart';
+import 'package:local/domain/models/sensor_reading.dart';
 import 'package:local/domain/models/simulation_result.dart';
 import 'package:local/domain/models/system_telemetry.dart';
 import 'package:local/domain/models/weather_analytics.dart';
@@ -200,6 +202,43 @@ class EngineClient {
     }
   }
 
+  // ── Sensor Readings (per-metric raw data, full CRUD) ─────────────────────
+
+  Future<List<SensorReading>> listSensorReadings({
+    required String parcelId,
+    required MetricType metricType,
+    int limit = 200,
+  }) async {
+    try {
+      final res = await _client
+          .get(_uri('/api/v1/weather/sensor-readings', {
+            'parcel_id': parcelId,
+            'metric_type': metricType.wireValue,
+            'limit': limit.toString(),
+          }))
+          .timeout(AppSettings.receiveTimeout);
+      if (res.statusCode == 200) {
+        final list = jsonDecode(res.body) as List<dynamic>;
+        return list.map((e) => SensorReading.fromJson(e as Map<String, dynamic>)).toList();
+      }
+    } catch (e) {
+      logError('Failed to fetch sensor readings: $e');
+    }
+    return [];
+  }
+
+  Future<bool> deleteSensorReading({required int id, required MetricType metricType}) async {
+    try {
+      final res = await _client
+          .delete(_uri('/api/v1/weather/sensor-readings/$id', {'metric_type': metricType.wireValue}))
+          .timeout(AppSettings.receiveTimeout);
+      return res.statusCode == 200;
+    } catch (e) {
+      logError('Failed to delete sensor reading: $e');
+      return false;
+    }
+  }
+
   // ── Weather Ingestion (CSV & Single Record) ───────────────────────────────
 
   Future<IngestionReport?> uploadCsv({
@@ -233,10 +272,10 @@ class EngineClient {
 
   Future<bool> ingestSingleRecord({
     required String parcelId,
-    required DailyWeatherRecord record,
+    required ManualWeatherEntry entry,
   }) async {
     try {
-      final payload = record.toJson();
+      final payload = entry.toJson();
       payload['parcel_id'] = parcelId;
 
       final res = await _client

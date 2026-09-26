@@ -3,8 +3,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:local/core/logs.dart';
 import 'package:local/domain/models/device_mapping.dart';
+import 'package:local/domain/models/metric_type.dart';
 import 'package:local/domain/models/parcel.dart';
 import 'package:local/domain/models/phenology_prediction.dart';
+import 'package:local/domain/models/sensor_reading.dart';
 import 'package:local/domain/models/simulation_result.dart';
 import 'package:local/domain/models/system_telemetry.dart';
 import 'package:local/domain/models/weather_analytics.dart';
@@ -320,6 +322,25 @@ class DashboardHandler extends ChangeNotifier {
     return false;
   }
 
+  /// One sensor's own raw reading history for the selected parcel -- full
+  /// audit trail, independent of any other sensor's data.
+  Future<List<SensorReading>> fetchSensorReadings(MetricType metricType) {
+    if (_selectedParcel == null) return Future.value([]);
+    return _deviceService.fetchSensorReadings(parcelId: _selectedParcel!.id, metricType: metricType);
+  }
+
+  /// Deletes one raw reading, then refreshes the current parcel's data so
+  /// the day's aggregate (and any chart/table showing it) reflects whatever
+  /// the day now recomputes to.
+  Future<bool> deleteSensorReading({required int id, required MetricType metricType}) async {
+    final ok = await _deviceService.deleteSensorReading(id: id, metricType: metricType);
+    if (ok && _selectedParcel != null) {
+      await selectParcel(_selectedParcel!, notifyOnChange: false, force: true);
+      notifyListeners();
+    }
+    return ok;
+  }
+
   // ── Weather Ingestion (CSV & Single Record) ───────────────────────────────
 
   Future<IngestionReport?> uploadCsv({
@@ -350,14 +371,14 @@ class DashboardHandler extends ChangeNotifier {
     }
   }
 
-  Future<bool> ingestSingleRecord(DailyWeatherRecord record) async {
+  Future<bool> ingestSingleRecord(ManualWeatherEntry entry) async {
     if (_selectedParcel == null) return false;
     _isLoading = true;
     notifyListeners();
 
     final ok = await _weatherService.ingestSingleRecord(
       parcelId: _selectedParcel!.id,
-      record: record,
+      entry: entry,
     );
 
     if (ok) {
