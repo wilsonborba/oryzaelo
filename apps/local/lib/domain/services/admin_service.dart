@@ -11,4 +11,8 @@ class AdminService {
 
   Future<bool> cleanMockData({bool resetPresets = false}) =>
       _client.cleanMockData(resetPresets: resetPresets);
+
+  Future<Map<String, String>> fetchConfig() => _client.getConfig();
+
+  Future<bool> updateConfig(Map<String, String> configs) => _client.updateConfig(configs);
 }

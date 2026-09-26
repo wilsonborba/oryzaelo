@@ -185,7 +185,7 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
       onTap: item.onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        width: 195,
+        width: 225,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: surfaceColor,
@@ -214,24 +214,29 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
                   height: 28,
                   fit: BoxFit.contain,
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: item.isSelected
-                        ? OryzaColors.burntOrange
-                        : (isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    item.badge,
-                    style: TextStyle(
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: OryzaTypography.monoFontFamily,
-                      package: 'oryzaelo_ui',
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
                       color: item.isSelected
-                          ? Colors.white
-                          : (isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen),
+                          ? OryzaColors.burntOrange
+                          : (isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      item.badge,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 8.5,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: OryzaTypography.monoFontFamily,
+                        package: 'oryzaelo_ui',
+                        color: item.isSelected
+                            ? Colors.white
+                            : (isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen),
+                      ),
                     ),
                   ),
                 ),

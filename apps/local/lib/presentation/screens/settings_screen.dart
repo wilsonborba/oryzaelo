@@ -43,6 +43,79 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  void _showCronTimeDialog() {
+    final s = OryzaI18n.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final current = widget.handler.cronTargetTime ?? '23:59';
+    final parts = current.split(':');
+    var selected = TimeOfDay(
+      hour: parts.isNotEmpty ? int.tryParse(parts[0]) ?? 23 : 23,
+      minute: parts.length > 1 ? int.tryParse(parts[1]) ?? 59 : 59,
+    );
+    bool isSaving = false;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDlgState) => AlertDialog(
+          backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: Text(s.settingsCronDialogTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '${selected.hour.toString().padLeft(2, '0')}:${selected.minute.toString().padLeft(2, '0')}',
+                style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800, fontFamily: 'Ubuntu Sans Mono'),
+              ),
+              const SizedBox(width: 12),
+              OutlinedButton.icon(
+                onPressed: () async {
+                  final picked = await showTimePicker(context: context, initialTime: selected);
+                  if (picked != null) setDlgState(() => selected = picked);
+                },
+                icon: const Icon(Icons.schedule, size: 16),
+                label: Text(s.settingsCronChangeBtn),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: isSaving ? null : () => Navigator.of(ctx).pop(),
+              child: Text(s.cancelBtn),
+            ),
+            ElevatedButton(
+              onPressed: isSaving
+                  ? null
+                  : () async {
+                      setDlgState(() => isSaving = true);
+                      final hhMm =
+                          '${selected.hour.toString().padLeft(2, '0')}:${selected.minute.toString().padLeft(2, '0')}';
+                      final ok = await widget.handler.updateCronTargetTime(hhMm);
+                      if (!ctx.mounted) return;
+                      Navigator.of(ctx).pop();
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(ok ? s.settingsCronUpdateSuccess : s.settingsCronUpdateFailedMsg),
+                          backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
+                        ),
+                      );
+                    },
+              child: isSaving
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    )
+                  : Text(s.confirmBtn),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _confirmCleanDatabase() {
     final s = OryzaI18n.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -125,6 +198,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               _buildEndpointCard(context, isDark, s),
                               const SizedBox(height: 16),
                               _buildDatabaseCard(context, isDark, s),
+                              const SizedBox(height: 16),
+                              _buildCronCard(context, isDark, s),
                             ],
                           ),
                         ),
@@ -149,6 +224,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       _buildEndpointCard(context, isDark, s),
                       const SizedBox(height: 16),
                       _buildDatabaseCard(context, isDark, s),
+                      const SizedBox(height: 16),
+                      _buildCronCard(context, isDark, s),
                       const SizedBox(height: 16),
                       _buildAppearanceCard(context, isDark, s, controller),
                       const SizedBox(height: 16),
@@ -390,6 +467,85 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 label: Text(s.settingsRestoreFactoryBtn),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCronCard(BuildContext context, bool isDark, OryzaStrings s) {
+    final currentTime = widget.handler.cronTargetTime;
+
+    return ScrapbookCard(
+      isDark: isDark,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Text(
+                s.settingsCronHeader.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6,
+                  fontFamily: 'Ubuntu Sans Mono',
+                  color: isDark ? Colors.grey.shade200 : Colors.grey.shade900,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            s.settingsCronDesc,
+            style: TextStyle(
+              fontSize: 12,
+              fontFamily: 'Ubuntu Sans',
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.black38 : Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: isDark ? Colors.white12 : Colors.black12),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        s.settingsCronCurrentLabel,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontFamily: 'Ubuntu Sans Mono',
+                          color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        currentTime ?? '—',
+                        style: const TextStyle(
+                          fontFamily: 'Ubuntu Sans Mono',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                OutlinedButton.icon(
+                  onPressed: _showCronTimeDialog,
+                  icon: const Icon(Icons.schedule, size: 16),
+                  label: Text(s.settingsCronChangeBtn),
+                ),
+              ],
+            ),
           ),
         ],
       ),

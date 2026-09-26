@@ -669,6 +669,15 @@ class OryzaStrings {
   final String themeDarkMode;
   final String themeLightMode;
 
+  // Cron scheduler configuration (Settings screen)
+  final String settingsCronHeader;
+  final String settingsCronDesc;
+  final String settingsCronCurrentLabel;
+  final String settingsCronChangeBtn;
+  final String settingsCronDialogTitle;
+  final String settingsCronUpdateSuccess;
+  final String settingsCronUpdateFailedMsg;
+
   // Stats overview section headers
   final String statsSectionPhenoTitle;
   final String statsSectionPhenoSubtitle;
@@ -726,6 +735,9 @@ class OryzaStrings {
   final String hudCronDetail;
   final String hudStatusActive;
   final String hudStatusFailed;
+  final String hudStatusUnknown;
+  final String hudNoDataLabel;
+  final String hudHostIdentityFormat;
 
   // Multidimensional visualizations
   final String vizWaitingAnalytics;
@@ -829,6 +841,28 @@ class OryzaStrings {
   final String radarWaterSecurity;
   final String radarHumidityBalance;
   final String radarThermalStability;
+
+  // Failure-path feedback for actions that previously only handled success
+  final String sensorSaveFailedMsg;
+  final String manualRecordFailedMsg;
+  final String parcelCreateFailedMsg;
+  final String parcelUpdateFailedMsg;
+  final String parcelDeleteFailedMsg;
+
+  // CSV bulk-ingestion dialog (Data Management screen)
+  final String csvUploadBtn;
+  final String csvUploadDialogTitle;
+  final String csvUploadDeviceLabel;
+  final String csvUploadDeviceHint;
+  final String csvUploadChooseFileBtn;
+  final String csvUploadNoFileSelected;
+  final String csvUploadNoDeviceSelectedMsg;
+  final String csvUploadSubmitBtn;
+  final String csvUploadFailedMsg;
+  final String csvUploadResultTitle;
+  final String csvUploadResultSummary;
+  final String csvUploadResultErrorsHeader;
+  final String csvUploadCloseBtn;
 
   const OryzaStrings({
     required this.navBrand,
@@ -1406,6 +1440,13 @@ class OryzaStrings {
     this.settingsInfoPortLabel = "Porta TCP Padrão",
     this.themeDarkMode = "Modo Escuro",
     this.themeLightMode = "Modo Claro",
+    this.settingsCronHeader = "Agendamento Automático",
+    this.settingsCronDesc = "Horário diário em que o nó de borda avalia automaticamente o estágio fenológico de todos os talhões usando os dados climáticos já recebidos.",
+    this.settingsCronCurrentLabel = "Horário atual",
+    this.settingsCronChangeBtn = "Alterar Horário",
+    this.settingsCronDialogTitle = "Definir Horário do Agendador Noturno",
+    this.settingsCronUpdateSuccess = "Horário do agendador atualizado com sucesso.",
+    this.settingsCronUpdateFailedMsg = "Falha ao atualizar horário do agendador. Verifique a conexão com o nó de borda.",
 
     this.statsSectionPhenoTitle = "Monitor Fenológico BBCH e Prescrições Agronômicas",
     this.statsSectionPhenoSubtitle = "Estágio fisiológico predito por IA residente (ONNX) e manejo operacional",
@@ -1440,27 +1481,30 @@ class OryzaStrings {
 
     this.hudLatencyHeader = "Latência de Inferência Submilissegundo (Benchmark Rust ONNX)",
     this.hudCpuMeanLabel = "Média CPU Rust (ort)",
-    this.hudCpuMeanDetail = "0.021 ms • Meta: < 5.0 ms",
+    this.hudCpuMeanDetail = "Meta: < 5.0 ms",
     this.hudP95Label = "Percentil 95 (p95)",
     this.hudP95Detail = "Consistência estrita em CPU",
-    this.hudThesisCeilingLabel = "Teto Orientador USP",
-    this.hudThesisCeilingDetail = "Limite tolerável da tese",
+    this.hudThesisCeilingLabel = "Teto de Latência de Borda",
+    this.hudThesisCeilingDetail = "Limite tolerável para inferência em campo",
     this.hudRelativeSpeedLabel = "Velocidade Relativa",
-    this.hudRelativeSpeedDetail = "Mais veloz que o teto da tese",
-    this.hudHardwareHeader = "Recursos de Hardware do Raspberry Pi",
+    this.hudRelativeSpeedDetail = "Mais veloz que o teto de borda",
+    this.hudHardwareHeader = "Recursos de Hardware do Nó de Borda",
     this.hudCpuUsageLabel = "Uso de CPU",
-    this.hudCpuUsageDetail = "4 Cores ARM Cortex-A76",
+    this.hudCpuUsageDetail = "{cores} núcleos disponíveis",
     this.hudRamLabel = "Memória RAM",
-    this.hudDiskLabel = "Disco / Cartão SD",
+    this.hudDiskLabel = "Disco / Armazenamento",
     this.hudUsedSuffix = "utilizado",
     this.hudSubsystemsHeader = "Subsistemas do Nó de Borda",
     this.hudSqliteLabel = "Banco SQLite Local (WAL Confinado)",
     this.hudOnnxSessionLabel = "Sessão ONNX Runtime Residente em Memória",
     this.hudOnnxSessionDetail = "CatBoost 44-Features Multiclass Classifier",
-    this.hudCronLabel = "Agendador Noturno Cron (23:59)",
+    this.hudCronLabel = "Agendador Noturno Cron ({time})",
     this.hudCronDetail = "Execução diária com recuperação no boot",
     this.hudStatusActive = "ATIVO",
     this.hudStatusFailed = "FALHA",
+    this.hudStatusUnknown = "DESCONHECIDO",
+    this.hudNoDataLabel = "Sem dados",
+    this.hudHostIdentityFormat = "{os}/{arch}",
 
     this.vizWaitingAnalytics = "Aguardando dados analíticos e predição fenológica.",
     this.vizDonutHeader = "Probabilidade Fenológica (CatBoost ONNX)",
@@ -1551,6 +1595,24 @@ class OryzaStrings {
     this.radarWaterSecurity = "Segurança Hídrica",
     this.radarHumidityBalance = "Equilíbrio de Umidade",
     this.radarThermalStability = "Estabilidade Térmica (DTR)",
+    this.sensorSaveFailedMsg = "Falha ao salvar mapeamento de sensor. Verifique a conexão com o nó de borda.",
+    this.manualRecordFailedMsg = "Falha ao gravar registro manual. Verifique a conexão com o nó de borda.",
+    this.parcelCreateFailedMsg = "Falha ao cadastrar talhão. Verifique a conexão com o nó de borda.",
+    this.parcelUpdateFailedMsg = "Falha ao atualizar talhão. Verifique a conexão com o nó de borda.",
+    this.parcelDeleteFailedMsg = "Falha ao excluir talhão. Verifique a conexão com o nó de borda.",
+    this.csvUploadBtn = "Importar CSV",
+    this.csvUploadDialogTitle = "Importar Registros via CSV",
+    this.csvUploadDeviceLabel = "Perfil do Sensor",
+    this.csvUploadDeviceHint = "Selecione o perfil do sensor",
+    this.csvUploadChooseFileBtn = "Escolher Arquivo",
+    this.csvUploadNoFileSelected = "Nenhum arquivo selecionado",
+    this.csvUploadNoDeviceSelectedMsg = "Selecione o perfil do sensor antes de importar.",
+    this.csvUploadSubmitBtn = "Importar",
+    this.csvUploadFailedMsg = "Falha ao importar CSV. Verifique o arquivo e a conexão com o nó de borda.",
+    this.csvUploadResultTitle = "Resultado da Importação",
+    this.csvUploadResultSummary = "{success} de {total} linhas importadas com sucesso",
+    this.csvUploadResultErrorsHeader = "Linhas rejeitadas",
+    this.csvUploadCloseBtn = "Fechar",
   });
 
 }
@@ -2724,6 +2786,13 @@ class OryzaI18n {
     settingsInfoPortLabel: "Default TCP Port",
     themeDarkMode: "Dark Mode",
     themeLightMode: "Light Mode",
+    settingsCronHeader: "Automated Scheduling",
+    settingsCronDesc: "The daily time at which the edge node automatically evaluates the phenological stage of every parcel using whatever weather data has already been received.",
+    settingsCronCurrentLabel: "Current time",
+    settingsCronChangeBtn: "Change Time",
+    settingsCronDialogTitle: "Set Nightly Scheduler Time",
+    settingsCronUpdateSuccess: "Scheduler time updated successfully.",
+    settingsCronUpdateFailedMsg: "Failed to update scheduler time. Check the connection to the edge node.",
 
     statsSectionPhenoTitle: "BBCH Phenological Monitor & Agronomic Prescriptions",
     statsSectionPhenoSubtitle: "Physiological stage predicted by resident AI (ONNX) and operational management",
@@ -2758,27 +2827,30 @@ class OryzaI18n {
 
     hudLatencyHeader: "Sub-Millisecond Inference Latency (Rust ONNX Benchmark)",
     hudCpuMeanLabel: "Rust CPU Mean (ort)",
-    hudCpuMeanDetail: "0.021 ms • Target: < 5.0 ms",
+    hudCpuMeanDetail: "Target: < 5.0 ms",
     hudP95Label: "95th Percentile (p95)",
     hudP95Detail: "Strict CPU consistency",
-    hudThesisCeilingLabel: "USP Thesis Ceiling",
-    hudThesisCeilingDetail: "Thesis tolerable threshold",
+    hudThesisCeilingLabel: "Edge Latency Ceiling",
+    hudThesisCeilingDetail: "Tolerable threshold for field inference",
     hudRelativeSpeedLabel: "Relative Speed",
-    hudRelativeSpeedDetail: "Faster than the thesis ceiling",
-    hudHardwareHeader: "Raspberry Pi Hardware Resources",
+    hudRelativeSpeedDetail: "Faster than the edge ceiling",
+    hudHardwareHeader: "Edge Node Hardware Resources",
     hudCpuUsageLabel: "CPU Usage",
-    hudCpuUsageDetail: "4 ARM Cortex-A76 Cores",
+    hudCpuUsageDetail: "{cores} cores available",
     hudRamLabel: "RAM Memory",
-    hudDiskLabel: "Disk / SD Card",
+    hudDiskLabel: "Disk / Storage",
     hudUsedSuffix: "used",
     hudSubsystemsHeader: "Edge Node Subsystems",
     hudSqliteLabel: "Local SQLite Database (Confined WAL)",
     hudOnnxSessionLabel: "Resident In-Memory ONNX Runtime Session",
     hudOnnxSessionDetail: "CatBoost 44-Feature Multiclass Classifier",
-    hudCronLabel: "Nightly Cron Scheduler (23:59)",
+    hudCronLabel: "Nightly Cron Scheduler ({time})",
     hudCronDetail: "Daily run with boot recovery",
     hudStatusActive: "ACTIVE",
     hudStatusFailed: "FAILED",
+    hudStatusUnknown: "UNKNOWN",
+    hudNoDataLabel: "No data",
+    hudHostIdentityFormat: "{os}/{arch}",
 
     vizWaitingAnalytics: "Waiting for analytics data and phenological prediction.",
     vizDonutHeader: "Phenological Probability (CatBoost ONNX)",
@@ -2869,6 +2941,24 @@ class OryzaI18n {
     radarWaterSecurity: "Water Security",
     radarHumidityBalance: "Humidity Balance",
     radarThermalStability: "Thermal Stability (DTR)",
+    sensorSaveFailedMsg: "Failed to save sensor mapping. Check the connection to the edge node.",
+    manualRecordFailedMsg: "Failed to save manual record. Check the connection to the edge node.",
+    parcelCreateFailedMsg: "Failed to register parcel. Check the connection to the edge node.",
+    parcelUpdateFailedMsg: "Failed to update parcel. Check the connection to the edge node.",
+    parcelDeleteFailedMsg: "Failed to delete parcel. Check the connection to the edge node.",
+    csvUploadBtn: "Import CSV",
+    csvUploadDialogTitle: "Import Records from CSV",
+    csvUploadDeviceLabel: "Sensor Profile",
+    csvUploadDeviceHint: "Select the sensor profile",
+    csvUploadChooseFileBtn: "Choose File",
+    csvUploadNoFileSelected: "No file selected",
+    csvUploadNoDeviceSelectedMsg: "Select a sensor profile before importing.",
+    csvUploadSubmitBtn: "Import",
+    csvUploadFailedMsg: "Failed to import CSV. Check the file and the connection to the edge node.",
+    csvUploadResultTitle: "Import Result",
+    csvUploadResultSummary: "{success} of {total} rows imported successfully",
+    csvUploadResultErrorsHeader: "Rejected rows",
+    csvUploadCloseBtn: "Close",
 
     settingsTitle: "Station Settings & Preferences",
     settingsSubtitle: "Edge network parameters, local SQLite database diagnostics, and interface visual preferences.",
@@ -3553,6 +3643,13 @@ class OryzaI18n {
     settingsInfoPortLabel: "พอร์ต TCP เริ่มต้น",
     themeDarkMode: "โหมดมืด",
     themeLightMode: "โหมดสว่าง",
+    settingsCronHeader: "การตั้งเวลาอัตโนมัติ",
+    settingsCronDesc: "เวลาประจำวันที่โหนดขอบจะประเมินระยะการเจริญเติบโตของทุกแปลงโดยอัตโนมัติ โดยใช้ข้อมูลสภาพอากาศที่ได้รับมาแล้ว",
+    settingsCronCurrentLabel: "เวลาปัจจุบัน",
+    settingsCronChangeBtn: "เปลี่ยนเวลา",
+    settingsCronDialogTitle: "ตั้งเวลาตัวจัดตารางเวลากลางคืน",
+    settingsCronUpdateSuccess: "อัปเดตเวลาตัวจัดตารางเวลาสำเร็จแล้ว",
+    settingsCronUpdateFailedMsg: "อัปเดตเวลาตัวจัดตารางเวลาล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
 
     statsSectionPhenoTitle: "ระบบติดตามระยะฟีโนโลยี BBCH และคำแนะนำทางการเกษตร",
     statsSectionPhenoSubtitle: "ระยะการเจริญเติบโตที่ทำนายโดย AI ประจำเครื่อง (ONNX) และการจัดการเชิงปฏิบัติการ",
@@ -3587,27 +3684,30 @@ class OryzaI18n {
 
     hudLatencyHeader: "ความหน่วงการอนุมานต่ำกว่ามิลลิวินาที (เกณฑ์มาตรฐาน Rust ONNX)",
     hudCpuMeanLabel: "ค่าเฉลี่ย CPU Rust (ort)",
-    hudCpuMeanDetail: "0.021 ms • เป้าหมาย: < 5.0 ms",
+    hudCpuMeanDetail: "เป้าหมาย: < 5.0 ms",
     hudP95Label: "เปอร์เซ็นไทล์ 95 (p95)",
     hudP95Detail: "ความสม่ำเสมอที่เข้มงวดบน CPU",
-    hudThesisCeilingLabel: "เพดานตามอาจารย์ที่ปรึกษา USP",
-    hudThesisCeilingDetail: "ขีดจำกัดที่ยอมรับได้ของวิทยานิพนธ์",
+    hudThesisCeilingLabel: "เพดานความหน่วงของโหนดขอบ",
+    hudThesisCeilingDetail: "ขีดจำกัดที่ยอมรับได้สำหรับการอนุมานภาคสนาม",
     hudRelativeSpeedLabel: "ความเร็วสัมพัทธ์",
-    hudRelativeSpeedDetail: "เร็วกว่าเพดานของวิทยานิพนธ์",
-    hudHardwareHeader: "ทรัพยากรฮาร์ดแวร์ของ Raspberry Pi",
+    hudRelativeSpeedDetail: "เร็วกว่าเพดานของโหนดขอบ",
+    hudHardwareHeader: "ทรัพยากรฮาร์ดแวร์ของโหนดขอบ",
     hudCpuUsageLabel: "การใช้งาน CPU",
-    hudCpuUsageDetail: "4 คอร์ ARM Cortex-A76",
+    hudCpuUsageDetail: "{cores} คอร์ที่ใช้งานได้",
     hudRamLabel: "หน่วยความจำ RAM",
-    hudDiskLabel: "ดิสก์ / การ์ด SD",
+    hudDiskLabel: "ดิสก์ / พื้นที่จัดเก็บ",
     hudUsedSuffix: "ใช้ไปแล้ว",
     hudSubsystemsHeader: "ระบบย่อยของโหนดขอบ",
     hudSqliteLabel: "ฐานข้อมูล SQLite ในเครื่อง (WAL แบบจำกัด)",
     hudOnnxSessionLabel: "เซสชัน ONNX Runtime ประจำเครื่องในหน่วยความจำ",
     hudOnnxSessionDetail: "ตัวจำแนกหลายคลาส CatBoost 44 ฟีเจอร์",
-    hudCronLabel: "ตัวจัดตารางเวลากลางคืน (23:59)",
+    hudCronLabel: "ตัวจัดตารางเวลากลางคืน ({time})",
     hudCronDetail: "ทำงานทุกวันพร้อมการกู้คืนเมื่อบูต",
     hudStatusActive: "ทำงานอยู่",
     hudStatusFailed: "ล้มเหลว",
+    hudStatusUnknown: "ไม่ทราบสถานะ",
+    hudNoDataLabel: "ไม่มีข้อมูล",
+    hudHostIdentityFormat: "{os}/{arch}",
 
     vizWaitingAnalytics: "กำลังรอข้อมูลวิเคราะห์และการทำนายฟีโนโลยี",
     vizDonutHeader: "ความน่าจะเป็นทางฟีโนโลยี (CatBoost ONNX)",
@@ -3698,6 +3798,24 @@ class OryzaI18n {
     radarWaterSecurity: "ความมั่นคงด้านน้ำ",
     radarHumidityBalance: "สมดุลความชื้น",
     radarThermalStability: "เสถียรภาพทางความร้อน (DTR)",
+    sensorSaveFailedMsg: "บันทึกการแมปเซ็นเซอร์ล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
+    manualRecordFailedMsg: "บันทึกข้อมูลด้วยตนเองล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
+    parcelCreateFailedMsg: "ลงทะเบียนแปลงล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
+    parcelUpdateFailedMsg: "อัปเดตแปลงล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
+    parcelDeleteFailedMsg: "ลบแปลงล้มเหลว ตรวจสอบการเชื่อมต่อกับโหนดขอบ",
+    csvUploadBtn: "นำเข้า CSV",
+    csvUploadDialogTitle: "นำเข้าข้อมูลจากไฟล์ CSV",
+    csvUploadDeviceLabel: "โปรไฟล์เซนเซอร์",
+    csvUploadDeviceHint: "เลือกโปรไฟล์เซนเซอร์",
+    csvUploadChooseFileBtn: "เลือกไฟล์",
+    csvUploadNoFileSelected: "ยังไม่ได้เลือกไฟล์",
+    csvUploadNoDeviceSelectedMsg: "โปรดเลือกโปรไฟล์เซนเซอร์ก่อนนำเข้าข้อมูล",
+    csvUploadSubmitBtn: "นำเข้า",
+    csvUploadFailedMsg: "นำเข้า CSV ล้มเหลว ตรวจสอบไฟล์และการเชื่อมต่อกับโหนดขอบ",
+    csvUploadResultTitle: "ผลการนำเข้าข้อมูล",
+    csvUploadResultSummary: "นำเข้าสำเร็จ {success} จาก {total} แถว",
+    csvUploadResultErrorsHeader: "แถวที่ถูกปฏิเสธ",
+    csvUploadCloseBtn: "ปิด",
 
     settingsTitle: "การตั้งค่าสถานีและค่ากำหนด",
     settingsSubtitle: "พารามิเตอร์เครือข่าย ฐานข้อมูล SQLite ในเครื่อง และการปรับแต่งอินเทอร์เฟซ",

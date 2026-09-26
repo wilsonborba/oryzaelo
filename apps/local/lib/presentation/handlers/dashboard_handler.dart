@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:local/core/logs.dart';
 import 'package:local/domain/models/device_mapping.dart';
@@ -63,6 +65,7 @@ class DashboardHandler extends ChangeNotifier {
   IngestionReport? _lastIngestionReport;
   String? _cachedParcelId;
   DateTime? _cachedAt;
+  String? _cronTargetTime;
 
   // Getters
   bool get isLoading => _isLoading;
@@ -82,6 +85,10 @@ class DashboardHandler extends ChangeNotifier {
   AppHealth? get appHealth => _appHealth;
   BenchmarkLatency? get benchmarkLatency => _benchmarkLatency;
   IngestionReport? get lastIngestionReport => _lastIngestionReport;
+  /// The nightly phenology-evaluation time ("HH:MM"), read live from the
+  /// backend's config store; null until [initialize] loads it, never a
+  /// client-side guess at what the backend defaults to.
+  String? get cronTargetTime => _cronTargetTime;
 
   List<DeviceMapping> get allDeviceMappings => [..._devicePresets, ..._customMappings];
 
@@ -100,17 +107,20 @@ class DashboardHandler extends ChangeNotifier {
       final customFuture = _deviceService.fetchCustomMappings();
       final parcelsFuture = _parcelService.fetchParcels();
       final telemetryFuture = refreshTelemetry(notify: false);
+      final configFuture = _adminService.fetchConfig();
 
       final results = await Future.wait([
         presetsFuture,
         customFuture,
         parcelsFuture,
         telemetryFuture,
+        configFuture,
       ]);
 
       _devicePresets = results[0] as List<DeviceMapping>;
       _customMappings = results[1] as List<DeviceMapping>;
       _parcels = results[2] as List<FarmParcel>;
+      _cronTargetTime = (results[4] as Map<String, String>)['cron_time'];
 
       // Auto-select first parcel or fallback
       if (_parcels.isNotEmpty) {
@@ -153,10 +163,17 @@ class DashboardHandler extends ChangeNotifier {
       notifyListeners();
     }
 
+    // Cumulative charts (GDD accumulation) must cover the full growth cycle
+    // since sowing, or the running total silently understates the season:
+    // a fixed last-60-days window truncates the early season for any parcel
+    // more than 60 days into its cycle (rice runs ~100-150 days), and the
+    // cutoff worsens by one day every day the crop keeps growing.
+    final windowDays = math.max(60, parcel.daysAfterSowing + 7);
+
     try {
       final predFuture = _phenologyService.fetchLatest(parcel.id);
-      final weatherFuture = _weatherService.fetchRecords(parcel.id, days: 60);
-      final analyticsFuture = _weatherService.fetchAnalytics(parcel.id, days: 60);
+      final weatherFuture = _weatherService.fetchRecords(parcel.id, days: windowDays);
+      final analyticsFuture = _weatherService.fetchAnalytics(parcel.id, days: windowDays);
 
       final results = await Future.wait([predFuture, weatherFuture, analyticsFuture]);
 
@@ -407,6 +424,25 @@ class DashboardHandler extends ChangeNotifier {
       _isOperatingMock = false;
       notifyListeners();
     }
+  }
+
+  // ── Edge Node Configuration ──────────────────────────────────────────────
+
+  /// Updates the nightly cron evaluation time. Returns false (config left
+  /// unchanged, [cronTargetTime] untouched) if the backend rejects the value
+  /// — e.g. malformed "HH:MM" — never optimistically applying it locally.
+  ///
+  /// Also refreshes telemetry so the Edge Node Subsystems HUD (which reads
+  /// [appHealth].cronTargetTime, a separate field populated by that fetch)
+  /// reflects the new time immediately, not just [cronTargetTime] itself.
+  Future<bool> updateCronTargetTime(String hhMm) async {
+    final ok = await _adminService.updateConfig({'cron_time': hhMm});
+    if (ok) {
+      _cronTargetTime = hhMm;
+      await refreshTelemetry(notify: false);
+      notifyListeners();
+    }
+    return ok;
   }
 
   // ── Record Batch Deletion ────────────────────────────────────────────────

@@ -39,8 +39,8 @@ class FarmParcel {
       longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
       riceEcosystem: json['rice_ecosystem'] as String? ?? 'Irrigated',
       riceVariety: json['rice_variety'] as String? ?? 'RD43',
-      sowingDate: json['sowing_date'] != null
-          ? DateTime.tryParse(json['sowing_date'].toString()) ?? DateTime.now()
+      sowingDate: json['planting_date'] != null
+          ? DateTime.tryParse(json['planting_date'].toString()) ?? DateTime.now()
           : DateTime.now(),
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())
@@ -60,7 +60,7 @@ class FarmParcel {
       'longitude': longitude,
       'rice_ecosystem': riceEcosystem,
       'rice_variety': riceVariety,
-      'sowing_date': sowingDate.toIso8601String().split('T').first,
+      'planting_date': sowingDate.toIso8601String().split('T').first,
     };
   }
 

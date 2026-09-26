@@ -222,9 +222,12 @@ class _SensorConfigScreenState extends State<SensorConfigScreen> {
 
                 Navigator.of(ctx).pop();
                 final ok = await widget.handler.saveCustomMapping(mapping);
-                if (mounted && ok) {
+                if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(s.sensorSavedSuccess)),
+                    SnackBar(
+                      content: Text(ok ? s.sensorSavedSuccess : s.sensorSaveFailedMsg),
+                      backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
+                    ),
                   );
                 }
               },

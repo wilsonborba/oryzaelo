@@ -480,4 +480,37 @@ class EngineClient {
       return false;
     }
   }
+
+  // ── Edge Node Configuration (key-value store) ────────────────────────────
+
+  Future<Map<String, String>> getConfig() async {
+    try {
+      final res = await _client.get(_uri('/api/v1/config')).timeout(AppSettings.receiveTimeout);
+      if (res.statusCode == 200) {
+        final map = jsonDecode(res.body) as Map<String, dynamic>;
+        return map.map((k, v) => MapEntry(k, v.toString()));
+      }
+    } catch (e) {
+      logError('Failed to fetch config: $e');
+    }
+    return {};
+  }
+
+  /// Returns false (and never applies a partial update) if the backend
+  /// rejects any key/value pair, e.g. a malformed cron_target_time.
+  Future<bool> updateConfig(Map<String, String> configs) async {
+    try {
+      final res = await _client
+          .put(
+            _uri('/api/v1/config'),
+            headers: _headers,
+            body: jsonEncode({'configs': configs}),
+          )
+          .timeout(AppSettings.receiveTimeout);
+      return res.statusCode == 200;
+    } catch (e) {
+      logError('Failed to update config: $e');
+      return false;
+    }
+  }
 }

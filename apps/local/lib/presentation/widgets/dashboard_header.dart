@@ -30,10 +30,14 @@ class DashboardHeader extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final isCompact = constraints.maxWidth < 768;
-          // Phone-tier: trims the header further so it never overflows on a
-          // real handset (menu + brand + status + refresh + theme + language
-          // all fit in ~300px once the badge/subtitle/text labels are cut).
-          final isNarrow = constraints.maxWidth < 480;
+          // Trims the header (badge, status label, 3-pill language selector)
+          // whenever the full un-trimmed content would not actually fit.
+          // Measured against the real widget tree: the full header's
+          // intrinsic width (menu + brand + badge + subtitle + status text +
+          // refresh + theme + 3-pill language selector) is ~920px, so this
+          // must trigger well above the old 480px phone-only cutoff or the
+          // Row overflows on any tablet/small-desktop width in between.
+          final isNarrow = constraints.maxWidth < 960;
 
           return Row(
             children: [

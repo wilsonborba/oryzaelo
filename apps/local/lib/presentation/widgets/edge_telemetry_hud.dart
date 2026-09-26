@@ -30,7 +30,7 @@ class EdgeTelemetryHud extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Microsecond Latency Meters (USP Thesis Target Comparison)
+            // Microsecond Latency Meters (Edge Inference Performance)
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -68,7 +68,9 @@ class EdgeTelemetryHud extends StatelessWidget {
                           _buildLatencyGauge(
                             width: gaugeWidth,
                             label: s.hudCpuMeanLabel,
-                            value: '${bench?.avgLatencyUs.toStringAsFixed(1) ?? "21.3"} µs',
+                            value: bench?.meanLatencyUs != null
+                                ? '${bench!.meanLatencyUs!.toStringAsFixed(1)} µs'
+                                : s.hudNoDataLabel,
                             subtext: s.hudCpuMeanDetail,
                             color: Colors.green,
                             isDark: isDark,
@@ -76,7 +78,7 @@ class EdgeTelemetryHud extends StatelessWidget {
                           _buildLatencyGauge(
                             width: gaugeWidth,
                             label: s.hudP95Label,
-                            value: '${bench?.p95Us.toStringAsFixed(1) ?? "22.7"} µs',
+                            value: bench?.p95Us != null ? '${bench!.p95Us!.toStringAsFixed(1)} µs' : s.hudNoDataLabel,
                             subtext: s.hudP95Detail,
                             color: Colors.teal,
                             isDark: isDark,
@@ -84,7 +86,9 @@ class EdgeTelemetryHud extends StatelessWidget {
                           _buildLatencyGauge(
                             width: gaugeWidth,
                             label: s.hudThesisCeilingLabel,
-                            value: '200.0 ms',
+                            value: bench?.targetCeilingMs != null
+                                ? '${bench!.targetCeilingMs!.toStringAsFixed(1)} ms'
+                                : s.hudNoDataLabel,
                             subtext: s.hudThesisCeilingDetail,
                             color: Colors.blueGrey,
                             isDark: isDark,
@@ -92,7 +96,9 @@ class EdgeTelemetryHud extends StatelessWidget {
                           _buildLatencyGauge(
                             width: gaugeWidth,
                             label: s.hudRelativeSpeedLabel,
-                            value: '9.389x',
+                            value: bench?.speedupVsEdgeCeiling != null
+                                ? '${bench!.speedupVsEdgeCeiling!.toStringAsFixed(2)}x'
+                                : s.hudNoDataLabel,
                             subtext: s.hudRelativeSpeedDetail,
                             color: Colors.amber.shade800,
                             isDark: isDark,
@@ -189,6 +195,13 @@ class EdgeTelemetryHud extends StatelessWidget {
   }
 
   Widget _buildSystemProbesPanel(SystemHealth? sys, bool isDark, OryzaStrings s) {
+    final hostIdentity = (sys?.os != null && sys?.arch != null)
+        ? s.hudHostIdentityFormat.replaceAll('{os}', sys!.os!).replaceAll('{arch}', sys.arch!)
+        : null;
+    final cpuDetail = sys?.cpuCores != null
+        ? s.hudCpuUsageDetail.replaceAll('{cores}', '${sys!.cpuCores}')
+        : s.hudNoDataLabel;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -199,36 +212,60 @@ class EdgeTelemetryHud extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            s.hudHardwareHeader,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
-              fontFamily: 'Ubuntu Sans Mono',
-              color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
-            ),
+          Row(
+            children: [
+              Text(
+                s.hudHardwareHeader,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Ubuntu Sans Mono',
+                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                ),
+              ),
+              if (hostIdentity != null) ...[
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    hostIdentity,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 9.5,
+                      fontFamily: 'Ubuntu Sans Mono',
+                      color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
           const SizedBox(height: 14),
           _buildResourceBar(
             label: s.hudCpuUsageLabel,
-            pct: sys?.cpuUsagePct ?? 6.4,
-            detail: '${(sys?.cpuUsagePct ?? 6.4).toStringAsFixed(1)}% (${s.hudCpuUsageDetail})',
+            pct: sys?.cpuUsagePct,
+            detail: sys?.cpuUsagePct != null ? '${sys!.cpuUsagePct!.toStringAsFixed(1)}% ($cpuDetail)' : null,
+            noDataLabel: s.hudNoDataLabel,
             color: Colors.blue,
             isDark: isDark,
           ),
           const SizedBox(height: 10),
           _buildResourceBar(
             label: s.hudRamLabel,
-            pct: sys?.ramUsagePct ?? 32.5,
-            detail: '${sys?.ramUsedMb ?? 1320} MB / ${sys?.ramTotalMb ?? 4096} MB LPDDR4X',
+            pct: sys?.ramUsagePct,
+            detail: (sys?.ramUsedMb != null && sys?.ramTotalMb != null)
+                ? '${sys!.ramUsedMb} MB / ${sys.ramTotalMb} MB'
+                : null,
+            noDataLabel: s.hudNoDataLabel,
             color: Colors.teal,
             isDark: isDark,
           ),
           const SizedBox(height: 10),
           _buildResourceBar(
             label: s.hudDiskLabel,
-            pct: sys?.diskUsagePct ?? 14.8,
-            detail: '${(sys?.diskUsagePct ?? 14.8).toStringAsFixed(1)}% ${s.hudUsedSuffix}',
+            pct: sys?.diskUsagePct,
+            detail: sys?.diskUsagePct != null ? '${sys!.diskUsagePct!.toStringAsFixed(1)}% ${s.hudUsedSuffix}' : null,
+            noDataLabel: s.hudNoDataLabel,
             color: Colors.amber.shade800,
             isDark: isDark,
           ),
@@ -239,11 +276,13 @@ class EdgeTelemetryHud extends StatelessWidget {
 
   Widget _buildResourceBar({
     required String label,
-    required double pct,
-    required String detail,
+    required double? pct,
+    required String? detail,
+    required String noDataLabel,
     required Color color,
     required bool isDark,
   }) {
+    final hasData = pct != null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -265,7 +304,7 @@ class EdgeTelemetryHud extends StatelessWidget {
             const SizedBox(width: 8),
             Flexible(
               child: Text(
-                detail,
+                detail ?? noDataLabel,
                 textAlign: TextAlign.right,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -273,7 +312,9 @@ class EdgeTelemetryHud extends StatelessWidget {
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Ubuntu Sans Mono',
-                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                  color: hasData
+                      ? (isDark ? Colors.grey.shade300 : Colors.grey.shade800)
+                      : (isDark ? Colors.grey.shade600 : Colors.grey.shade400),
                 ),
               ),
             ),
@@ -283,10 +324,10 @@ class EdgeTelemetryHud extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
-            value: (pct / 100.0).clamp(0.0, 1.0),
+            value: hasData ? (pct / 100.0).clamp(0.0, 1.0) : 0.0,
             minHeight: 6,
             backgroundColor: isDark ? Colors.white10 : Colors.black12,
-            valueColor: AlwaysStoppedAnimation<Color>(color),
+            valueColor: AlwaysStoppedAnimation<Color>(hasData ? color : Colors.grey.withValues(alpha: 0.3)),
           ),
         ),
       ],
@@ -316,7 +357,7 @@ class EdgeTelemetryHud extends StatelessWidget {
           const SizedBox(height: 14),
           _buildSubsystemRow(
             s.hudSqliteLabel,
-            app?.sqliteWalOk ?? true,
+            app?.sqliteConnected,
             'src/dal/data/local/oryza_elo_edge.db',
             isDark,
             s,
@@ -324,15 +365,15 @@ class EdgeTelemetryHud extends StatelessWidget {
           const SizedBox(height: 10),
           _buildSubsystemRow(
             s.hudOnnxSessionLabel,
-            app?.onnxLoaded ?? true,
+            app?.onnxLoaded,
             s.hudOnnxSessionDetail,
             isDark,
             s,
           ),
           const SizedBox(height: 10),
           _buildSubsystemRow(
-            s.hudCronLabel,
-            app?.cronActive ?? true,
+            s.hudCronLabel.replaceAll('{time}', app?.cronTargetTime ?? s.hudNoDataLabel),
+            app?.cronActive,
             s.hudCronDetail,
             isDark,
             s,
@@ -342,13 +383,13 @@ class EdgeTelemetryHud extends StatelessWidget {
     );
   }
 
-  Widget _buildSubsystemRow(String title, bool isOk, String desc, bool isDark, OryzaStrings s) {
+  Widget _buildSubsystemRow(String title, bool? isOk, String desc, bool isDark, OryzaStrings s) {
     return Row(
       children: [
         Icon(
-          isOk ? Icons.check_circle : Icons.error,
+          isOk == null ? Icons.help_outline : (isOk ? Icons.check_circle : Icons.error),
           size: 16,
-          color: isOk ? Colors.green : Colors.red,
+          color: isOk == null ? Colors.grey : (isOk ? Colors.green : Colors.red),
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -377,18 +418,20 @@ class EdgeTelemetryHud extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(
-            color: isOk
-                ? (isDark ? Colors.green.shade900.withValues(alpha: 0.3) : Colors.green.shade50)
-                : Colors.red.shade100,
+            color: isOk == null
+                ? (isDark ? Colors.white10 : Colors.grey.shade200)
+                : (isOk ? (isDark ? Colors.green.shade900.withValues(alpha: 0.3) : Colors.green.shade50) : Colors.red.shade100),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
-            isOk ? s.hudStatusActive : s.hudStatusFailed,
+            isOk == null ? s.hudStatusUnknown : (isOk ? s.hudStatusActive : s.hudStatusFailed),
             style: TextStyle(
               fontSize: 9,
               fontWeight: FontWeight.w800,
               fontFamily: 'Ubuntu Sans Mono',
-              color: isOk ? (isDark ? Colors.green.shade300 : Colors.green.shade800) : Colors.red,
+              color: isOk == null
+                  ? (isDark ? Colors.grey.shade400 : Colors.grey.shade600)
+                  : (isOk ? (isDark ? Colors.green.shade300 : Colors.green.shade800) : Colors.red),
             ),
           ),
         ),

@@ -403,11 +403,12 @@ class ParcelSelectorBar extends StatelessWidget {
                 );
                 if (context.mounted) {
                   Navigator.pop(ctx);
-                  if (ok) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(s.parcelCreatedSuccess)),
-                    );
-                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(ok ? s.parcelCreatedSuccess : s.parcelCreateFailedMsg),
+                      backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
+                    ),
+                  );
                 }
               },
               child: Text(s.parcelSaveBtn),
@@ -478,11 +479,12 @@ class ParcelSelectorBar extends StatelessWidget {
                 final ok = await handler.updateParcel(updated);
                 if (context.mounted) {
                   Navigator.pop(ctx);
-                  if (ok) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(s.parcelUpdatedSuccess)),
-                    );
-                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(ok ? s.parcelUpdatedSuccess : s.parcelUpdateFailedMsg),
+                      backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
+                    ),
+                  );
                 }
               },
               child: Text(s.parcelUpdateBtn),
@@ -510,11 +512,12 @@ class ParcelSelectorBar extends StatelessWidget {
               final ok = await handler.deleteParcel(parcel.id);
               if (context.mounted) {
                 Navigator.pop(ctx);
-                if (ok) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(s.parcelDeletedSuccess)),
-                  );
-                }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(ok ? s.parcelDeletedSuccess : s.parcelDeleteFailedMsg),
+                    backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
+                  ),
+                );
               }
             },
             child: Text(s.parcelConfirmDeleteBtn, style: const TextStyle(color: Colors.white)),

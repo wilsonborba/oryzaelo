@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:math' as math;
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:local/domain/models/device_mapping.dart';
 import 'package:local/domain/models/weather_record.dart';
 import 'package:local/presentation/handlers/dashboard_handler.dart';
 import 'package:local/presentation/widgets/parcel_selector_bar.dart';
@@ -214,9 +217,12 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
 
                 Navigator.of(ctx).pop();
                 final ok = await widget.handler.ingestSingleRecord(rec);
-                if (mounted && ok) {
+                if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(s.manualRecordSavedMsg)),
+                    SnackBar(
+                      content: Text(ok ? s.manualRecordSavedMsg : s.manualRecordFailedMsg),
+                      backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
+                    ),
                   );
                 }
               },
@@ -228,6 +234,204 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showCsvUploadDialog() {
+    final s = OryzaI18n.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final devices = widget.handler.allDeviceMappings;
+
+    DeviceMapping? selectedDevice;
+    String? pickedFileName;
+    String? pickedCsvContent;
+    bool isSubmitting = false;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: Text(
+            s.csvUploadDialogTitle,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+          content: SizedBox(
+            width: math.min(420, MediaQuery.of(context).size.width * 0.86),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(s.csvUploadDeviceLabel, style: const TextStyle(fontSize: 12.5)),
+                const SizedBox(height: 6),
+                DropdownButtonFormField<DeviceMapping>(
+                  initialValue: selectedDevice,
+                  isExpanded: true,
+                  hint: Text(s.csvUploadDeviceHint),
+                  decoration: const InputDecoration(isDense: true),
+                  items: devices
+                      .map(
+                        (d) => DropdownMenuItem(
+                          value: d,
+                          child: Text(
+                            d.deviceName,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (val) => setDialogState(() => selectedDevice = val),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () async {
+                        final result = await FilePicker.platform.pickFiles(
+                          type: FileType.custom,
+                          allowedExtensions: ['csv'],
+                          withData: true,
+                        );
+                        final file = result?.files.singleOrNull;
+                        if (file?.bytes != null) {
+                          setDialogState(() {
+                            pickedFileName = file!.name;
+                            pickedCsvContent = utf8.decode(file.bytes!);
+                          });
+                        }
+                      },
+                      icon: const Icon(Icons.upload_file_rounded, size: 16),
+                      label: Text(s.csvUploadChooseFileBtn),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        pickedFileName ?? s.csvUploadNoFileSelected,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: isSubmitting ? null : () => Navigator.of(ctx).pop(),
+              child: Text(s.cancelBtn),
+            ),
+            ElevatedButton(
+              onPressed: isSubmitting
+                  ? null
+                  : () async {
+                      final s = OryzaI18n.of(context);
+                      if (selectedDevice == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(s.csvUploadNoDeviceSelectedMsg)),
+                        );
+                        return;
+                      }
+                      if (pickedCsvContent == null) return;
+
+                      setDialogState(() => isSubmitting = true);
+                      final report = await widget.handler.uploadCsv(
+                        deviceId: selectedDevice!.id,
+                        csvContent: pickedCsvContent!,
+                      );
+                      if (!ctx.mounted) return;
+                      Navigator.of(ctx).pop();
+
+                      if (!mounted) return;
+                      if (report != null) {
+                        _showCsvResultDialog(report);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(s.csvUploadFailedMsg),
+                            backgroundColor: Colors.red.shade800,
+                          ),
+                        );
+                      }
+                    },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: OryzaColors.burntOrange,
+                foregroundColor: Colors.white,
+              ),
+              child: isSubmitting
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    )
+                  : Text(s.csvUploadSubmitBtn),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showCsvResultDialog(IngestionReport report) {
+    final s = OryzaI18n.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final summary = s.csvUploadResultSummary
+        .replaceAll('{success}', '${report.successfulRows}')
+        .replaceAll('{total}', '${report.totalRows}');
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text(s.csvUploadResultTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
+        content: SizedBox(
+          width: math.min(420, MediaQuery.of(context).size.width * 0.86),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                summary,
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: report.failedRows > 0
+                      ? (report.successfulRows > 0 ? Colors.orange.shade800 : Colors.red.shade800)
+                      : Colors.green.shade800,
+                ),
+              ),
+              if (report.errors.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(s.csvUploadResultErrorsHeader, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
+                const SizedBox(height: 6),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 220),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: report.errors
+                          .map(
+                            (e) => Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: Text(e, style: const TextStyle(fontSize: 11.5)),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(s.csvUploadCloseBtn),
+          ),
+        ],
       ),
     );
   }
@@ -344,12 +548,23 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
               ),
+              OutlinedButton.icon(
+                onPressed: widget.handler.selectedParcel == null ? null : _showCsvUploadDialog,
+                icon: const Icon(Icons.upload_file_rounded, size: 16),
+                label: Text(s.csvUploadBtn),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: textColor,
+                  side: BorderSide(color: borderColor),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+              ),
               ElevatedButton.icon(
                 onPressed: widget.handler.isOperatingMock
                     ? null
                     : () async {
                         final ok = await widget.handler.populateMockData(days: 75, parcels: 4);
-                        if (mounted && ok) {
+                        if (!mounted) return;
+                        if (ok) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(s.demoDataLoadedSuccess)),
                           );
@@ -375,7 +590,8 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     ? null
                     : () async {
                         final ok = await widget.handler.cleanMockData();
-                        if (mounted && ok) {
+                        if (!mounted) return;
+                        if (ok) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(s.demoDataCleanedSuccess)),
                           );
