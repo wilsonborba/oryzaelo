@@ -614,6 +614,13 @@ class OryzaStrings {
   final String filterTimeAfternoon;
   final String filterTimeNight;
   final String filterTimeCustom;
+  final String filterPeriodAll;
+  final String filterPeriod7Days;
+  final String filterPeriod15Days;
+  final String filterPeriod30Days;
+  final String filterPeriodCustom;
+  final String filterStartDate;
+  final String filterEndDate;
 
   // Manual record dialog & data table (data_management_screen)
   final String manualRecordDateLabel;
@@ -1421,6 +1428,13 @@ class OryzaStrings {
     this.filterTimeAfternoon = "Tarde",
     this.filterTimeNight = "Noite",
     this.filterTimeCustom = "Personalizado",
+    this.filterPeriodAll = "Todo o Histórico",
+    this.filterPeriod7Days = "Últimos 7 Dias",
+    this.filterPeriod15Days = "Últimos 15 Dias",
+    this.filterPeriod30Days = "Últimos 30 Dias",
+    this.filterPeriodCustom = "Datas Específicas",
+    this.filterStartDate = "Data Inicial",
+    this.filterEndDate = "Data Final",
 
     this.manualRecordDateLabel = "Data do Registro",
     this.manualFieldTMax = "T_máx (°C)",
@@ -3057,6 +3071,13 @@ class OryzaI18n {
     filterTimeAfternoon: "Afternoon",
     filterTimeNight: "Night",
     filterTimeCustom: "Custom",
+    filterPeriodAll: "All History",
+    filterPeriod7Days: "Last 7 Days",
+    filterPeriod15Days: "Last 15 Days",
+    filterPeriod30Days: "Last 30 Days",
+    filterPeriodCustom: "Custom Range",
+    filterStartDate: "Start Date",
+    filterEndDate: "End Date",
 
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );
@@ -3944,6 +3965,13 @@ class OryzaI18n {
     filterTimeAfternoon: "บ่าย",
     filterTimeNight: "ค่ำ",
     filterTimeCustom: "กำหนดเอง",
+    filterPeriodAll: "ประวัติทั้งหมด",
+    filterPeriod7Days: "7 วันที่ผ่านมา",
+    filterPeriod15Days: "15 วันที่ผ่านมา",
+    filterPeriod30Days: "30 วันที่ผ่านมา",
+    filterPeriodCustom: "กำหนดช่วงวันที่",
+    filterStartDate: "วันที่เริ่มต้น",
+    filterEndDate: "วันที่สิ้นสุด",
 
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );

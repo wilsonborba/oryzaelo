@@ -249,5 +249,38 @@ void main() {
     // Verify page 2 shows "11 - 20"
     expect(find.textContaining('11 - 20'), findsOneWidget);
   });
+
+  testWidgets('compact date range filter dialog opens with presets and selects preset cleanly', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1280, 900));
+    final handler = await buildHandler();
+
+    await tester.pumpWidget(wrap(DataManagementScreen(handler: handler)));
+    await tester.pumpAndSettle();
+
+    // Switch to sensor history tab
+    final historyTab = find.byIcon(Icons.history_rounded);
+    await tester.tap(historyTab);
+    await tester.pumpAndSettle();
+
+    // Tap date range filter button
+    final dateFilterBtn = find.byIcon(Icons.date_range_rounded);
+    await tester.tap(dateFilterBtn);
+    await tester.pumpAndSettle();
+
+    // Verify dialog is opened with compact presets
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(find.text('Todo o Histórico'), findsOneWidget);
+    expect(find.text('Últimos 7 Dias'), findsOneWidget);
+    expect(find.text('Últimos 15 Dias'), findsOneWidget);
+    expect(find.text('Últimos 30 Dias'), findsOneWidget);
+
+    // Tap "Últimos 7 Dias" preset
+    await tester.tap(find.text('Últimos 7 Dias'));
+    await tester.pumpAndSettle();
+
+    // Dialog dismissed automatically
+    expect(find.byType(Dialog), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }
 

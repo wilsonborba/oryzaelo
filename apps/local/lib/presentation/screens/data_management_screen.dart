@@ -1522,23 +1522,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                         : '${_historyStartDate != null ? DateFormat('yyyy-MM-dd').format(_historyStartDate!) : ''} → ${_historyEndDate != null ? DateFormat('yyyy-MM-dd').format(_historyEndDate!) : ''}',
                     style: const TextStyle(fontSize: 11),
                   ),
-                  onPressed: () async {
-                    final picked = await showDateRangePicker(
-                      context: context,
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime(2035),
-                      initialDateRange: _historyStartDate != null && _historyEndDate != null
-                          ? DateTimeRange(start: _historyStartDate!, end: _historyEndDate!)
-                          : null,
-                    );
-                    if (picked != null) {
-                      setState(() {
-                        _historyStartDate = picked.start;
-                        _historyEndDate = picked.end;
-                        _historyCurrentPage = 0;
-                      });
-                    }
-                  },
+                  onPressed: () => _showDateRangeFilterDialog(context, isDark, s),
                 ),
 
                 // Time Filter Button
@@ -1926,6 +1910,383 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showDateRangeFilterDialog(BuildContext context, bool isDark, OryzaStrings s) async {
+    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
+    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
+    final activeBg = isDark
+        ? OryzaColors.botanicalGreen.withValues(alpha: 0.25)
+        : OryzaColors.botanicalGreen.withValues(alpha: 0.12);
+    final activeColor = isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen;
+    final inactiveColor = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+
+    final allReadings = _cachedReadings ?? const [];
+    final refDate = allReadings.isNotEmpty
+        ? allReadings.map((r) => r.recordedAt).reduce((a, b) => a.isAfter(b) ? a : b)
+        : (widget.handler.weatherRecords.isNotEmpty
+            ? widget.handler.weatherRecords.map((w) => w.date).reduce((a, b) => a.isAfter(b) ? a : b)
+            : DateTime.now());
+    final anchor = DateTime(refDate.year, refDate.month, refDate.day);
+    final d7 = anchor.subtract(const Duration(days: 6));
+    final d15 = anchor.subtract(const Duration(days: 14));
+    final d30 = anchor.subtract(const Duration(days: 29));
+
+    await showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setDlgState) {
+            final isAllPeriod = _historyStartDate == null && _historyEndDate == null;
+            final is7Days = _historyStartDate != null &&
+                _historyEndDate != null &&
+                _historyStartDate!.year == d7.year &&
+                _historyStartDate!.month == d7.month &&
+                _historyStartDate!.day == d7.day &&
+                _historyEndDate!.year == anchor.year &&
+                _historyEndDate!.month == anchor.month &&
+                _historyEndDate!.day == anchor.day;
+            final is15Days = _historyStartDate != null &&
+                _historyEndDate != null &&
+                _historyStartDate!.year == d15.year &&
+                _historyStartDate!.month == d15.month &&
+                _historyStartDate!.day == d15.day &&
+                _historyEndDate!.year == anchor.year &&
+                _historyEndDate!.month == anchor.month &&
+                _historyEndDate!.day == anchor.day;
+            final is30Days = _historyStartDate != null &&
+                _historyEndDate != null &&
+                _historyStartDate!.year == d30.year &&
+                _historyStartDate!.month == d30.month &&
+                _historyStartDate!.day == d30.day &&
+                _historyEndDate!.year == anchor.year &&
+                _historyEndDate!.month == anchor.month &&
+                _historyEndDate!.day == anchor.day;
+
+            Widget buildPresetButton({
+              required String label,
+              required String sublabel,
+              required bool isSelected,
+              required VoidCallback onTap,
+            }) {
+              return InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(6),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected ? activeBg : Colors.transparent,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: isSelected ? activeColor : borderColor,
+                      width: isSelected ? 1.4 : 1.0,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                          color: isSelected
+                              ? activeColor
+                              : (isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        sublabel,
+                        style: TextStyle(
+                          fontSize: 9.5,
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          color: inactiveColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            return Dialog(
+              backgroundColor: surfaceColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: borderColor, width: 1.2),
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 340),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Header
+                      Row(
+                        children: [
+                          const Icon(Icons.date_range_rounded, size: 16, color: OryzaColors.burntOrange),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              s.filterDateRange.toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: OryzaTypography.monoFontFamily,
+                                package: 'oryzaelo_ui',
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.6,
+                                color: isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary,
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () => Navigator.pop(ctx),
+                            borderRadius: BorderRadius.circular(4),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Icon(Icons.close_rounded, size: 16, color: inactiveColor),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Presets Grid
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildPresetButton(
+                              label: s.filterPeriodAll,
+                              sublabel: s.filterAllSensors,
+                              isSelected: isAllPeriod,
+                              onTap: () {
+                                setState(() {
+                                  _historyStartDate = null;
+                                  _historyEndDate = null;
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: buildPresetButton(
+                              label: s.filterPeriod7Days,
+                              sublabel: '${DateFormat('dd/MM').format(d7)} - ${DateFormat('dd/MM').format(anchor)}',
+                              isSelected: is7Days,
+                              onTap: () {
+                                setState(() {
+                                  _historyStartDate = d7;
+                                  _historyEndDate = anchor;
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildPresetButton(
+                              label: s.filterPeriod15Days,
+                              sublabel: '${DateFormat('dd/MM').format(d15)} - ${DateFormat('dd/MM').format(anchor)}',
+                              isSelected: is15Days,
+                              onTap: () {
+                                setState(() {
+                                  _historyStartDate = d15;
+                                  _historyEndDate = anchor;
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: buildPresetButton(
+                              label: s.filterPeriod30Days,
+                              sublabel: '${DateFormat('dd/MM').format(d30)} - ${DateFormat('dd/MM').format(anchor)}',
+                              isSelected: is30Days,
+                              onTap: () {
+                                setState(() {
+                                  _historyStartDate = d30;
+                                  _historyEndDate = anchor;
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Custom Dates Divider & Title
+                      Row(
+                        children: [
+                          Expanded(child: Divider(color: borderColor, height: 1)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              s.filterPeriodCustom.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontFamily: OryzaTypography.monoFontFamily,
+                                package: 'oryzaelo_ui',
+                                fontWeight: FontWeight.w700,
+                                color: inactiveColor,
+                              ),
+                            ),
+                          ),
+                          Expanded(child: Divider(color: borderColor, height: 1)),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Custom Date Pickers Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                side: BorderSide(
+                                  color: _historyStartDate != null ? OryzaColors.burntOrange : borderColor,
+                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                              ),
+                              onPressed: () async {
+                                final d = await showDatePicker(
+                                  context: context,
+                                  initialDate: _historyStartDate ?? anchor,
+                                  firstDate: DateTime(2020),
+                                  lastDate: DateTime(2035),
+                                );
+                                if (d != null) {
+                                  setState(() {
+                                    _historyStartDate = d;
+                                    if (_historyEndDate != null && _historyEndDate!.isBefore(d)) {
+                                      _historyEndDate = d;
+                                    }
+                                    _historyCurrentPage = 0;
+                                  });
+                                  setDlgState(() {});
+                                }
+                              },
+                              child: Text(
+                                _historyStartDate != null
+                                    ? DateFormat('yyyy-MM-dd').format(_historyStartDate!)
+                                    : s.filterStartDate,
+                                style: TextStyle(
+                                  fontFamily: OryzaTypography.monoFontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  color: _historyStartDate != null
+                                      ? (isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary)
+                                      : inactiveColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text('→', style: TextStyle(color: inactiveColor, fontSize: 14)),
+                          ),
+                          Expanded(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                side: BorderSide(
+                                  color: _historyEndDate != null ? OryzaColors.burntOrange : borderColor,
+                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                              ),
+                              onPressed: () async {
+                                final d = await showDatePicker(
+                                  context: context,
+                                  initialDate: _historyEndDate ?? anchor,
+                                  firstDate: _historyStartDate ?? DateTime(2020),
+                                  lastDate: DateTime(2035),
+                                );
+                                if (d != null) {
+                                  setState(() {
+                                    _historyEndDate = d;
+                                    _historyCurrentPage = 0;
+                                  });
+                                  setDlgState(() {});
+                                }
+                              },
+                              child: Text(
+                                _historyEndDate != null
+                                    ? DateFormat('yyyy-MM-dd').format(_historyEndDate!)
+                                    : s.filterEndDate,
+                                style: TextStyle(
+                                  fontFamily: OryzaTypography.monoFontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  color: _historyEndDate != null
+                                      ? (isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary)
+                                      : inactiveColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Actions
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (_historyStartDate != null || _historyEndDate != null)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _historyStartDate = null;
+                                  _historyEndDate = null;
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                              child: Text(
+                                s.filterClear,
+                                style: const TextStyle(color: OryzaColors.burntOrange, fontSize: 11),
+                              ),
+                            ),
+                          const Spacer(),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: OryzaColors.botanicalGreen,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                            ),
+                            onPressed: () => Navigator.pop(ctx),
+                            child: Text(s.csvUploadCloseBtn, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
