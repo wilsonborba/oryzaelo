@@ -35,6 +35,25 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
   int _rowsPerPage = 10;
   int _currentPage = 0;
 
+  int _historyRowsPerPage = 10;
+  int _historyCurrentPage = 0;
+  DateTime? _historyStartDate;
+  DateTime? _historyEndDate;
+  TimeOfDay? _historyStartTime;
+  TimeOfDay? _historyEndTime;
+  String? _historySensorFilter;
+
+  void _clearHistoryFilters() {
+    setState(() {
+      _historyStartDate = null;
+      _historyEndDate = null;
+      _historyStartTime = null;
+      _historyEndTime = null;
+      _historySensorFilter = null;
+      _historyCurrentPage = 0;
+    });
+  }
+
   Future<void> _loadSensorReadings() async {
     final parcelId = widget.handler.selectedParcel?.id;
     if (parcelId == null) {
@@ -710,13 +729,14 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 onPressed: widget.handler.isOperatingMock
                     ? null
                     : () async {
+                        final messenger = ScaffoldMessenger.of(context);
                         final ok = await widget.handler.populateMockData(
                           days: 75,
                           parcels: 4,
                         );
                         if (!mounted) return;
                         if (ok) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             SnackBar(content: Text(s.demoDataLoadedSuccess)),
                           );
                         }
@@ -746,10 +766,11 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 onPressed: widget.handler.isOperatingMock
                     ? null
                     : () async {
+                        final messenger = ScaffoldMessenger.of(context);
                         final ok = await widget.handler.cleanMockData();
                         if (!mounted) return;
                         if (ok) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             SnackBar(content: Text(s.demoDataCleanedSuccess)),
                           );
                         }
@@ -894,34 +915,18 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
     );
   }
 
-  Widget _buildMetricCell(double? val, String unit, String? sensorId, bool isDark) {
+  Widget _buildMetricCell(double? val, String unit, bool isDark) {
     if (val == null) {
       return const Text('—');
     }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          "${unit == '%' ? val.toStringAsFixed(0) : val.toStringAsFixed(1)} $unit",
-          style: const TextStyle(
-            fontFamily: OryzaTypography.monoFontFamily,
-            package: 'oryzaelo_ui',
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        if (sensorId != null && sensorId.isNotEmpty)
-          Text(
-            sensorId.replaceAll('preset_', '').replaceAll('mapping_', ''),
-            style: TextStyle(
-              fontSize: 8.5,
-              fontFamily: OryzaTypography.monoFontFamily,
-              package: 'oryzaelo_ui',
-              color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
-            ),
-          ),
-      ],
+    return Text(
+      "${unit == '%' ? val.toStringAsFixed(0) : val.toStringAsFixed(1)} $unit",
+      style: const TextStyle(
+        fontFamily: OryzaTypography.monoFontFamily,
+        package: 'oryzaelo_ui',
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 
@@ -1026,38 +1031,67 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             ),
 
           // Scrollable Table
-          OryzaHorizontalScroller(
-            isDark: isDark,
-            step: 220,
-            child: DataTable(
-              showCheckboxColumn: false,
-              headingRowColor: WidgetStateProperty.all(
-                isDark ? const Color(0xFF1B201A) : const Color(0xFFF2EFE6),
-              ),
-              headingRowHeight: 40,
-              dataRowMinHeight: 38,
-              dataRowMaxHeight: 42,
-              columnSpacing: 20,
-              horizontalMargin: 16,
-              columns: [
-                DataColumn(
-                  label: Checkbox(
-                    value: allPageSelected,
-                    onChanged: (_) => _toggleSelectAll(pageRecords),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return OryzaHorizontalScroller(
+                isDark: isDark,
+                step: 220,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: constraints.maxWidth,
                   ),
-                ),
-                DataColumn(label: _headerLabel(s.tableColDate)),
-                DataColumn(label: _headerLabel(s.tableColTmax), numeric: true),
-                DataColumn(label: _headerLabel(s.tableColTmin), numeric: true),
-                DataColumn(label: _headerLabel(s.tableColRain), numeric: true),
-                DataColumn(label: _headerLabel(s.tableColRad), numeric: true),
-                DataColumn(label: _headerLabel(s.tableColRh), numeric: true),
-                DataColumn(
-                  label: _headerLabel(s.chartUnitGdd.split(' ')[0]),
-                  numeric: true,
-                ),
-                DataColumn(label: _headerLabel(s.tableColSource)),
-              ],
+                  child: DataTable(
+                    showCheckboxColumn: false,
+                    headingRowColor: WidgetStateProperty.all(
+                      isDark ? const Color(0xFF1B201A) : const Color(0xFFF2EFE6),
+                    ),
+                    headingRowHeight: 40,
+                    dataRowMinHeight: 38,
+                    dataRowMaxHeight: 42,
+                    columnSpacing: 20,
+                    horizontalMargin: 16,
+                    columns: [
+                      DataColumn(
+                        label: Checkbox(
+                          value: allPageSelected,
+                          onChanged: (_) => _toggleSelectAll(pageRecords),
+                        ),
+                      ),
+                      DataColumn(
+                        columnWidth: const IntrinsicColumnWidth(flex: 1.2),
+                        label: _headerLabel(s.tableColDate),
+                      ),
+                      DataColumn(
+                        columnWidth: const IntrinsicColumnWidth(flex: 1.0),
+                        label: _headerLabel(s.tableColTmax),
+                        numeric: true,
+                      ),
+                      DataColumn(
+                        columnWidth: const IntrinsicColumnWidth(flex: 1.0),
+                        label: _headerLabel(s.tableColTmin),
+                        numeric: true,
+                      ),
+                      DataColumn(
+                        columnWidth: const IntrinsicColumnWidth(flex: 1.0),
+                        label: _headerLabel(s.tableColRain),
+                        numeric: true,
+                      ),
+                      DataColumn(
+                        columnWidth: const IntrinsicColumnWidth(flex: 1.0),
+                        label: _headerLabel(s.tableColRad),
+                        numeric: true,
+                      ),
+                      DataColumn(
+                        columnWidth: const IntrinsicColumnWidth(flex: 1.0),
+                        label: _headerLabel(s.tableColRh),
+                        numeric: true,
+                      ),
+                      DataColumn(
+                        columnWidth: const IntrinsicColumnWidth(flex: 1.1),
+                        label: _headerLabel(s.chartUnitGdd.split(' ')[0]),
+                        numeric: true,
+                      ),
+                    ],
               rows: pageRecords.map((r) {
                 final isSelected = _selectedDates.contains(r.date);
                 final gdd = r.dailyGdd;
@@ -1115,11 +1149,11 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                         ],
                       ),
                     ),
-                    DataCell(_buildMetricCell(r.tMax, '°C', r.tMaxSensorId, isDark)),
-                    DataCell(_buildMetricCell(r.tMin, '°C', r.tMinSensorId, isDark)),
-                    DataCell(_buildMetricCell(r.precipitationMm, 'mm', r.rainfallSensorId, isDark)),
-                    DataCell(_buildMetricCell(r.radiationMjM2, 'MJ/m²', r.radiationSensorId, isDark)),
-                    DataCell(_buildMetricCell(r.relativeHumidityPct, '%', r.humiditySensorId, isDark)),
+                    DataCell(_buildMetricCell(r.tMax, '°C', isDark)),
+                    DataCell(_buildMetricCell(r.tMin, '°C', isDark)),
+                    DataCell(_buildMetricCell(r.precipitationMm, 'mm', isDark)),
+                    DataCell(_buildMetricCell(r.radiationMjM2, 'MJ/m²', isDark)),
+                    DataCell(_buildMetricCell(r.relativeHumidityPct, '%', isDark)),
                     DataCell(
                       Text(
                         gdd != null ? "${gdd.toStringAsFixed(1)} °C·d" : '—',
@@ -1130,36 +1164,14 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                         ),
                       ),
                     ),
-                    DataCell(
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? OryzaColors.darkCanvas
-                              : OryzaColors.botanicalGreenLight,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          r.sourceDisplay,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontFamily: OryzaTypography.monoFontFamily,
-                            package: 'oryzaelo_ui',
-                            color: isDark
-                                ? OryzaColors.mustardYellow
-                                : OryzaColors.botanicalGreen,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 );
               }).toList(),
             ),
           ),
+        );
+      },
+    ),
 
           // Pagination Controls Footer
           Container(
@@ -1368,7 +1380,48 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
       (MetricType.humidity, s.tableColRh),
     ];
 
-    final readings = _cachedReadings ?? [];
+    final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
+    final allReadings = _cachedReadings ?? [];
+    final availableSensors = allReadings.map((r) => r.sensorId).toSet().toList()..sort();
+
+    final filteredReadings = allReadings.where((r) {
+      if (_historyStartDate != null) {
+        final start = DateTime(_historyStartDate!.year, _historyStartDate!.month, _historyStartDate!.day);
+        if (r.recordedAt.isBefore(start)) return false;
+      }
+      if (_historyEndDate != null) {
+        final end = DateTime(_historyEndDate!.year, _historyEndDate!.month, _historyEndDate!.day, 23, 59, 59, 999);
+        if (r.recordedAt.isAfter(end)) return false;
+      }
+      if (_historyStartTime != null) {
+        final timeMin = r.recordedAt.hour * 60 + r.recordedAt.minute;
+        final startMin = _historyStartTime!.hour * 60 + _historyStartTime!.minute;
+        if (timeMin < startMin) return false;
+      }
+      if (_historyEndTime != null) {
+        final timeMin = r.recordedAt.hour * 60 + r.recordedAt.minute;
+        final endMin = _historyEndTime!.hour * 60 + _historyEndTime!.minute;
+        if (timeMin > endMin) return false;
+      }
+      if (_historySensorFilter != null && _historySensorFilter!.isNotEmpty) {
+        if (r.sensorId != _historySensorFilter) return false;
+      }
+      return true;
+    }).toList();
+
+    final hasActiveFilters = _historyStartDate != null ||
+        _historyEndDate != null ||
+        _historyStartTime != null ||
+        _historyEndTime != null ||
+        (_historySensorFilter != null && _historySensorFilter!.isNotEmpty);
+
+    final totalPages = (filteredReadings.length / _historyRowsPerPage).ceil();
+    if (_historyCurrentPage >= totalPages && totalPages > 0) {
+      _historyCurrentPage = totalPages - 1;
+    }
+    final startIndex = _historyCurrentPage * _historyRowsPerPage;
+    final endIndex = (startIndex + _historyRowsPerPage).clamp(0, filteredReadings.length);
+    final pageReadings = filteredReadings.sublist(startIndex, endIndex);
 
     return Container(
       decoration: BoxDecoration(
@@ -1426,12 +1479,172 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     backgroundColor: isDark ? OryzaColors.darkCanvas : OryzaColors.lightCanvas,
                     onSelected: (val) {
                       if (val) {
-                        setState(() => _selectedHistoryMetric = m.$1);
+                        setState(() {
+                          _selectedHistoryMetric = m.$1;
+                          _historyCurrentPage = 0;
+                        });
                         _loadSensorReadings();
                       }
                     },
                   );
                 }),
+              ],
+            ),
+          ),
+
+          // Filter Toolbar (Date range, Time range, Sensor filter, Clear button)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF161B15) : const Color(0xFFFAF8F5),
+              border: Border(bottom: BorderSide(color: borderColor, width: 0.8)),
+            ),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                // Date Range Button
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    side: BorderSide(
+                      color: (_historyStartDate != null || _historyEndDate != null)
+                          ? OryzaColors.burntOrange
+                          : borderColor,
+                    ),
+                  ),
+                  icon: const Icon(Icons.date_range_rounded, size: 14),
+                  label: Text(
+                    _historyStartDate == null && _historyEndDate == null
+                        ? s.filterDateRange
+                        : '${_historyStartDate != null ? DateFormat('yyyy-MM-dd').format(_historyStartDate!) : ''} → ${_historyEndDate != null ? DateFormat('yyyy-MM-dd').format(_historyEndDate!) : ''}',
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                  onPressed: () async {
+                    final picked = await showDateRangePicker(
+                      context: context,
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2035),
+                      initialDateRange: _historyStartDate != null && _historyEndDate != null
+                          ? DateTimeRange(start: _historyStartDate!, end: _historyEndDate!)
+                          : null,
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        _historyStartDate = picked.start;
+                        _historyEndDate = picked.end;
+                        _historyCurrentPage = 0;
+                      });
+                    }
+                  },
+                ),
+
+                // Time Filter Button
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    side: BorderSide(
+                      color: (_historyStartTime != null || _historyEndTime != null)
+                          ? OryzaColors.burntOrange
+                          : borderColor,
+                    ),
+                  ),
+                  icon: const Icon(Icons.access_time_rounded, size: 14),
+                  label: Text(
+                    _historyStartTime == null && _historyEndTime == null
+                        ? s.filterTimeRange
+                        : '${_historyStartTime != null ? _historyStartTime!.format(context) : '00:00'} - ${_historyEndTime != null ? _historyEndTime!.format(context) : '23:59'}',
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                  onPressed: () => _showTimeRangeFilterDialog(context, isDark, s),
+                ),
+
+                // Sensor Dropdown Filter
+                if (availableSensors.length > 1)
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 220),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: _historySensorFilter != null ? OryzaColors.burntOrange : borderColor,
+                        ),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String?>(
+                          value: _historySensorFilter,
+                          isDense: true,
+                          dropdownColor: surfaceColor,
+                          hint: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 160),
+                            child: Text(
+                              s.filterAllSensors,
+                              style: const TextStyle(fontSize: 11),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                          items: [
+                            DropdownMenuItem<String?>(
+                              value: null,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(maxWidth: 160),
+                                child: Text(
+                                  s.filterAllSensors,
+                                  style: const TextStyle(fontSize: 11),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ),
+                            ...availableSensors.map(
+                              (sId) => DropdownMenuItem<String?>(
+                                value: sId,
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(maxWidth: 160),
+                                  child: Text(
+                                    sId.replaceAll('preset_', '').replaceAll('mapping_', ''),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontFamily: OryzaTypography.monoFontFamily,
+                                      package: 'oryzaelo_ui',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                          onChanged: (val) {
+                            setState(() {
+                              _historySensorFilter = val;
+                              _historyCurrentPage = 0;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+
+                // Clear Filters Button
+                if (hasActiveFilters)
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      foregroundColor: OryzaColors.burntOrange,
+                    ),
+                    onPressed: _clearHistoryFilters,
+                    icon: const Icon(Icons.clear_rounded, size: 14),
+                    label: Text(
+                      s.filterClear,
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -1447,7 +1660,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 ),
               ),
             )
-          else if (readings.isEmpty)
+          else if (allReadings.isEmpty)
             Padding(
               padding: const EdgeInsets.all(36),
               child: Center(
@@ -1473,90 +1686,357 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 ),
               ),
             )
-          else
-            OryzaHorizontalScroller(
-              isDark: isDark,
-              step: 220,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(
-                  isDark ? const Color(0xFF1B201A) : const Color(0xFFF2EFE6),
+          else if (filteredReadings.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(36),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.filter_alt_off_rounded,
+                      size: 36,
+                      color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      s.filterClear,
+                      style: TextStyle(
+                        fontFamily: OryzaTypography.fontFamily,
+                        package: 'oryzaelo_ui',
+                        fontSize: 13,
+                        color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: _clearHistoryFilters,
+                      child: Text(s.filterClear),
+                    ),
+                  ],
                 ),
-                headingRowHeight: 40,
-                dataRowMinHeight: 38,
-                dataRowMaxHeight: 42,
-                columnSpacing: 24,
-                horizontalMargin: 16,
-                columns: [
-                  DataColumn(label: _headerLabel(s.tableColTimestamp)),
-                  DataColumn(label: _headerLabel(s.tableColSource)),
-                  DataColumn(label: _headerLabel(s.tableColValue), numeric: true),
-                  DataColumn(label: _headerLabel(s.tableColActions)),
-                ],
-                rows: readings.map((r) {
-                  return DataRow(
-                    cells: [
-                      DataCell(
-                        Text(
-                          DateFormat('yyyy-MM-dd HH:mm').format(r.recordedAt),
-                          style: const TextStyle(
-                            fontFamily: OryzaTypography.monoFontFamily,
-                            package: 'oryzaelo_ui',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+              ),
+            )
+          else
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return OryzaHorizontalScroller(
+                  isDark: isDark,
+                  step: 220,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: constraints.maxWidth,
+                    ),
+                    child: DataTable(
+                      headingRowColor: WidgetStateProperty.all(
+                        isDark ? const Color(0xFF1B201A) : const Color(0xFFF2EFE6),
+                      ),
+                      headingRowHeight: 40,
+                      dataRowMinHeight: 38,
+                      dataRowMaxHeight: 42,
+                      columnSpacing: 24,
+                      horizontalMargin: 16,
+                      columns: [
+                        DataColumn(
+                          columnWidth: const IntrinsicColumnWidth(flex: 1.5),
+                          label: _headerLabel(s.tableColTimestamp),
+                        ),
+                        DataColumn(
+                          columnWidth: const IntrinsicColumnWidth(flex: 1.5),
+                          label: _headerLabel(s.tableColSource),
+                        ),
+                        DataColumn(
+                          columnWidth: const IntrinsicColumnWidth(flex: 1.5),
+                          label: _headerLabel(s.tableColValue),
+                          numeric: true,
+                        ),
+                        DataColumn(
+                          columnWidth: const IntrinsicColumnWidth(flex: 0.8),
+                          label: _headerLabel(s.tableColActions),
+                        ),
+                      ],
+                      rows: pageReadings.map((r) {
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              Text(
+                                DateFormat('yyyy-MM-dd HH:mm').format(r.recordedAt),
+                                style: const TextStyle(
+                                  fontFamily: OryzaTypography.monoFontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  r.sensorId,
+                                  style: TextStyle(
+                                    fontSize: 10.5,
+                                    fontFamily: OryzaTypography.monoFontFamily,
+                                    package: 'oryzaelo_ui',
+                                    color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Text(
+                                "${r.value.toStringAsFixed(1)} ${r.metricType.canonicalUnit}",
+                                style: const TextStyle(
+                                  fontFamily: OryzaTypography.monoFontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Colors.redAccent),
+                                tooltip: s.tableColActions,
+                                onPressed: () async {
+                                  final ok = await widget.handler.deleteSensorReading(
+                                    id: r.id,
+                                    metricType: r.metricType,
+                                  );
+                                  if (ok) {
+                                    await _loadSensorReadings();
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                );
+              },
+            ),
+
+          // Pagination Controls Footer for Sensor History
+          if (filteredReadings.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: borderColor, width: 1.0)),
+              ),
+              child: Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 220),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            s.tablePaginationRows,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 11, color: textColor),
                           ),
                         ),
-                      ),
-                      DataCell(
+                        const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           decoration: BoxDecoration(
-                            color: isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight,
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: borderColor),
                           ),
-                          child: Text(
-                            r.sensorId,
-                            style: TextStyle(
-                              fontSize: 10.5,
-                              fontFamily: OryzaTypography.monoFontFamily,
-                              package: 'oryzaelo_ui',
-                              color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<int>(
+                              value: _historyRowsPerPage,
+                              isDense: true,
+                              dropdownColor: surfaceColor,
+                              items: const [
+                                DropdownMenuItem(value: 10, child: Text("10")),
+                                DropdownMenuItem(value: 25, child: Text("25")),
+                                DropdownMenuItem(value: 50, child: Text("50")),
+                              ],
+                              onChanged: (val) {
+                                if (val != null) {
+                                  setState(() {
+                                    _historyRowsPerPage = val;
+                                    _historyCurrentPage = 0;
+                                  });
+                                }
+                              },
                             ),
                           ),
                         ),
-                      ),
-                      DataCell(
-                        Text(
-                          "${r.value.toStringAsFixed(1)} ${r.metricType.canonicalUnit}",
-                          style: const TextStyle(
-                            fontFamily: OryzaTypography.monoFontFamily,
-                            package: 'oryzaelo_ui',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
+                      ],
+                    ),
+                  ),
+                  Text(
+                    "${startIndex + 1} - $endIndex ${s.tablePaginationOf} ${filteredReadings.length}${hasActiveFilters ? ' (${allReadings.length})' : ''}",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontFamily: OryzaTypography.monoFontFamily,
+                      package: 'oryzaelo_ui',
+                      fontSize: 11.5,
+                    ),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        key: const Key('history_pagination_prev'),
+                        style: IconButton.styleFrom(
+                          side: BorderSide(color: borderColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
                           ),
                         ),
+                        onPressed: _historyCurrentPage > 0
+                            ? () => setState(() => _historyCurrentPage--)
+                            : null,
+                        icon: const Icon(Icons.chevron_left_rounded, size: 18),
                       ),
-                      DataCell(
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Colors.redAccent),
-                          tooltip: s.tableColActions,
-                          onPressed: () async {
-                            final ok = await widget.handler.deleteSensorReading(
-                              id: r.id,
-                              metricType: r.metricType,
-                            );
-                            if (ok) {
-                              await _loadSensorReadings();
-                            }
-                          },
+                      const SizedBox(width: 6),
+                      IconButton(
+                        key: const Key('history_pagination_next'),
+                        style: IconButton.styleFrom(
+                          side: BorderSide(color: borderColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
                         ),
+                        onPressed: _historyCurrentPage < totalPages - 1
+                            ? () => setState(() => _historyCurrentPage++)
+                            : null,
+                        icon: const Icon(Icons.chevron_right_rounded, size: 18),
                       ),
                     ],
-                  );
-                }).toList(),
+                  ),
+                ],
               ),
             ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showTimeRangeFilterDialog(BuildContext context, bool isDark, OryzaStrings s) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: Text(s.filterTimeRange, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                dense: true,
+                title: const Text('00:00 - 23:59 (Dia Todo)', style: TextStyle(fontSize: 12)),
+                onTap: () {
+                  setState(() {
+                    _historyStartTime = null;
+                    _historyEndTime = null;
+                    _historyCurrentPage = 0;
+                  });
+                  Navigator.pop(ctx);
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('00:00 - 12:00 (Manhã)', style: TextStyle(fontSize: 12)),
+                onTap: () {
+                  setState(() {
+                    _historyStartTime = const TimeOfDay(hour: 0, minute: 0);
+                    _historyEndTime = const TimeOfDay(hour: 12, minute: 0);
+                    _historyCurrentPage = 0;
+                  });
+                  Navigator.pop(ctx);
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('12:00 - 18:00 (Tarde)', style: TextStyle(fontSize: 12)),
+                onTap: () {
+                  setState(() {
+                    _historyStartTime = const TimeOfDay(hour: 12, minute: 0);
+                    _historyEndTime = const TimeOfDay(hour: 18, minute: 0);
+                    _historyCurrentPage = 0;
+                  });
+                  Navigator.pop(ctx);
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('18:00 - 23:59 (Noite)', style: TextStyle(fontSize: 12)),
+                onTap: () {
+                  setState(() {
+                    _historyStartTime = const TimeOfDay(hour: 18, minute: 0);
+                    _historyEndTime = const TimeOfDay(hour: 23, minute: 59);
+                    _historyCurrentPage = 0;
+                  });
+                  Navigator.pop(ctx);
+                },
+              ),
+              const Divider(),
+              ListTile(
+                dense: true,
+                leading: const Icon(Icons.tune_rounded, size: 16),
+                title: const Text('Horário Inicial Personalizado', style: TextStyle(fontSize: 12)),
+                subtitle: Text(_historyStartTime?.format(context) ?? '00:00', style: const TextStyle(fontSize: 11)),
+                onTap: () async {
+                  final t = await showTimePicker(
+                    context: context,
+                    initialTime: _historyStartTime ?? const TimeOfDay(hour: 6, minute: 0),
+                  );
+                  if (t != null) {
+                    setState(() {
+                      _historyStartTime = t;
+                      _historyCurrentPage = 0;
+                    });
+                  }
+                  if (ctx.mounted) Navigator.pop(ctx);
+                },
+              ),
+              ListTile(
+                dense: true,
+                leading: const Icon(Icons.tune_rounded, size: 16),
+                title: const Text('Horário Final Personalizado', style: TextStyle(fontSize: 12)),
+                subtitle: Text(_historyEndTime?.format(context) ?? '23:59', style: const TextStyle(fontSize: 11)),
+                onTap: () async {
+                  final t = await showTimePicker(
+                    context: context,
+                    initialTime: _historyEndTime ?? const TimeOfDay(hour: 18, minute: 0),
+                  );
+                  if (t != null) {
+                    setState(() {
+                      _historyEndTime = t;
+                      _historyCurrentPage = 0;
+                    });
+                  }
+                  if (ctx.mounted) Navigator.pop(ctx);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

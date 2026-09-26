@@ -552,6 +552,11 @@ class OryzaStrings {
   final String tableUploadCsvBtn;
   final String tablePaginationRows;
   final String tablePaginationOf;
+  final String filterDateRange;
+  final String filterTimeRange;
+  final String filterClear;
+  final String filterAllSensors;
+  final String filterSensorLabel;
   final String tableConfirmDeleteTitle;
   final String tableConfirmDeleteDesc;
 
@@ -1345,6 +1350,11 @@ class OryzaStrings {
     this.tableUploadCsvBtn = "Importar Arquivo CSV",
     this.tablePaginationRows = "Linhas por página:",
     this.tablePaginationOf = "de",
+    this.filterDateRange = "Filtrar por Período",
+    this.filterTimeRange = "Filtrar por Horário",
+    this.filterClear = "Limpar Filtros",
+    this.filterAllSensors = "Todos os sensores",
+    this.filterSensorLabel = "Sensor",
     this.tableConfirmDeleteTitle = "Excluir Registros Selecionados?",
     this.tableConfirmDeleteDesc = "Esta ação excluirá permanentemente os registros selecionados do banco SQLite local.",
 
@@ -2715,6 +2725,11 @@ class OryzaI18n {
     tableUploadCsvBtn: "Import CSV File",
     tablePaginationRows: "Rows per page:",
     tablePaginationOf: "of",
+    filterDateRange: "Filter by Date",
+    filterTimeRange: "Filter by Time",
+    filterClear: "Clear Filters",
+    filterAllSensors: "All sensors",
+    filterSensorLabel: "Sensor",
     tableConfirmDeleteTitle: "Delete Selected Records?",
     tableConfirmDeleteDesc: "This action will permanently remove selected telemetry records from local SQLite storage.",
 
@@ -3588,6 +3603,11 @@ class OryzaI18n {
     tableUploadCsvBtn: "นำเข้าไฟล์ CSV",
     tablePaginationRows: "แถวต่อหน้า:",
     tablePaginationOf: "จาก",
+    filterDateRange: "กรองตามช่วงวันที่",
+    filterTimeRange: "กรองตามเวลา",
+    filterClear: "ล้างตัวกรอง",
+    filterAllSensors: "เซ็นเซอร์ทั้งหมด",
+    filterSensorLabel: "เซ็นเซอร์",
     tableConfirmDeleteTitle: "ลบบันทึกที่เลือกหรือไม่?",
     tableConfirmDeleteDesc: "การดำเนินการนี้จะลบบันทึกข้อมูลที่เลือกออกจากฐานข้อมูล SQLite ในเครื่องอย่างถาวร",
 

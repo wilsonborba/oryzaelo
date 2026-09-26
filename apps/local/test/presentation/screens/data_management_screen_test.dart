@@ -65,6 +65,23 @@ void main() {
           200,
         );
       }
+      if (request.url.path == '/api/v1/devices/presets' || request.url.path == '/api/v1/devices/mappings') {
+        return http.Response('[]', 200);
+      }
+      if (request.url.path == '/api/v1/weather/sensor-readings') {
+        final mockReadings = List.generate(25, (i) {
+          final isEven = i % 2 == 0;
+          return {
+            'id': i + 1,
+            'parcel_id': 'p-1',
+            'sensor_id': isEven ? 'preset_davis_vantage' : 'sensor_pluviometro_avulso',
+            'value': 10.0 + i,
+            'recorded_at': '2026-06-0${(i % 5) + 1}T12:00:00Z',
+            'received_at': '2026-06-0${(i % 5) + 1}T12:01:00Z',
+          };
+        });
+        return http.Response(jsonEncode(mockReadings), 200);
+      }
       return http.Response('{}', 200);
     });
     final engineClient = EngineClient(baseUrl: 'http://edge.local:8005', client: client);
@@ -149,4 +166,88 @@ void main() {
 
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('desktop width expands table across full card width without empty right-side void', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1280, 900));
+    final handler = await buildHandler();
+
+    await tester.pumpWidget(wrap(DataManagementScreen(handler: handler)));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+
+    final dataTableFinder = find.byType(DataTable);
+    expect(dataTableFinder, findsOneWidget);
+
+    final dataTableSize = tester.getSize(dataTableFinder);
+    // On desktop 1280px with 16px screen padding, card width is ~1248px.
+    // The table must expand to fill the container (> 1200px), not stay at ~780px.
+    expect(dataTableSize.width, greaterThan(1200));
+
+    // Also verify sensor history view expands on desktop
+    final historyTab = find.byIcon(Icons.history_rounded);
+    await tester.tap(historyTab);
+    await tester.pumpAndSettle();
+
+    final historyTableFinder = find.byType(DataTable);
+    if (historyTableFinder.evaluate().isNotEmpty) {
+      final historyTableSize = tester.getSize(historyTableFinder);
+      expect(historyTableSize.width, greaterThan(1200));
+    }
+  });
+
+  testWidgets('daily view does not have font/source column or sensor badges', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1280, 900));
+    final handler = await buildHandler();
+
+    await tester.pumpWidget(wrap(DataManagementScreen(handler: handler)));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+
+    // Verify exactly 8 columns (no tableColSource)
+    final dataTable = tester.widget<DataTable>(find.byType(DataTable));
+    expect(dataTable.columns.length, 8);
+
+    // Verify cell displays clean value without sensor subtitle badge
+    expect(find.text('33.0 °C'), findsOneWidget);
+    expect(find.text('preset_davis_vantage'), findsNothing);
+  });
+
+  testWidgets('sensor history view has pagination and filter controls', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1280, 900));
+    final handler = await buildHandler();
+
+    await tester.pumpWidget(wrap(DataManagementScreen(handler: handler)));
+    await tester.pumpAndSettle();
+
+    // Switch to sensor history tab
+    final historyTab = find.byIcon(Icons.history_rounded);
+    await tester.tap(historyTab);
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+
+    // Verify filter buttons are rendered
+    expect(find.byIcon(Icons.date_range_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.access_time_rounded), findsOneWidget);
+
+    // Verify sensor history table has 4 columns
+    final dataTable = tester.widget<DataTable>(find.byType(DataTable));
+    expect(dataTable.columns.length, 4);
+
+    // Verify pagination footer is rendered with "1 - 10" of 25
+    expect(find.textContaining('1 - 10'), findsOneWidget);
+
+    // Tap next page
+    final nextBtn = find.byKey(const Key('history_pagination_next'));
+    await tester.ensureVisible(nextBtn);
+    await tester.pumpAndSettle();
+    await tester.tap(nextBtn);
+    await tester.pumpAndSettle();
+
+    // Verify page 2 shows "11 - 20"
+    expect(find.textContaining('11 - 20'), findsOneWidget);
+  });
 }
+
