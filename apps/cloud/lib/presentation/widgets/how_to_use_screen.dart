@@ -523,6 +523,88 @@ class _HowToUseScreenState extends State<HowToUseScreen> {
                   color: textSecondary,
                 ),
               ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: widget.isDark ? const Color(0xFF141914) : const Color(0xFFF3F1E7),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: borderColor),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade900.withValues(alpha: widget.isDark ? 0.3 : 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: Colors.green.shade700),
+                          ),
+                          child: Text(
+                            s.loadDemoDataBtn,
+                            style: TextStyle(
+                              fontFamily: OryzaTypography.monoFontFamily,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: widget.isDark ? Colors.green.shade300 : Colors.green.shade800,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            s.demoDataLoadedSuccess,
+                            style: TextStyle(
+                              fontFamily: OryzaTypography.fontFamily,
+                              package: 'oryzaelo_ui',
+                              fontSize: 12,
+                              color: textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade900.withValues(alpha: widget.isDark ? 0.3 : 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: Colors.red.shade700),
+                          ),
+                          child: Text(
+                            s.cleanDemoDataBtn,
+                            style: TextStyle(
+                              fontFamily: OryzaTypography.monoFontFamily,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: widget.isDark ? Colors.red.shade300 : Colors.red.shade800,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            s.demoDataCleanedSuccess,
+                            style: TextStyle(
+                              fontFamily: OryzaTypography.fontFamily,
+                              package: 'oryzaelo_ui',
+                              fontSize: 12,
+                              color: textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 16),
 
               // Option 2: CLI Terminal
