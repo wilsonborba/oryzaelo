@@ -15,6 +15,7 @@ class PhenologyMonitorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final s = OryzaI18n.of(context);
     final state = OryzaScope.of(context);
     final locale = state.locale;
     final currentLang = locale.countryCode != null
@@ -30,20 +31,20 @@ class PhenologyMonitorCard extends StatelessWidget {
             children: [
               Icon(Icons.eco_outlined, size: 48, color: isDark ? Colors.grey.shade600 : Colors.grey.shade400),
               const SizedBox(height: 12),
-              const Text(
-                'Nenhuma inferência fenológica registrada para este talhão.',
-                style: TextStyle(fontWeight: FontWeight.w600),
+              Text(
+                s.phenoEmptyTitle,
+                style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 6),
-              const Text(
-                'Carregue dados meteorológicos ou execute a predição manual com o modelo CatBoost ONNX.',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+              Text(
+                s.phenoEmptyBody,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: handler.isAnalyzing ? null : () => handler.runPrediction(currentLang),
                 icon: const Icon(Icons.bolt, size: 18),
-                label: const Text('Executar Inferência de Borda'),
+                label: Text(s.phenoRunInferenceBtn),
               ),
             ],
           ),
@@ -78,25 +79,14 @@ class PhenologyMonitorCard extends StatelessWidget {
                           width: 1.5,
                         ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.psychology,
-                            size: 20,
-                            color: _getStageColor(pred.granularStage),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _formatStageName(pred.granularStage),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'Ubuntu Sans',
-                              color: _getStageColor(pred.granularStage),
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        _formatStageName(pred.granularStage, s),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Ubuntu Sans',
+                          color: _getStageColor(pred.granularStage),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -108,7 +98,7 @@ class PhenologyMonitorCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        'FASE: ${pred.macroPhase.toUpperCase()}',
+                        '${s.phenoPhaseLabel}: ${pred.macroPhase.toUpperCase()}',
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
@@ -132,24 +122,16 @@ class PhenologyMonitorCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: isDark ? Colors.white24 : Colors.black12),
                       ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.check_circle_outline,
-                            size: 16,
-                            color: pred.confidence >= 0.85 ? Colors.green : Colors.amber,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            'CONFIANÇA: ${(pred.confidence * 100).toStringAsFixed(1)}%',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              fontFamily: 'Ubuntu Sans Mono',
-                              color: isDark ? Colors.white : Colors.black87,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        '${s.phenoConfidenceLabel}: ${(pred.confidence * 100).toStringAsFixed(1)}%',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          fontFamily: 'Ubuntu Sans Mono',
+                          color: pred.confidence >= 0.85
+                              ? (isDark ? Colors.green.shade300 : Colors.green.shade700)
+                              : (isDark ? Colors.amber.shade300 : Colors.amber.shade800),
+                        ),
                       ),
                     ),
 
@@ -162,20 +144,14 @@ class PhenologyMonitorCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.amber.shade700),
                         ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.swap_horiz, size: 16, color: Colors.amber),
-                            const SizedBox(width: 4),
-                            Text(
-                              'TRANSIÇÃO IMINENTE',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                                fontFamily: 'Ubuntu Sans Mono',
-                                color: Colors.amber.shade300,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          s.phenoTransitionImminent,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Ubuntu Sans Mono',
+                            color: Colors.amber.shade300,
+                          ),
                         ),
                       ),
                     ],
@@ -192,7 +168,7 @@ class PhenologyMonitorCard extends StatelessWidget {
                               child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                             )
                           : const Icon(Icons.bolt, size: 16),
-                      label: Text(handler.isAnalyzing ? 'Inferindo...' : 'Reavaliar'),
+                      label: Text(handler.isAnalyzing ? s.phenoInferringLabel : s.phenoReevaluateBtn),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isDark ? Colors.green.shade800 : Colors.green.shade700,
                         foregroundColor: Colors.white,
@@ -207,7 +183,7 @@ class PhenologyMonitorCard extends StatelessWidget {
         const SizedBox(height: 18),
 
         // BBCH Stage Progression Timeline
-        _buildStageProgressionBar(pred.granularStage, isDark),
+        _buildStageProgressionBar(pred.granularStage, isDark, s),
 
         const SizedBox(height: 18),
 
@@ -223,40 +199,22 @@ class PhenologyMonitorCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Advisory Headline
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.tips_and_updates_outlined,
-                    color: isDark ? Colors.amber.shade300 : Colors.amber.shade800,
-                    size: 22,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          advisory.headline,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            fontFamily: 'Ubuntu Sans',
-                            color: isDark ? Colors.amber.shade200 : Colors.amber.shade900,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          advisory.plainText,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            height: 1.45,
-                            fontFamily: 'Ubuntu Sans',
-                            color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              Text(
+                advisory.headline,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Ubuntu Sans',
+                  color: isDark ? Colors.amber.shade200 : Colors.amber.shade900,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                advisory.plainText,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  height: 1.45,
+                  fontFamily: 'Ubuntu Sans',
+                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                ),
               ),
 
               // Urgent Warnings (Mandatory Restrictions, e.g. 09h-12h Spray Ban)
@@ -280,7 +238,7 @@ class PhenologyMonitorCard extends StatelessWidget {
                           Icon(Icons.warning_amber_rounded, size: 18, color: Colors.red.shade700),
                           const SizedBox(width: 8),
                           Text(
-                            'RESTRIÇÃO OPERACIONAL MANDATÓRIA',
+                            s.phenoMandatoryRestriction,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w900,
@@ -322,7 +280,7 @@ class PhenologyMonitorCard extends StatelessWidget {
               if (advisory.managementTips.isNotEmpty) ...[
                 const SizedBox(height: 14),
                 Text(
-                  'RECOMENDAÇÕES PRÁTICAS DE MANEJO:',
+                  s.phenoManagementTipsHeader,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
@@ -338,12 +296,13 @@ class PhenologyMonitorCard extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          size: 14,
-                          color: isDark ? Colors.green.shade400 : Colors.green.shade700,
+                        Text(
+                          '• ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            color: isDark ? Colors.green.shade400 : Colors.green.shade700,
+                          ),
                         ),
-                        const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             tip,
@@ -367,15 +326,15 @@ class PhenologyMonitorCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStageProgressionBar(String currentStage, bool isDark) {
-    const stages = [
-      {'key': 'Seedling', 'label': 'Plântula', 'bbch': '10-19'},
-      {'key': 'Tillering', 'label': 'Perfilhamento', 'bbch': '20-29'},
-      {'key': 'Booting', 'label': 'Emborrachamento', 'bbch': '40-49'},
-      {'key': 'Heading', 'label': 'Espigamento', 'bbch': '50-59'},
-      {'key': 'Flowering', 'label': 'Floração', 'bbch': '60-69'},
-      {'key': 'PreHarvest', 'label': 'Maturação', 'bbch': '70-89'},
-      {'key': 'HarvestReady', 'label': 'Colheita', 'bbch': '90-99'},
+  Widget _buildStageProgressionBar(String currentStage, bool isDark, OryzaStrings s) {
+    final stages = [
+      {'key': 'Seedling', 'label': s.phenoStageSeedling, 'bbch': '10-19'},
+      {'key': 'Tillering', 'label': s.phenoStageTillering, 'bbch': '20-29'},
+      {'key': 'Booting', 'label': s.phenoStageBooting, 'bbch': '40-49'},
+      {'key': 'Heading', 'label': s.phenoStageHeading, 'bbch': '50-59'},
+      {'key': 'Flowering', 'label': s.phenoStageFlowering, 'bbch': '60-69'},
+      {'key': 'PreHarvest', 'label': s.phenoStagePreHarvest, 'bbch': '70-89'},
+      {'key': 'HarvestReady', 'label': s.phenoStageHarvestReady, 'bbch': '90-99'},
     ];
 
     return SingleChildScrollView(
@@ -383,9 +342,9 @@ class PhenologyMonitorCard extends StatelessWidget {
       child: Row(
         children: stages.asMap().entries.map((entry) {
           final idx = entry.key;
-          final s = entry.value;
-          final isCurrent = s['key'] == currentStage;
-          final isPassed = _stageIndex(s['key']!) < _stageIndex(currentStage);
+          final st = entry.value;
+          final isCurrent = st['key'] == currentStage;
+          final isPassed = _stageIndex(st['key']!) < _stageIndex(currentStage);
 
           return Row(
             mainAxisSize: MainAxisSize.min,
@@ -409,7 +368,7 @@ class PhenologyMonitorCard extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      s['label']!,
+                      st['label']!,
                       style: TextStyle(
                         fontSize: 10.5,
                         fontWeight: isCurrent ? FontWeight.w900 : FontWeight.w600,
@@ -420,7 +379,7 @@ class PhenologyMonitorCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'BBCH ${s['bbch']}',
+                      'BBCH ${st['bbch']}',
                       style: TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.w700,
@@ -489,22 +448,22 @@ class PhenologyMonitorCard extends StatelessWidget {
     }
   }
 
-  String _formatStageName(String stage) {
+  String _formatStageName(String stage, OryzaStrings s) {
     switch (stage) {
       case 'Seedling':
-        return 'Plântula (BBCH 10–19)';
+        return '${s.phenoStageSeedling} (BBCH 10–19)';
       case 'Tillering':
-        return 'Perfilhamento Ativo (BBCH 20–29)';
+        return '${s.phenoStageTillering} (BBCH 20–29)';
       case 'Booting':
-        return 'Emborrachamento (BBCH 40–49)';
+        return '${s.phenoStageBooting} (BBCH 40–49)';
       case 'Heading':
-        return 'Espigamento (BBCH 50–59)';
+        return '${s.phenoStageHeading} (BBCH 50–59)';
       case 'Flowering':
-        return 'Floração / Antese (BBCH 60–69)';
+        return '${s.phenoStageFlowering} (BBCH 60–69)';
       case 'PreHarvest':
-        return 'Maturação Pré-Colheita (BBCH 70–89)';
+        return '${s.phenoStagePreHarvest} (BBCH 70–89)';
       case 'HarvestReady':
-        return 'Colheita Plena (BBCH 90–99)';
+        return '${s.phenoStageHarvestReady} (BBCH 90–99)';
       default:
         return stage;
     }

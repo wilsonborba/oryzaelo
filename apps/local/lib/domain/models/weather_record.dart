@@ -8,6 +8,12 @@ class DailyWeatherRecord {
   final double relativeHumidityPct;
   final String source;
 
+  /// Growing Degree Days for this day, as computed by the backend
+  /// (`WeatherRecordResponse.daily_gdd`, same formula/base temp used for the
+  /// `total_gdd` aggregate) — the single source of truth, never recomputed
+  /// client-side, so chart/table/backend never disagree.
+  final double dailyGdd;
+
   const DailyWeatherRecord({
     required this.date,
     required this.tMax,
@@ -16,16 +22,11 @@ class DailyWeatherRecord {
     required this.radiationMjM2,
     required this.relativeHumidityPct,
     required this.source,
+    this.dailyGdd = 0.0,
   });
 
   /// Diurnal Temperature Range (DTR)
   double get dtr => (tMax - tMin).clamp(0.0, 50.0);
-
-  /// Growing Degree Days (GDD Base 10°C)
-  double dailyGdd([double baseTemp = 10.0]) {
-    final tMean = (tMax + tMin) / 2.0;
-    return (tMean - baseTemp).clamp(0.0, 50.0);
-  }
 
   factory DailyWeatherRecord.fromJson(Map<String, dynamic> json) {
     return DailyWeatherRecord(
@@ -39,6 +40,7 @@ class DailyWeatherRecord {
       relativeHumidityPct:
           (json['relative_humidity_pct'] as num?)?.toDouble() ?? 0.0,
       source: json['source'] as String? ?? 'Sensor',
+      dailyGdd: (json['daily_gdd'] as num?)?.toDouble() ?? 0.0,
     );
   }
 

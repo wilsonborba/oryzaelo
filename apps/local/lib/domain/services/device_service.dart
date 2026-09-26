@@ -9,7 +9,13 @@ class DeviceService {
 
   Future<List<DeviceMapping>> fetchPresets() => _client.getDevicePresets();
 
-  Future<List<DeviceMapping>> fetchCustomMappings() => _client.getDeviceMappings();
+  /// The backend's `/devices/mappings` endpoint returns ALL mappings
+  /// (presets + custom, `is_preset` unfiltered) — filter client-side so
+  /// presets aren't duplicated alongside [fetchPresets] in the UI.
+  Future<List<DeviceMapping>> fetchCustomMappings() async {
+    final all = await _client.getDeviceMappings();
+    return all.where((m) => !m.isPreset).toList();
+  }
 
   Future<DeviceMapping?> saveCustomMapping(DeviceMapping mapping) =>
       _client.createDeviceMapping(mapping);

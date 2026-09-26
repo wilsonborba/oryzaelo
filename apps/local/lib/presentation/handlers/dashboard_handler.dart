@@ -14,6 +14,11 @@ import 'package:local/domain/services/phenology_service.dart';
 import 'package:local/domain/services/telemetry_service.dart';
 import 'package:local/domain/services/weather_service.dart';
 
+/// How long a parcel's weather/analytics/prediction fetch stays valid before
+/// [selectParcel] silently refetches it. The reload button (or a parcel
+/// switch) always forces a fresh fetch regardless of this buffer.
+const Duration _dataCacheTtl = Duration(minutes: 30);
+
 /// Presentation state coordinator following Handler -> Service -> DAL architecture.
 class DashboardHandler extends ChangeNotifier {
   final ParcelService _parcelService;
@@ -56,6 +61,8 @@ class DashboardHandler extends ChangeNotifier {
   AppHealth? _appHealth;
   BenchmarkLatency? _benchmarkLatency;
   IngestionReport? _lastIngestionReport;
+  String? _cachedParcelId;
+  DateTime? _cachedAt;
 
   // Getters
   bool get isLoading => _isLoading;
@@ -107,7 +114,7 @@ class DashboardHandler extends ChangeNotifier {
 
       // Auto-select first parcel or fallback
       if (_parcels.isNotEmpty) {
-        await selectParcel(_parcels.first, notifyOnChange: false);
+        await selectParcel(_parcels.first, notifyOnChange: false, force: true);
       }
     } catch (e) {
       logError('Initialization error: $e');
@@ -119,8 +126,28 @@ class DashboardHandler extends ChangeNotifier {
   }
 
   /// Selects active parcel and refreshes its agronomic data.
-  Future<void> selectParcel(FarmParcel parcel, {bool notifyOnChange = true}) async {
+  ///
+  /// Skips the network round-trip when the same parcel was already fetched
+  /// within [_dataCacheTtl] (default 30 min), unless [force] is set (used by
+  /// the header's manual reload button) or the parcel actually changed.
+  Future<void> selectParcel(
+    FarmParcel parcel, {
+    bool notifyOnChange = true,
+    bool force = false,
+  }) async {
+    final sameParcel = _selectedParcel?.id == parcel.id;
     _selectedParcel = parcel;
+
+    final cacheFresh = sameParcel &&
+        _cachedParcelId == parcel.id &&
+        _cachedAt != null &&
+        DateTime.now().difference(_cachedAt!) < _dataCacheTtl;
+
+    if (!force && cacheFresh) {
+      if (notifyOnChange) notifyListeners();
+      return;
+    }
+
     if (notifyOnChange) {
       _isLoading = true;
       notifyListeners();
@@ -136,6 +163,8 @@ class DashboardHandler extends ChangeNotifier {
       _latestPrediction = results[0] as PhenologyPrediction?;
       _weatherRecords = results[1] as List<DailyWeatherRecord>;
       _analyticsReport = results[2] as WeatherAnalyticsReport?;
+      _cachedParcelId = parcel.id;
+      _cachedAt = DateTime.now();
     } catch (e) {
       logError('Error fetching parcel telemetry: $e');
     } finally {
@@ -295,7 +324,7 @@ class DashboardHandler extends ChangeNotifier {
 
       // Refresh weather records and analytics after ingestion
       if (report != null && report.successfulRows > 0) {
-        await selectParcel(_selectedParcel!, notifyOnChange: false);
+        await selectParcel(_selectedParcel!, notifyOnChange: false, force: true);
       }
       return report;
     } finally {
@@ -315,7 +344,7 @@ class DashboardHandler extends ChangeNotifier {
     );
 
     if (ok) {
-      await selectParcel(_selectedParcel!, notifyOnChange: false);
+      await selectParcel(_selectedParcel!, notifyOnChange: false, force: true);
     }
     _isLoading = false;
     notifyListeners();

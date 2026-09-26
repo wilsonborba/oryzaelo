@@ -32,12 +32,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     if (!mounted) return;
 
+    final s = OryzaI18n.of(context);
     setState(() {
       _isTestingPing = false;
       if (widget.handler.isEngineOnline) {
-        _pingResult = 'Online (${stopwatch.elapsedMilliseconds} ms)';
+        _pingResult = s.settingsOnlineStatus.replaceAll('{ms}', '${stopwatch.elapsedMilliseconds}');
       } else {
-        _pingResult = 'Offline (timeout)';
+        _pingResult = s.settingsOfflineStatus;
       }
     });
   }
@@ -52,17 +53,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: Text(
-          s.tableConfirmDeleteTitle,
+          s.confirmCleanTitle,
           style: const TextStyle(fontWeight: FontWeight.w800, fontFamily: 'Ubuntu Sans'),
         ),
         content: Text(
-          s.tableConfirmDeleteDesc,
+          s.confirmCleanDesc,
           style: const TextStyle(fontSize: 13, fontFamily: 'Ubuntu Sans'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancelar'),
+            child: Text(s.cancelBtn),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -76,14 +77,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      ok ? 'Base de dados restaurada com sucesso.' : 'Falha ao limpar base de dados.',
+                      ok ? s.demoDataCleanedSuccess : s.settingsCleanFailedMsg,
                     ),
                     backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
                   ),
                 );
               }
             },
-            child: const Text('Confirmar Limpeza'),
+            child: Text(s.confirmBtn),
           ),
         ],
       ),
@@ -169,19 +170,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: isDark ? Colors.blueGrey.shade900 : Colors.blueGrey.shade100,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              Icons.tune,
-              size: 28,
-              color: isDark ? Colors.blueGrey.shade200 : Colors.blueGrey.shade800,
-            ),
-          ),
-          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,12 +212,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.router,
-                size: 18,
-                color: isDark ? Colors.green.shade400 : Colors.green.shade800,
-              ),
-              const SizedBox(width: 8),
               Text(
                 s.settingsEdgeEndpoint.toUpperCase(),
                 style: TextStyle(
@@ -271,7 +253,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    isOnline ? 'CONECTADO' : 'SEM RESPOSTA',
+                    isOnline ? s.settingsConnectedBadge : s.settingsNoResponseBadge,
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
@@ -297,7 +279,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.network_ping, size: 16),
-                label: const Text('Testar Conexão'),
+                label: Text(s.settingsTestConnectionBtn),
               ),
               if (_pingResult != null) ...[
                 const SizedBox(width: 12),
@@ -331,12 +313,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.storage,
-                size: 18,
-                color: isDark ? Colors.blue.shade400 : Colors.blue.shade800,
-              ),
-              const SizedBox(width: 8),
               Text(
                 s.settingsStorageInfo.toUpperCase(),
                 style: TextStyle(
@@ -350,18 +326,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          _buildInfoRow('Engine de Persistência', 'SQLite 3 (WAL Mode + FFI)', isDark),
+          _buildInfoRow(s.settingsPersistenceEngineLabel, s.settingsSqliteEngineValue, isDark),
           const SizedBox(height: 8),
-          _buildInfoRow('Talhões Cadastrados', '$parcelsCount talhões', isDark),
+          _buildInfoRow(s.settingsParcelsRegisteredLabel, '$parcelsCount ${s.settingsParcelsUnit}', isDark),
           const SizedBox(height: 8),
-          _buildInfoRow('Registros Climáticos Carregados', '$recordsCount dias', isDark),
+          _buildInfoRow(s.settingsRecordsLoadedLabel, '$recordsCount ${s.settingsDaysUnit}', isDark),
           const SizedBox(height: 8),
-          _buildInfoRow('Sensores Mapeados', '$presetsCount presets / $customSensorsCount personalizados', isDark),
+          _buildInfoRow(
+            s.settingsSensorsMappedLabel,
+            '$presetsCount ${s.settingsPresetsUnit} / $customSensorsCount ${s.settingsCustomUnit}',
+            isDark,
+          ),
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 12),
           Text(
-            'AÇÕES RÁPIDAS DE DESENVOLVIMENTO & DEMONSTRAÇÃO',
+            s.settingsQuickActionsHeader,
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w800,
@@ -388,9 +368,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                ok
-                                    ? 'Base populada com sucesso (4 talhões, 75 dias).'
-                                    : 'Falha ao popular base de dados.',
+                                ok ? s.demoDataLoadedSuccess : s.settingsPopulateFailedMsg,
                               ),
                               backgroundColor: ok ? Colors.green.shade800 : Colors.red.shade800,
                             ),
@@ -398,7 +376,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         }
                       },
                 icon: const Icon(Icons.auto_awesome, size: 16),
-                label: const Text('Popular Base Demo (75 Dias)'),
+                label: Text(s.settingsPopulateDemoBtn),
               ),
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
@@ -407,7 +385,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 onPressed: widget.handler.isLoading ? null : _confirmCleanDatabase,
                 icon: const Icon(Icons.delete_sweep, size: 16),
-                label: const Text('Restaurar Estado de Fábrica'),
+                label: Text(s.settingsRestoreFactoryBtn),
               ),
             ],
           ),
@@ -430,12 +408,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.palette_outlined,
-                size: 18,
-                color: isDark ? Colors.purple.shade300 : Colors.purple.shade700,
-              ),
-              const SizedBox(width: 8),
               Text(
                 s.settingsThemeLabel.toUpperCase(),
                 style: TextStyle(
@@ -451,16 +423,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 16),
           // Theme Selector (Dark / Light)
           SegmentedButton<ThemeMode>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: ThemeMode.dark,
-                icon: Icon(Icons.dark_mode, size: 16),
-                label: Text('Modo Escuro'),
+                icon: const Icon(Icons.dark_mode, size: 16),
+                label: Text(s.themeDarkMode),
               ),
               ButtonSegment(
                 value: ThemeMode.light,
-                icon: Icon(Icons.light_mode, size: 16),
-                label: Text('Modo Claro'),
+                icon: const Icon(Icons.light_mode, size: 16),
+                label: Text(s.themeLightMode),
               ),
             ],
             selected: {controller.themeMode},
@@ -471,68 +443,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           const SizedBox(height: 20),
-          // Background Graph Paper Selector
-          Row(
-            children: [
-              Icon(
-                Icons.grid_4x4,
-                size: 16,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                s.settingsGridLabel,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Ubuntu Sans Mono',
-                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<OryzaBackgroundStyle>(
-            initialValue: controller.backgroundStyle,
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            items: const [
-              DropdownMenuItem(
-                value: OryzaBackgroundStyle.atmospheric,
-                child: Text('Atmosférico (Difuso Biofísico)'),
-              ),
-              DropdownMenuItem(
-                value: OryzaBackgroundStyle.cleanStudio,
-                child: Text('Estúdio Minimalista (Limpo)'),
-              ),
-              DropdownMenuItem(
-                value: OryzaBackgroundStyle.swissDots,
-                child: Text('Matriz Suíça (Micro-Pontos 48px)'),
-              ),
-              DropdownMenuItem(
-                value: OryzaBackgroundStyle.topographic,
-                child: Text('Topográfico (Curvas Agronômicas)'),
-              ),
-            ],
-            onChanged: (style) {
-              if (style != null) {
-                controller.setBackgroundStyle(style);
-              }
-            },
-          ),
-          const SizedBox(height: 20),
           // Language Selector
           Row(
             children: [
-              Icon(
-                Icons.language,
-                size: 16,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-              ),
-              const SizedBox(width: 6),
               Text(
                 s.settingsLangLabel,
                 style: TextStyle(
@@ -583,14 +496,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.info_outline,
-                size: 18,
-                color: isDark ? Colors.amber.shade300 : Colors.amber.shade700,
-              ),
-              const SizedBox(width: 8),
               Text(
-                'ARQUITETURA DO SISTEMA & TELEMETRIA',
+                s.settingsSystemArchHeader,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
@@ -602,15 +509,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          _buildInfoRow('Aplicação Edge', 'Oryza-Elo Dashboard v0.1.0', isDark),
+          _buildInfoRow(s.settingsInfoAppLabel, 'Oryza-Elo Dashboard v0.1.0', isDark),
           const SizedBox(height: 8),
-          _buildInfoRow('Engine Residente', 'Rust 2021 (Axum + Tokio + Tract ONNX)', isDark),
+          _buildInfoRow(s.settingsInfoEngineLabel, 'Rust 2021 (Axum + Tokio + Tract ONNX)', isDark),
           const SizedBox(height: 8),
-          _buildInfoRow('Design System', 'Swiss Scrapbook Minimalist / Oryzaelo UI', isDark),
+          _buildInfoRow(s.settingsInfoDesignLabel, 'Swiss Scrapbook Minimalist / Oryzaelo UI', isDark),
           const SizedBox(height: 8),
-          _buildInfoRow('Modo de Operação', 'Air-Gapped Local (Zero Dependência Cloud)', isDark),
+          _buildInfoRow(s.settingsInfoModeLabel, s.settingsInfoModeValue, isDark),
           const SizedBox(height: 8),
-          _buildInfoRow('Porta TCP Padrão', '8005 (HTTP / REST JSON)', isDark),
+          _buildInfoRow(s.settingsInfoPortLabel, '8005 (HTTP / REST JSON)', isDark),
         ],
       ),
     );

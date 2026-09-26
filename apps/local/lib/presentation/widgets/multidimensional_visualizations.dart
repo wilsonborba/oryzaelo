@@ -19,6 +19,7 @@ class MultidimensionalVisualizations extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final s = OryzaI18n.of(context);
     final state = OryzaScope.of(context);
     final locale = state.locale;
     final currentLang = locale.countryCode != null
@@ -33,9 +34,9 @@ class MultidimensionalVisualizations extends StatelessWidget {
             children: [
               Icon(Icons.radar, size: 48, color: isDark ? Colors.grey.shade600 : Colors.grey.shade400),
               const SizedBox(height: 12),
-              const Text(
-                'Aguardando dados analíticos e predição fenológica.',
-                style: TextStyle(fontWeight: FontWeight.w600),
+              Text(
+                s.vizWaitingAnalytics,
+                style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -71,12 +72,12 @@ class MultidimensionalVisualizations extends StatelessWidget {
                     flex: 4,
                     child: _buildPanel(
                       context,
-                      title: 'PROBABILIDADE FENOLÓGICA (CATBOOST ONNX)',
-                      subtitle: 'Distribuição bayesiana de pertinência por estágio BBCH',
-                      icon: Icons.pie_chart_outline,
+                      title: s.vizDonutHeader,
+                      subtitle: s.vizDonutSubtitle,
                       child: PhenologyProbabilitiesDonut(
                         probabilities: prediction?.probabilities ?? {},
                         isDark: isDark,
+                        emptyLabel: s.vizNoDonutData,
                       ),
                     ),
                   ),
@@ -85,12 +86,12 @@ class MultidimensionalVisualizations extends StatelessWidget {
                     flex: 5,
                     child: _buildPanel(
                       context,
-                      title: 'RADAR AGROMETEOROLÓGICO MULTIDIMENSIONAL',
-                      subtitle: 'Índice de adequação biofísica da cultura do arroz (5 eixos)',
-                      icon: Icons.radar,
+                      title: s.vizRadarHeader,
+                      subtitle: s.vizRadarSubtitle,
                       child: BiometRadarChart(
                         dimensions: analytics?.biometRadar ?? [],
                         isDark: isDark,
+                        emptyLabel: s.vizNoRadarData,
                       ),
                     ),
                   ),
@@ -99,23 +100,23 @@ class MultidimensionalVisualizations extends StatelessWidget {
             else ...[
               _buildPanel(
                 context,
-                title: 'PROBABILIDADE FENOLÓGICA (CATBOOST ONNX)',
-                subtitle: 'Distribuição bayesiana de pertinência por estágio BBCH',
-                icon: Icons.pie_chart_outline,
+                title: s.vizDonutHeader,
+                subtitle: s.vizDonutSubtitle,
                 child: PhenologyProbabilitiesDonut(
                   probabilities: prediction?.probabilities ?? {},
                   isDark: isDark,
+                  emptyLabel: s.vizNoDonutData,
                 ),
               ),
               const SizedBox(height: 16),
               _buildPanel(
                 context,
-                title: 'RADAR AGROMETEOROLÓGICO MULTIDIMENSIONAL',
-                subtitle: 'Índice de adequação biofísica da cultura do arroz (5 eixos)',
-                icon: Icons.radar,
+                title: s.vizRadarHeader,
+                subtitle: s.vizRadarSubtitle,
                 child: BiometRadarChart(
                   dimensions: analytics?.biometRadar ?? [],
                   isDark: isDark,
+                  emptyLabel: s.vizNoRadarData,
                 ),
               ),
             ],
@@ -125,12 +126,12 @@ class MultidimensionalVisualizations extends StatelessWidget {
             // Row 2: Environmental Correlation Matrix Heatmap
             _buildPanel(
               context,
-              title: 'MATRIZ DE CORRELAÇÃO AMBIENTAL DE PEARSON',
-              subtitle: 'Interações lineares entre condutores climáticos (-1.0 a +1.0) calculadas na borda',
-              icon: Icons.grid_on,
+              title: s.vizCorrelationHeader,
+              subtitle: s.vizCorrelationSubtitle,
               child: CorrelationHeatmap(
                 correlation: analytics?.correlationMatrix,
                 isDark: isDark,
+                emptyLabel: s.vizNoCorrelationData,
               ),
             ),
           ],
@@ -211,7 +212,6 @@ class MultidimensionalVisualizations extends StatelessWidget {
     BuildContext context, {
     required String title,
     required String subtitle,
-    required IconData icon,
     required Widget child,
   }) {
     final theme = Theme.of(context);
@@ -227,36 +227,23 @@ class MultidimensionalVisualizations extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Icon(icon, size: 16, color: isDark ? Colors.green.shade300 : Colors.green.shade800),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.6,
-                        fontFamily: 'Ubuntu Sans Mono',
-                        color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
-                      ),
-                    ),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontFamily: 'Ubuntu Sans',
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.6,
+              fontFamily: 'Ubuntu Sans Mono',
+              color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+            ),
+          ),
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 10,
+              fontFamily: 'Ubuntu Sans',
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+            ),
           ),
           const SizedBox(height: 16),
           child,
@@ -273,19 +260,21 @@ class MultidimensionalVisualizations extends StatelessWidget {
 class PhenologyProbabilitiesDonut extends StatelessWidget {
   final Map<String, double> probabilities;
   final bool isDark;
+  final String emptyLabel;
 
   const PhenologyProbabilitiesDonut({
     super.key,
     required this.probabilities,
     required this.isDark,
+    required this.emptyLabel,
   });
 
   @override
   Widget build(BuildContext context) {
     if (probabilities.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 180,
-        child: Center(child: Text('Sem distribuição probabilística disponível')),
+        child: Center(child: Text(emptyLabel)),
       );
     }
 
@@ -440,19 +429,21 @@ class _DonutPainter extends CustomPainter {
 class BiometRadarChart extends StatelessWidget {
   final List<RadarDimensionScore> dimensions;
   final bool isDark;
+  final String emptyLabel;
 
   const BiometRadarChart({
     super.key,
     required this.dimensions,
     required this.isDark,
+    required this.emptyLabel,
   });
 
   @override
   Widget build(BuildContext context) {
     if (dimensions.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 220,
-        child: Center(child: Text('Aguardando cálculo das dimensões biofísicas')),
+        child: Center(child: Text(emptyLabel)),
       );
     }
 
@@ -570,19 +561,21 @@ class _RadarPainter extends CustomPainter {
 class CorrelationHeatmap extends StatelessWidget {
   final CorrelationMatrix? correlation;
   final bool isDark;
+  final String emptyLabel;
 
   const CorrelationHeatmap({
     super.key,
     required this.correlation,
     required this.isDark,
+    required this.emptyLabel,
   });
 
   @override
   Widget build(BuildContext context) {
     if (correlation == null || correlation!.variables.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 180,
-        child: Center(child: Text('Aguardando cálculo da matriz de correlação')),
+        child: Center(child: Text(emptyLabel)),
       );
     }
 

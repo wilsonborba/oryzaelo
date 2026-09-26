@@ -54,10 +54,9 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
               // ── 1. Phenology Monitor Section ──
               if (_activeSection == StatsSection.all || _activeSection == StatsSection.phenology) ...[
                 _buildSectionContainer(
-                  title: 'MONITOR FENOLÓGICO BBCH E PRESCRIÇÕES AGRONÔMICAS',
-                  subtitle: 'Estágio fisiológico predito por IA residente (ONNX) e manejo operacional',
-                  tag: 'INFERÊNCIA ATIVA',
-                  icon: Icons.psychology,
+                  title: s.statsSectionPhenoTitle.toUpperCase(),
+                  subtitle: s.statsSectionPhenoSubtitle,
+                  tag: s.statsSectionPhenoTag.toUpperCase(),
                   isDark: isDark,
                   child: PhenologyMonitorCard(handler: widget.handler),
                 ),
@@ -67,10 +66,9 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
               // ── 2. Climate Dynamics & GDD Section ──
               if (_activeSection == StatsSection.all || _activeSection == StatsSection.climate) ...[
                 _buildSectionContainer(
-                  title: 'DINÂMICA CLIMÁTICA E SOMA TÉRMICA (GDD BASE 10°C)',
-                  subtitle: 'Curvas de acúmulo térmico (°C·dia), amplitude DTR e balanço hídrico',
-                  tag: 'SÉRIES TEMPORAIS',
-                  icon: Icons.show_chart,
+                  title: s.statsSectionClimateTitle.toUpperCase(),
+                  subtitle: s.statsSectionClimateSubtitle,
+                  tag: s.statsSectionClimateTag.toUpperCase(),
                   isDark: isDark,
                   child: AgrometeorologicalCharts(records: widget.handler.weatherRecords),
                 ),
@@ -80,10 +78,9 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
               // ── 3. Radar & Multidimensional Biometrics Section ──
               if (_activeSection == StatsSection.all || _activeSection == StatsSection.radar) ...[
                 _buildSectionContainer(
-                  title: 'ÍNDICES MULTIDIMENSIONAIS, RADAR BIOMET E CORRELAÇÕES',
-                  subtitle: 'Radar de 5 dimensões fisiológicas, matriz de Pearson e alertas estatísticos',
-                  tag: 'CIÊNCIA DE DADOS',
-                  icon: Icons.auto_graph,
+                  title: s.statsSectionRadarTitle.toUpperCase(),
+                  subtitle: s.statsSectionRadarSubtitle,
+                  tag: s.statsSectionRadarTag.toUpperCase(),
                   isDark: isDark,
                   child: MultidimensionalVisualizations(
                     prediction: widget.handler.latestPrediction,
@@ -96,10 +93,9 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
               // ── 4. Edge Hardware & Benchmarks Telemetry HUD Section ──
               if (_activeSection == StatsSection.all || _activeSection == StatsSection.hardware) ...[
                 _buildSectionContainer(
-                  title: 'TELEMETRIA DO HARDWARE DE BORDA E BENCHMARKS EM TEMPO REAL',
-                  subtitle: 'Latência submilissegundo (< 22 µs), CPU/RAM e integridade do banco SQLite',
-                  tag: 'HARDWARE HUD',
-                  icon: Icons.speed,
+                  title: s.statsSectionHardwareTitle.toUpperCase(),
+                  subtitle: s.statsSectionHardwareSubtitle,
+                  tag: s.statsSectionHardwareTag.toUpperCase(),
                   isDark: isDark,
                   child: EdgeTelemetryHud(handler: widget.handler),
                 ),
@@ -119,7 +115,7 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
           _StatsNavItem(
             section: StatsSection.all,
             label: s.dashFilterAll,
-            badge: "VISÃO COMPLETA",
+            badge: s.statsNavAllBadge,
             assetPath: "assets/icons3d/target-dynamic-color.png",
             isSelected: _activeSection == StatsSection.all,
             onTap: () => setState(() => _activeSection = StatsSection.all),
@@ -127,7 +123,7 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
           _StatsNavItem(
             section: StatsSection.phenology,
             label: s.dashFilterPheno,
-            badge: "IA RESIDENTE",
+            badge: s.statsNavPhenoBadge,
             assetPath: "assets/icons3d/target-dynamic-color.png",
             isSelected: _activeSection == StatsSection.phenology,
             onTap: () => setState(() => _activeSection = StatsSection.phenology),
@@ -143,7 +139,7 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
           _StatsNavItem(
             section: StatsSection.radar,
             label: s.dashFilterBiomet,
-            badge: "5 DIMENSÕES",
+            badge: s.statsNavRadarBadge,
             assetPath: "assets/icons3d/calculator-dynamic-color.png",
             isSelected: _activeSection == StatsSection.radar,
             onTap: () => setState(() => _activeSection = StatsSection.radar),
@@ -260,101 +256,67 @@ class _StatsOverviewScreenState extends State<StatsOverviewScreen> {
     );
   }
 
+  /// Plain section heading (icon + title + subtitle + tag), no card box of its
+  /// own — [child] already renders its own bordered card(s) (chart tiles,
+  /// the phenology card, the telemetry HUD), so wrapping it in a second
+  /// bordered/shadowed container just produced cards nested inside cards.
   Widget _buildSectionContainer({
     required String title,
     required String subtitle,
     required String tag,
-    required IconData icon,
     required bool isDark,
     required Widget child,
   }) {
-    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
-    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
     final textColor = isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
     final textSecondary = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
 
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: surfaceColor,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: borderColor, width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
-            offset: const Offset(3, 4),
-            blurRadius: 0,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: OryzaColors.burntOrange.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: OryzaColors.burntOrange.withValues(alpha: 0.3)),
-                ),
-                child: Icon(icon, size: 16, color: OryzaColors.burntOrange),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontFamily: OryzaTypography.monoFontFamily,
-                        package: 'oryzaelo_ui',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.8,
-                        color: textColor,
-                      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: OryzaTypography.monoFontFamily,
+                      package: 'oryzaelo_ui',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                      color: textColor,
                     ),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontFamily: OryzaTypography.fontFamily,
-                        package: 'oryzaelo_ui',
-                        fontSize: 11,
-                        color: textSecondary,
-                      ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontFamily: OryzaTypography.fontFamily,
+                      package: 'oryzaelo_ui',
+                      fontSize: 11,
+                      color: textSecondary,
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight,
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(
-                    color: isDark ? OryzaColors.darkBorder : OryzaColors.botanicalGreenBorder,
                   ),
-                ),
-                child: Text(
-                  tag,
-                  style: TextStyle(
-                    fontFamily: OryzaTypography.monoFontFamily,
-                    package: 'oryzaelo_ui',
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w700,
-                    color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
-                  ),
-                ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          child,
-        ],
-      ),
+            ),
+            Text(
+              tag,
+              style: TextStyle(
+                fontFamily: OryzaTypography.monoFontFamily,
+                package: 'oryzaelo_ui',
+                fontSize: 9.5,
+                fontWeight: FontWeight.w700,
+                color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+        child,
+      ],
     );
   }
 }

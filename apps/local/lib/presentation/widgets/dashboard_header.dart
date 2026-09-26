@@ -21,27 +21,43 @@ class DashboardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final s = OryzaI18n.of(context);
+
+    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: ScrapbookCard(
-        isDark: isDark,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isCompact = constraints.maxWidth < 768;
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isCompact = constraints.maxWidth < 768;
 
-            return Row(
-              children: [
-                // Optional Sidebar toggle button (useful on mobile or compact widths)
-                if (onToggleSidebar != null) ...[
-                  IconButton(
-                    onPressed: onToggleSidebar,
-                    icon: const Icon(Icons.menu, size: 20),
-                    tooltip: 'Menu de Navegação',
+          return Row(
+            children: [
+              // Optional Sidebar toggle button (useful on mobile or compact widths)
+              if (onToggleSidebar != null) ...[
+                Tooltip(
+                  message: s.headerMenuTooltip,
+                  child: Material(
+                    color: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: onToggleSidebar,
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: borderColor, width: 1.2),
+                        ),
+                        child: const Icon(Icons.menu, size: 18),
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 8),
-                ],
+                ),
+                const SizedBox(width: 8),
+              ],
 
                 // Brand Mark & Local Edge Title (No corner emoji/logo)
                 Column(
@@ -85,7 +101,7 @@ class DashboardHeader extends StatelessWidget {
                     if (!isCompact) ...[
                       const SizedBox(height: 2),
                       Text(
-                        'NÓ DE BORDA RURAL • PORTA 8005 • AIR-GAPPED',
+                        s.headerSubtitle,
                         style: TextStyle(
                           fontSize: 10,
                           color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
@@ -126,7 +142,7 @@ class DashboardHeader extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        isOnline ? 'AIR-GAPPED OPERACIONAL' : 'ENGINE OFFLINE',
+                        isOnline ? s.headerOnlineStatus : s.headerOfflineStatus,
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
@@ -152,14 +168,12 @@ class DashboardHeader extends StatelessWidget {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.refresh, size: 20),
-                  tooltip: 'Atualizar Telemetria',
+                  tooltip: s.headerRefreshTooltip,
                 ),
 
                 const SizedBox(width: 6),
 
                 // Design System Controls
-                const BackgroundStyleSelector(),
-                const SizedBox(width: 6),
                 const ThemeToggle(),
                 const SizedBox(width: 6),
                 const LanguageSelector(),
@@ -167,7 +181,6 @@ class DashboardHeader extends StatelessWidget {
             );
           },
         ),
-      ),
     );
   }
 }

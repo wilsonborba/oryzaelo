@@ -121,6 +121,42 @@ class OryzaTypography {
 }
 
 class OryzaTheme {
+  // Shared hairline + hard-shadow "Swiss" box language reused by inputs/dropdowns
+  // so every field-like control matches ScrapbookCard instead of Material defaults.
+  static InputDecorationTheme _inputTheme({required bool isDark}) {
+    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
+    final fillColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
+    OutlineInputBorder border(Color color, double width) => OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: color, width: width),
+        );
+
+    return InputDecorationTheme(
+      filled: true,
+      fillColor: fillColor,
+      isDense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      border: border(borderColor, 1.2),
+      enabledBorder: border(borderColor, 1.2),
+      focusedBorder: border(OryzaColors.burntOrange, 1.6),
+      errorBorder: border(Colors.red.shade700, 1.2),
+      focusedErrorBorder: border(Colors.red.shade700, 1.6),
+      labelStyle: TextStyle(
+        color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+        fontSize: 13,
+      ),
+    );
+  }
+
+  static DataTableThemeData _dataTableTheme({required bool isDark}) {
+    return DataTableThemeData(
+      headingRowColor: WidgetStateProperty.all(
+        isDark ? const Color(0xFF1B201A) : const Color(0xFFF2EFE6),
+      ),
+      dividerThickness: 0.6,
+    );
+  }
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -137,6 +173,8 @@ class OryzaTheme {
         outline: OryzaColors.lightBorder,
       ),
       textTheme: OryzaTypography.textTheme(OryzaColors.lightTextPrimary),
+      inputDecorationTheme: _inputTheme(isDark: false),
+      dataTableTheme: _dataTableTheme(isDark: false),
     );
   }
 
@@ -156,6 +194,8 @@ class OryzaTheme {
         outline: OryzaColors.darkBorder,
       ),
       textTheme: OryzaTypography.textTheme(OryzaColors.darkTextPrimary),
+      inputDecorationTheme: _inputTheme(isDark: true),
+      dataTableTheme: _dataTableTheme(isDark: true),
     );
   }
 }

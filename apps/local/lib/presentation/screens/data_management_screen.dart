@@ -65,7 +65,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
       builder: (ctx) => AlertDialog(
         title: Text(s.tableConfirmDeleteTitle),
         content: Text(
-          "Deseja excluir permanentemente $count registro(s) meteorológico(s) do banco de dados local?",
+          s.deleteConfirmBody.replaceAll('{count}', '$count'),
         ),
         actions: [
           TextButton(
@@ -92,7 +92,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
         });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("$count registro(s) excluído(s) com sucesso.")),
+            SnackBar(content: Text(s.deleteSuccessMsg.replaceAll('{count}', '$count'))),
           );
         }
       }
@@ -113,56 +113,91 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             s.tableNewRecordBtn,
             style: const TextStyle(fontWeight: FontWeight.w700),
           ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text("Data do Registro", style: TextStyle(fontSize: 12.5)),
-                  subtitle: Text(
-                    DateFormat('yyyy-MM-dd').format(_manualDate),
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+          content: SizedBox(
+            width: 420,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(s.manualRecordDateLabel, style: const TextStyle(fontSize: 12.5)),
+                    subtitle: Text(
+                      DateFormat('yyyy-MM-dd').format(_manualDate),
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    trailing: const Icon(Icons.calendar_today_rounded, size: 20),
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: _manualDate,
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime.now().add(const Duration(days: 365)),
+                      );
+                      if (picked != null) {
+                        setDialogState(() => _manualDate = picked);
+                      }
+                    },
                   ),
-                  trailing: const Icon(Icons.calendar_today_rounded, size: 20),
-                  onTap: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      initialDate: _manualDate,
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime.now().add(const Duration(days: 365)),
-                    );
-                    if (picked != null) {
-                      setDialogState(() => _manualDate = picked);
-                    }
-                  },
-                ),
-                TextField(
-                  controller: _tMaxCtrl,
-                  decoration: const InputDecoration(labelText: "T_máx (°C)"),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-                TextField(
-                  controller: _tMinCtrl,
-                  decoration: const InputDecoration(labelText: "T_mín (°C)"),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-                TextField(
-                  controller: _rainCtrl,
-                  decoration: const InputDecoration(labelText: "Precipitação (mm)"),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-                TextField(
-                  controller: _radCtrl,
-                  decoration: const InputDecoration(labelText: "Radiação Solar (MJ/m²)"),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-                TextField(
-                  controller: _rhCtrl,
-                  decoration: const InputDecoration(labelText: "Umidade Relativa (%)"),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _tMaxCtrl,
+                          decoration: InputDecoration(labelText: s.manualFieldTMax),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: _tMinCtrl,
+                          decoration: InputDecoration(labelText: s.manualFieldTMin),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _rainCtrl,
+                          decoration: InputDecoration(labelText: s.manualFieldRain),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: _radCtrl,
+                          decoration: InputDecoration(labelText: s.manualFieldRad),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _rhCtrl,
+                          decoration: InputDecoration(labelText: s.manualFieldRh),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(child: SizedBox()),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
@@ -182,14 +217,14 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                   precipitationMm: double.tryParse(_rainCtrl.text) ?? 0.0,
                   radiationMjM2: double.tryParse(_radCtrl.text) ?? 18.0,
                   relativeHumidityPct: double.tryParse(_rhCtrl.text) ?? 70.0,
-                  source: 'Manual_Entry_Terminal',
+                  source: s.manualRecordSourceLabel,
                 );
 
                 Navigator.of(ctx).pop();
                 final ok = await widget.handler.ingestSingleRecord(rec);
                 if (mounted && ok) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Registro manual gravado com sucesso.")),
+                    SnackBar(content: Text(s.manualRecordSavedMsg)),
                   );
                 }
               },
@@ -197,7 +232,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 backgroundColor: OryzaColors.burntOrange,
                 foregroundColor: Colors.white,
               ),
-              child: const Text("Gravar Registro"),
+              child: Text(s.saveRecordBtn),
             ),
           ],
         ),
@@ -289,7 +324,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     ),
                   ),
                   Text(
-                    "Ingestão via CSV, inserção manual e administração do banco local SQLite",
+                    s.dataManagementSubtitle,
                     style: TextStyle(
                       fontFamily: OryzaTypography.fontFamily,
                       package: 'oryzaelo_ui',
@@ -416,7 +451,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             ),
             const SizedBox(height: 18),
             Text(
-              "Nenhum Registro Meteorológico Encontrado",
+              s.noRecordsFoundTitle,
               style: TextStyle(
                 fontFamily: OryzaTypography.fontFamily,
                 package: 'oryzaelo_ui',
@@ -429,7 +464,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
               child: Text(
-                "A base deste talhão está vazia. Adicione registros manualmente, importe um arquivo CSV ou clique no botão 'Carregar Dados de Teste' acima para popular as séries de referência.",
+                s.noRecordsFoundBody,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: OryzaTypography.fontFamily,
@@ -454,6 +489,19 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _headerLabel(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontFamily: OryzaTypography.monoFontFamily,
+        package: 'oryzaelo_ui',
+        fontWeight: FontWeight.w800,
+        fontSize: 11,
+        letterSpacing: 0.4,
       ),
     );
   }
@@ -510,7 +558,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
               child: Row(
                 children: [
                   Text(
-                    "${_selectedDates.length} registro(s) selecionado(s)",
+                    s.tableSelectedCount.replaceAll('{count}', '${_selectedDates.length}'),
                     style: const TextStyle(
                       fontFamily: OryzaTypography.monoFontFamily,
                       package: 'oryzaelo_ui',
@@ -534,7 +582,7 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                   const SizedBox(width: 8),
                   TextButton(
                     onPressed: () => setState(() => _selectedDates.clear()),
-                    child: const Text('Desselecionar Todos'),
+                    child: Text(s.deselectAllBtn),
                   ),
                 ],
               ),
@@ -544,9 +592,13 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
+              showCheckboxColumn: false,
               headingRowColor: WidgetStateProperty.all(
                 isDark ? const Color(0xFF1B201A) : const Color(0xFFF2EFE6),
               ),
+              headingRowHeight: 40,
+              dataRowMinHeight: 38,
+              dataRowMaxHeight: 42,
               columnSpacing: 20,
               horizontalMargin: 16,
               columns: [
@@ -556,58 +608,18 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                     onChanged: (_) => _toggleSelectAll(pageRecords),
                   ),
                 ),
-                DataColumn(
-                  label: Text(
-                    s.tableColDate,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    s.tableColTmax,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    s.tableColTmin,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    s.tableColRain,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    s.tableColRad,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    s.tableColRh,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    s.chartUnitGdd.split(' ')[0],
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    s.tableColSource,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-                  ),
-                ),
+                DataColumn(label: _headerLabel(s.tableColDate)),
+                DataColumn(label: _headerLabel(s.tableColTmax), numeric: true),
+                DataColumn(label: _headerLabel(s.tableColTmin), numeric: true),
+                DataColumn(label: _headerLabel(s.tableColRain), numeric: true),
+                DataColumn(label: _headerLabel(s.tableColRad), numeric: true),
+                DataColumn(label: _headerLabel(s.tableColRh), numeric: true),
+                DataColumn(label: _headerLabel(s.chartUnitGdd.split(' ')[0]), numeric: true),
+                DataColumn(label: _headerLabel(s.tableColSource)),
               ],
               rows: pageRecords.map((r) {
                 final isSelected = _selectedDates.contains(r.date);
-                final gdd = r.dailyGdd(10.0);
+                final gdd = r.dailyGdd;
 
                 return DataRow(
                   selected: isSelected,
@@ -686,8 +698,11 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
           ),
 
           // Pagination Controls Footer
-          Padding(
-            padding: const EdgeInsets.all(12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: borderColor, width: 1.0)),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -698,23 +713,32 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                       style: TextStyle(fontSize: 11, color: textColor),
                     ),
                     const SizedBox(width: 8),
-                    DropdownButton<int>(
-                      value: _rowsPerPage,
-                      isDense: true,
-                      dropdownColor: surfaceColor,
-                      items: const [
-                        DropdownMenuItem(value: 10, child: Text("10")),
-                        DropdownMenuItem(value: 25, child: Text("25")),
-                        DropdownMenuItem(value: 50, child: Text("50")),
-                      ],
-                      onChanged: (val) {
-                        if (val != null) {
-                          setState(() {
-                            _rowsPerPage = val;
-                            _currentPage = 0;
-                          });
-                        }
-                      },
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: borderColor),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<int>(
+                          value: _rowsPerPage,
+                          isDense: true,
+                          dropdownColor: surfaceColor,
+                          items: const [
+                            DropdownMenuItem(value: 10, child: Text("10")),
+                            DropdownMenuItem(value: 25, child: Text("25")),
+                            DropdownMenuItem(value: 50, child: Text("50")),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) {
+                              setState(() {
+                                _rowsPerPage = val;
+                                _currentPage = 0;
+                              });
+                            }
+                          },
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -729,16 +753,25 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
                 Row(
                   children: [
                     IconButton(
+                      style: IconButton.styleFrom(
+                        side: BorderSide(color: borderColor),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                      ),
                       onPressed: _currentPage > 0
                           ? () => setState(() => _currentPage--)
                           : null,
-                      icon: const Icon(Icons.chevron_left_rounded),
+                      icon: const Icon(Icons.chevron_left_rounded, size: 18),
                     ),
+                    const SizedBox(width: 6),
                     IconButton(
+                      style: IconButton.styleFrom(
+                        side: BorderSide(color: borderColor),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                      ),
                       onPressed: _currentPage < totalPages - 1
                           ? () => setState(() => _currentPage++)
                           : null,
-                      icon: const Icon(Icons.chevron_right_rounded),
+                      icon: const Icon(Icons.chevron_right_rounded, size: 18),
                     ),
                   ],
                 ),

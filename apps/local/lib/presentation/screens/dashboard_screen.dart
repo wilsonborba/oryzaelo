@@ -54,44 +54,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final showExpandedSidebar = !isCompact && _isSidebarExpanded;
 
         return Scaffold(
-          body: GraphPaperBackground(
-            isDark: isDark,
-            child: SafeArea(
-              child: Column(
-                children: [
-                  // ── Top Header Bar ──
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    child: DashboardHeader(
-                      isOnline: _handler.isEngineOnline,
-                      isRefreshing: _handler.isLoading,
-                      onRefresh: () => _handler.initialize(),
-                      onToggleSidebar: () {
-                        setState(() => _isSidebarExpanded = !_isSidebarExpanded);
-                      },
-                    ),
+          backgroundColor: isDark ? OryzaColors.darkCanvas : OryzaColors.lightCanvas,
+          body: SafeArea(
+            child: Column(
+              children: [
+                // ── Top Header Bar ──
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                  child: DashboardHeader(
+                    isOnline: _handler.isEngineOnline,
+                    isRefreshing: _handler.isLoading,
+                    onRefresh: () => _handler.initialize(),
+                    onToggleSidebar: () {
+                      setState(() => _isSidebarExpanded = !_isSidebarExpanded);
+                    },
                   ),
+                ),
 
-                  // ── Error Banner if Engine Unreachable ──
-                  if (!_handler.isEngineOnline)
-                    _buildErrorBanner(isDark),
+                // ── Error Banner if Engine Unreachable ──
+                if (!_handler.isEngineOnline)
+                  _buildErrorBanner(isDark, s),
 
-                  // ── Sidebar + Content Area ──
-                  Expanded(
-                    child: Row(
-                      children: [
-                        // Lateral Navigation Sidebar
-                        _buildSidebar(context, isDark, s, showExpandedSidebar, isCompact),
+                // ── Sidebar + Content Area ──
+                Expanded(
+                  child: Row(
+                    children: [
+                      // Lateral Navigation Sidebar
+                      _buildSidebar(context, isDark, s, showExpandedSidebar, isCompact),
 
-                        // Content Area
-                        Expanded(
-                          child: _buildContentArea(),
-                        ),
-                      ],
-                    ),
+                      // Content Area
+                      Expanded(
+                        child: _buildContentArea(),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           // Mobile bottom nav as fallback on very compact screens
@@ -181,7 +179,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 if (expanded) ...[
                   const SizedBox(height: 6),
                   Text(
-                    'ASODYA ECOSYSTEM',
+                    s.sidebarBrand,
                     style: TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w800,
@@ -292,7 +290,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ── Error Banner ────────────────────────────────────────────────────────────
 
-  Widget _buildErrorBanner(bool isDark) {
+  Widget _buildErrorBanner(bool isDark, OryzaStrings s) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Container(
@@ -302,14 +300,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.red.shade700),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Icon(Icons.cloud_off, color: Colors.redAccent, size: 18),
-            SizedBox(width: 10),
+            const Icon(Icons.cloud_off, color: Colors.redAccent, size: 18),
+            const SizedBox(width: 10),
             Expanded(
               child: Text(
-                'Edge engine offline (0.0.0.0:8005). Verifique se o binario oryzaelo_engine esta em execucao.',
-                style: TextStyle(
+                s.errorBannerOfflineMsg,
+                style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: Colors.redAccent,
@@ -355,27 +353,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _NavDestination(
         icon: Icons.analytics_outlined,
         label: s.dashNavStats,
-        shortLabel: 'Stats',
+        shortLabel: s.dashNavStats,
       ),
       _NavDestination(
         icon: Icons.calculate_outlined,
         label: s.dashNavSim,
-        shortLabel: 'Simulador',
+        shortLabel: s.dashNavSim,
       ),
       _NavDestination(
         icon: Icons.table_chart_outlined,
         label: s.dashNavData,
-        shortLabel: 'Dados',
+        shortLabel: s.dashNavData,
       ),
       _NavDestination(
         icon: Icons.sensors_outlined,
         label: s.dashNavSensors,
-        shortLabel: 'Sensores',
+        shortLabel: s.dashNavSensors,
       ),
       _NavDestination(
         icon: Icons.tune_outlined,
         label: s.dashNavSettings,
-        shortLabel: 'Config',
+        shortLabel: s.dashNavSettings,
       ),
     ];
   }

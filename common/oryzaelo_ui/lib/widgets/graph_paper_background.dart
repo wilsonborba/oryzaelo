@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
-import '../core/state.dart';
 
 /// Senior UI/UX Engineered Atmospheric Background for Oryza-Elo.
 /// Renders an ultra-soft, widely-spaced rice paddy topography (várzea de arroz)
@@ -9,7 +8,6 @@ import '../core/state.dart';
 class OryzaAtmosphericBackground extends StatefulWidget {
   final Widget child;
   final bool isDark;
-  final OryzaBackgroundStyle style;
   final ScrollController? scrollController;
   final bool fadeBottom;
 
@@ -17,7 +15,6 @@ class OryzaAtmosphericBackground extends StatefulWidget {
     super.key,
     required this.child,
     required this.isDark,
-    this.style = OryzaBackgroundStyle.topographic,
     this.scrollController,
     this.fadeBottom = true,
   });
@@ -259,22 +256,3 @@ class _FieldPollenParticle {
   }
 }
 
-/// Backward-compatible wrapper for existing callers
-class GraphPaperBackground extends StatelessWidget {
-  final Widget child;
-  final bool isDark;
-
-  const GraphPaperBackground({
-    super.key,
-    required this.child,
-    required this.isDark,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return OryzaAtmosphericBackground(
-      isDark: isDark,
-      child: child,
-    );
-  }
-}

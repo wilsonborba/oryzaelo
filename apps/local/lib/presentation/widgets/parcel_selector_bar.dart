@@ -29,14 +29,8 @@ class ParcelSelectorBar extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.landscape,
-                  size: 20,
-                  color: isDark ? Colors.green.shade300 : Colors.green.shade800,
-                ),
-                const SizedBox(width: 8),
                 Text(
-                  'TALHÃO ATIVO DA FAZENDA',
+                  s.parcelActiveLabel.toUpperCase(),
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
@@ -50,13 +44,13 @@ class ParcelSelectorBar extends StatelessWidget {
                 if (selected != null) ...[
                   IconButton(
                     icon: const Icon(Icons.edit_outlined, size: 18),
-                    tooltip: 'Editar Parâmetros do Talhão',
-                    onPressed: () => _showEditParcelDialog(context, selected),
+                    tooltip: s.parcelEditTooltip,
+                    onPressed: () => _showEditParcelDialog(context, selected, s),
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete_outline, size: 18),
-                    tooltip: 'Excluir Talhão',
-                    onPressed: () => _confirmDeleteParcel(context, selected),
+                    tooltip: s.parcelDeleteTooltip,
+                    onPressed: () => _confirmDeleteParcel(context, selected, s),
                   ),
                   const SizedBox(width: 8),
                 ],
@@ -92,9 +86,9 @@ class ParcelSelectorBar extends StatelessWidget {
                   const SizedBox(width: 8),
                 ],
                 ElevatedButton.icon(
-                  onPressed: () => _showCreateParcelDialog(context),
+                  onPressed: () => _showCreateParcelDialog(context, s),
                   icon: const Icon(Icons.add, size: 16),
-                  label: const Text('Novo Talhão'),
+                  label: Text(s.parcelNewBtn),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isDark ? Colors.green.shade800 : Colors.green.shade700,
                     foregroundColor: Colors.white,
@@ -130,7 +124,7 @@ class ParcelSelectorBar extends StatelessWidget {
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: selected?.id,
-                          hint: const Text('Selecione um talhão'),
+                          hint: Text(s.parcelSelectHint),
                           isDense: true,
                           items: handler.parcels.map((p) {
                             return DropdownMenuItem<String>(
@@ -158,40 +152,35 @@ class ParcelSelectorBar extends StatelessWidget {
                       // Cultivar Badge
                       _buildMetricChip(
                         isDark: isDark,
-                        label: 'VARIETAL',
+                        label: s.parcelVarietalLabel,
                         value: selected.riceVariety,
-                        icon: Icons.grass,
                       ),
                       // Ecosystem Badge
                       _buildMetricChip(
                         isDark: isDark,
-                        label: 'ECOSSISTEMA',
+                        label: s.parcelEcosystemLabel,
                         value: selected.riceEcosystem,
-                        icon: Icons.water_drop_outlined,
                       ),
                       // Area Badge
                       _buildMetricChip(
                         isDark: isDark,
-                        label: 'ÁREA',
+                        label: s.parcelAreaLabel,
                         value: '${selected.areaHectares} ha',
-                        icon: Icons.square_foot,
                       ),
                       // DAE Badge
                       _buildMetricChip(
                         isDark: isDark,
-                        label: 'IDADE (DAE)',
-                        value: '${selected.daysAfterSowing} dias',
-                        icon: Icons.calendar_today_outlined,
+                        label: s.parcelAgeLabel,
+                        value: '${selected.daysAfterSowing} ${s.settingsDaysUnit}',
                         highlight: true,
                       ),
                       if (!isCompact) ...[
                         // GPS Badge
                         _buildMetricChip(
                           isDark: isDark,
-                          label: 'COORDENADAS',
+                          label: s.parcelCoordsLabel,
                           value:
                               '${selected.latitude.toStringAsFixed(3)}°, ${selected.longitude.toStringAsFixed(3)}°',
-                          icon: Icons.place_outlined,
                         ),
                       ],
                     ],
@@ -209,7 +198,6 @@ class ParcelSelectorBar extends StatelessWidget {
     required bool isDark,
     required String label,
     required String value,
-    required IconData icon,
     bool highlight = false,
   }) {
     return Container(
@@ -227,49 +215,36 @@ class ParcelSelectorBar extends StatelessWidget {
               : (isDark ? Colors.white12 : Colors.black12),
         ),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            size: 14,
-            color: highlight
-                ? (isDark ? Colors.green.shade300 : Colors.green.shade800)
-                : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 8,
+              fontWeight: FontWeight.w800,
+              fontFamily: 'Ubuntu Sans Mono',
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+            ),
           ),
-          const SizedBox(width: 6),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 8,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Ubuntu Sans Mono',
-                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                ),
-              ),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Ubuntu Sans',
-                  color: highlight
-                      ? (isDark ? Colors.green.shade200 : Colors.green.shade900)
-                      : (isDark ? Colors.white : Colors.black87),
-                ),
-              ),
-            ],
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Ubuntu Sans',
+              color: highlight
+                  ? (isDark ? Colors.green.shade200 : Colors.green.shade900)
+                  : (isDark ? Colors.white : Colors.black87),
+            ),
           ),
         ],
       ),
     );
   }
 
-  void _showCreateParcelDialog(BuildContext context) {
-    final nameCtrl = TextEditingController(text: 'Talhão ${handler.parcels.length + 1}');
+  void _showCreateParcelDialog(BuildContext context, OryzaStrings s) {
+    final nameCtrl = TextEditingController(text: s.parcelDefaultName.replaceAll('{n}', '${handler.parcels.length + 1}'));
     final areaCtrl = TextEditingController(text: '12.5');
     final latCtrl = TextEditingController(text: '14.882');
     final lonCtrl = TextEditingController(text: '100.451');
@@ -281,7 +256,7 @@ class ParcelSelectorBar extends StatelessWidget {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDlgState) => AlertDialog(
-          title: const Text('Cadastrar Novo Talhão de Arroz'),
+          title: Text(s.parcelCreateDialogTitle),
           content: SingleChildScrollView(
             child: SizedBox(
               width: 440,
@@ -290,7 +265,7 @@ class ParcelSelectorBar extends StatelessWidget {
                 children: [
                   TextField(
                     controller: nameCtrl,
-                    decoration: const InputDecoration(labelText: 'Identificação do Talhão'),
+                    decoration: InputDecoration(labelText: s.parcelNameFieldLabel),
                   ),
                   const SizedBox(height: 10),
                   Row(
@@ -299,18 +274,18 @@ class ParcelSelectorBar extends StatelessWidget {
                         child: TextField(
                           controller: areaCtrl,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(labelText: 'Área (ha)'),
+                          decoration: InputDecoration(labelText: s.parcelAreaFieldLabel),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           initialValue: ecosystem,
-                          decoration: const InputDecoration(labelText: 'Ecossistema'),
-                          items: const [
-                            DropdownMenuItem(value: 'Irrigated', child: Text('Irrigado')),
-                            DropdownMenuItem(value: 'Rainfed Lowland', child: Text('Várzea')),
-                            DropdownMenuItem(value: 'Upland', child: Text('Sequeiro')),
+                          decoration: InputDecoration(labelText: s.parcelEcosystemFieldLabel),
+                          items: [
+                            DropdownMenuItem(value: 'Irrigated', child: Text(s.parcelEcosystemIrrigated)),
+                            DropdownMenuItem(value: 'Rainfed Lowland', child: Text(s.parcelEcosystemLowland)),
+                            DropdownMenuItem(value: 'Upland', child: Text(s.parcelEcosystemUpland)),
                           ],
                           onChanged: (v) => setDlgState(() => ecosystem = v!),
                         ),
@@ -320,13 +295,13 @@ class ParcelSelectorBar extends StatelessWidget {
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
                     initialValue: variety,
-                    decoration: const InputDecoration(labelText: 'Varietal / Cultivar'),
-                    items: const [
-                      DropdownMenuItem(value: 'RD43', child: Text('RD43 (Baixo IG - Tailândia)')),
-                      DropdownMenuItem(value: 'Chai Nat 1', child: Text('Chai Nat 1 (Alto Potencial)')),
-                      DropdownMenuItem(value: 'Khao Dawk Mali 105', child: Text('KDML 105 (Jasmim)')),
-                      DropdownMenuItem(value: 'BRS Pampa', child: Text('BRS Pampa (Embrapa Clima)')),
-                      DropdownMenuItem(value: 'IR64', child: Text('IR64 (IRRI Referência)')),
+                    decoration: InputDecoration(labelText: s.parcelVarietalFieldLabel),
+                    items: [
+                      DropdownMenuItem(value: 'RD43', child: Text(s.parcelVarietyRd43)),
+                      DropdownMenuItem(value: 'Chai Nat 1', child: Text(s.parcelVarietyChaiNat1)),
+                      DropdownMenuItem(value: 'Khao Dawk Mali 105', child: Text(s.parcelVarietyKdml105)),
+                      DropdownMenuItem(value: 'BRS Pampa', child: Text(s.parcelVarietyBrsPampa)),
+                      DropdownMenuItem(value: 'IR64', child: Text(s.parcelVarietyIr64)),
                     ],
                     onChanged: (v) => setDlgState(() => variety = v!),
                   ),
@@ -337,7 +312,7 @@ class ParcelSelectorBar extends StatelessWidget {
                         child: TextField(
                           controller: latCtrl,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(labelText: 'Latitude (°)'),
+                          decoration: InputDecoration(labelText: s.parcelLatitudeLabel),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -345,7 +320,7 @@ class ParcelSelectorBar extends StatelessWidget {
                         child: TextField(
                           controller: lonCtrl,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(labelText: 'Longitude (°)'),
+                          decoration: InputDecoration(labelText: s.parcelLongitudeLabel),
                         ),
                       ),
                     ],
@@ -353,10 +328,9 @@ class ParcelSelectorBar extends StatelessWidget {
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      const Text('Data de Semeadura: '),
-                      TextButton.icon(
-                        icon: const Icon(Icons.date_range, size: 16),
-                        label: Text(sowingDate.toIso8601String().split('T').first),
+                      Text(s.parcelSowingDateLabel),
+                      TextButton(
+                        child: Text(sowingDate.toIso8601String().split('T').first),
                         onPressed: () async {
                           final picked = await showDatePicker(
                             context: context,
@@ -378,7 +352,7 @@ class ParcelSelectorBar extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancelar'),
+              child: Text(s.cancelBtn),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -395,12 +369,12 @@ class ParcelSelectorBar extends StatelessWidget {
                   Navigator.pop(ctx);
                   if (ok) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Talhão cadastrado e sincronizado com o nó de borda!')),
+                      SnackBar(content: Text(s.parcelCreatedSuccess)),
                     );
                   }
                 }
               },
-              child: const Text('Salvar Talhão'),
+              child: Text(s.parcelSaveBtn),
             ),
           ],
         ),
@@ -408,7 +382,7 @@ class ParcelSelectorBar extends StatelessWidget {
     );
   }
 
-  void _showEditParcelDialog(BuildContext context, FarmParcel parcel) {
+  void _showEditParcelDialog(BuildContext context, FarmParcel parcel, OryzaStrings s) {
     final nameCtrl = TextEditingController(text: parcel.name);
     final areaCtrl = TextEditingController(text: parcel.areaHectares.toString());
     DateTime sowingDate = parcel.sowingDate;
@@ -417,27 +391,26 @@ class ParcelSelectorBar extends StatelessWidget {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDlgState) => AlertDialog(
-          title: Text('Editar ${parcel.name}'),
+          title: Text(s.parcelEditDialogTitle.replaceAll('{name}', parcel.name)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameCtrl,
-                decoration: const InputDecoration(labelText: 'Nome do Talhão'),
+                decoration: InputDecoration(labelText: s.parcelNameFieldLabel),
               ),
               const SizedBox(height: 10),
               TextField(
                 controller: areaCtrl,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Área (ha)'),
+                decoration: InputDecoration(labelText: s.parcelAreaFieldLabel),
               ),
               const SizedBox(height: 14),
               Row(
                 children: [
-                  const Text('Data de Semeadura: '),
-                  TextButton.icon(
-                    icon: const Icon(Icons.date_range, size: 16),
-                    label: Text(sowingDate.toIso8601String().split('T').first),
+                  Text(s.parcelSowingDateLabel),
+                  TextButton(
+                    child: Text(sowingDate.toIso8601String().split('T').first),
                     onPressed: () async {
                       final picked = await showDatePicker(
                         context: context,
@@ -457,7 +430,7 @@ class ParcelSelectorBar extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancelar'),
+              child: Text(s.cancelBtn),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -471,12 +444,12 @@ class ParcelSelectorBar extends StatelessWidget {
                   Navigator.pop(ctx);
                   if (ok) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Talhão atualizado no banco local!')),
+                      SnackBar(content: Text(s.parcelUpdatedSuccess)),
                     );
                   }
                 }
               },
-              child: const Text('Atualizar'),
+              child: Text(s.parcelUpdateBtn),
             ),
           ],
         ),
@@ -484,18 +457,16 @@ class ParcelSelectorBar extends StatelessWidget {
     );
   }
 
-  void _confirmDeleteParcel(BuildContext context, FarmParcel parcel) {
+  void _confirmDeleteParcel(BuildContext context, FarmParcel parcel, OryzaStrings s) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Excluir ${parcel.name}?'),
-        content: const Text(
-          'Esta operação removerá o talhão e todos os seus registros climáticos do nó local do Raspberry Pi.',
-        ),
+        title: Text(s.parcelDeleteDialogTitle.replaceAll('{name}', parcel.name)),
+        content: Text(s.parcelDeleteDialogBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancelar'),
+            child: Text(s.cancelBtn),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -505,12 +476,12 @@ class ParcelSelectorBar extends StatelessWidget {
                 Navigator.pop(ctx);
                 if (ok) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Talhão excluído com sucesso.')),
+                    SnackBar(content: Text(s.parcelDeletedSuccess)),
                   );
                 }
               }
             },
-            child: const Text('Confirmar Exclusão', style: TextStyle(color: Colors.white)),
+            child: Text(s.parcelConfirmDeleteBtn, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),

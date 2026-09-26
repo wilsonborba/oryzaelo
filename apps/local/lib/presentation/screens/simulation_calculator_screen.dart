@@ -284,9 +284,9 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(color: OryzaColors.burntOrange.withValues(alpha: 0.4)),
                     ),
-                    child: const Text(
-                      'RUST TRACT ONNX',
-                      style: TextStyle(
+                    child: Text(
+                      s.simOnnxBadge,
+                      style: const TextStyle(
                         fontFamily: OryzaTypography.monoFontFamily,
                         package: 'oryzaelo_ui',
                         fontSize: 10,
@@ -398,11 +398,11 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                   fontWeight: FontWeight.w600,
                   color: textColor,
                 ),
-                items: const [
-                  DropdownMenuItem(value: 'BRS Querência', child: Text('BRS Querência (Brasil - 130d)')),
-                  DropdownMenuItem(value: 'IR64', child: Text('IR64 (Tailândia/IRRI - 115d)')),
-                  DropdownMenuItem(value: 'Hom Mali (Jasmine)', child: Text('KDML105 Jasmine (Tailândia - 120d)')),
-                  DropdownMenuItem(value: 'Epagri 109', child: Text('Epagri 109 (Brasil - 135d)')),
+                items: [
+                  DropdownMenuItem(value: 'BRS Querência', child: Text(s.simCultivarOptionBrs)),
+                  DropdownMenuItem(value: 'IR64', child: Text(s.simCultivarOptionIr64)),
+                  DropdownMenuItem(value: 'Hom Mali (Jasmine)', child: Text(s.simCultivarOptionJasmine)),
+                  DropdownMenuItem(value: 'Epagri 109', child: Text(s.simCultivarOptionEpagri)),
                 ],
                 onChanged: (val) {
                   if (val != null) setState(() => _cultivar = val);
@@ -415,7 +415,7 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
           // DAS Slider
           _buildSliderField(
             label: s.simDasLabel,
-            valueDisplay: "${_das.toInt()} dias",
+            valueDisplay: "${_das.toInt()} ${s.simDasUnit}",
             value: _das,
             min: 5,
             max: 120,
@@ -490,7 +490,7 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                   )
                 : const Icon(Icons.play_arrow_rounded, size: 20),
             label: Text(
-              widget.handler.isAnalyzing ? "SIMULANDO CENÁRIO..." : s.simApplyBtn.toUpperCase(),
+              widget.handler.isAnalyzing ? s.simRunningLabel : s.simApplyBtn.toUpperCase(),
               style: const TextStyle(
                 fontFamily: OryzaTypography.monoFontFamily,
                 package: 'oryzaelo_ui',
@@ -592,7 +592,7 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
               ),
               const SizedBox(height: 16),
               Text(
-                "Aguardando Execução da Simulação",
+                s.simWaitingTitle,
                 style: TextStyle(
                   fontFamily: OryzaTypography.fontFamily,
                   package: 'oryzaelo_ui',
@@ -605,7 +605,7 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 420),
                 child: Text(
-                  "Ajuste os parâmetros microclimáticos no painel ao lado e clique em 'Executar Simulação' para gerar o diagnóstico agronômico multidimensional.",
+                  s.simWaitingBody,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: OryzaTypography.fontFamily,
@@ -662,7 +662,7 @@ class _SimulationCalculatorScreenState extends State<SimulationCalculatorScreen>
                 ),
               ),
               Text(
-                "GDD Acumulado: ${res.accumulatedGdd.toStringAsFixed(1)} °C·dia",
+                "${s.simGddAccumulatedLabel}: ${res.accumulatedGdd.toStringAsFixed(1)} ${s.simGddDayUnit}",
                 style: TextStyle(
                   fontFamily: OryzaTypography.monoFontFamily,
                   package: 'oryzaelo_ui',

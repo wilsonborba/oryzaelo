@@ -587,6 +587,11 @@ class OryzaStrings {
   final String sensorBaudLabel;
   final String sensorCalibrationLabel;
   final String sensorSaveBtn;
+  final String sensorBaseLabel;
+  final String sensorBaseCustomOption;
+  final String sensorDateColLabel;
+  final String sensorDateFormatLabel;
+  final String sensorSavedSuccess;
 
   final String settingsTitle;
   final String settingsSubtitle;
@@ -595,6 +600,216 @@ class OryzaStrings {
   final String settingsThemeLabel;
   final String settingsLangLabel;
   final String settingsGridLabel;
+
+  // Manual record dialog & data table (data_management_screen)
+  final String manualRecordDateLabel;
+  final String manualFieldTMax;
+  final String manualFieldTMin;
+  final String manualFieldRain;
+  final String manualFieldRad;
+  final String manualFieldRh;
+  final String deleteConfirmBody;
+  final String deleteSuccessMsg;
+  final String manualRecordSavedMsg;
+  final String saveRecordBtn;
+  final String dataManagementSubtitle;
+  final String noRecordsFoundTitle;
+  final String noRecordsFoundBody;
+  final String deselectAllBtn;
+
+  // Sensor config screen extras
+  final String sensorActiveCount;
+  final String sensorNoCustomMappings;
+
+  // Simulation calculator screen
+  final String simCultivarOptionBrs;
+  final String simCultivarOptionIr64;
+  final String simCultivarOptionJasmine;
+  final String simCultivarOptionEpagri;
+  final String simDasUnit;
+  final String simRunningLabel;
+  final String simWaitingTitle;
+  final String simWaitingBody;
+  final String simGddAccumulatedLabel;
+
+  // Dashboard header & shell
+  final String headerMenuTooltip;
+  final String headerRefreshTooltip;
+  final String headerOnlineStatus;
+  final String headerOfflineStatus;
+  final String headerSubtitle;
+  final String errorBannerOfflineMsg;
+
+  // Settings screen extras
+  final String settingsOnlineStatus;
+  final String settingsOfflineStatus;
+  final String settingsConnectedBadge;
+  final String settingsNoResponseBadge;
+  final String settingsTestConnectionBtn;
+  final String settingsPersistenceEngineLabel;
+  final String settingsParcelsRegisteredLabel;
+  final String settingsParcelsUnit;
+  final String settingsRecordsLoadedLabel;
+  final String settingsDaysUnit;
+  final String settingsSensorsMappedLabel;
+  final String settingsPresetsUnit;
+  final String settingsCustomUnit;
+  final String settingsQuickActionsHeader;
+  final String settingsPopulateDemoBtn;
+  final String settingsPopulateFailedMsg;
+  final String settingsRestoreFactoryBtn;
+  final String settingsCleanFailedMsg;
+  final String settingsSystemArchHeader;
+  final String settingsInfoAppLabel;
+  final String settingsInfoEngineLabel;
+  final String settingsInfoDesignLabel;
+  final String settingsInfoModeLabel;
+  final String settingsInfoModeValue;
+  final String settingsInfoPortLabel;
+  final String themeDarkMode;
+  final String themeLightMode;
+
+  // Stats overview section headers
+  final String statsSectionPhenoTitle;
+  final String statsSectionPhenoSubtitle;
+  final String statsSectionPhenoTag;
+  final String statsSectionClimateTitle;
+  final String statsSectionClimateSubtitle;
+  final String statsSectionClimateTag;
+  final String statsSectionRadarTitle;
+  final String statsSectionRadarSubtitle;
+  final String statsSectionRadarTag;
+  final String statsSectionHardwareTitle;
+  final String statsSectionHardwareSubtitle;
+  final String statsSectionHardwareTag;
+
+  // Phenology monitor card
+  final String phenoEmptyTitle;
+  final String phenoEmptyBody;
+  final String phenoRunInferenceBtn;
+  final String phenoPhaseLabel;
+  final String phenoConfidenceLabel;
+  final String phenoTransitionImminent;
+  final String phenoInferringLabel;
+  final String phenoReevaluateBtn;
+  final String phenoMandatoryRestriction;
+  final String phenoManagementTipsHeader;
+  final String phenoStageSeedling;
+  final String phenoStageTillering;
+  final String phenoStageBooting;
+  final String phenoStageHeading;
+  final String phenoStageFlowering;
+  final String phenoStagePreHarvest;
+  final String phenoStageHarvestReady;
+
+  // Edge telemetry HUD
+  final String hudLatencyHeader;
+  final String hudCpuMeanLabel;
+  final String hudCpuMeanDetail;
+  final String hudP95Label;
+  final String hudP95Detail;
+  final String hudThesisCeilingLabel;
+  final String hudThesisCeilingDetail;
+  final String hudRelativeSpeedLabel;
+  final String hudRelativeSpeedDetail;
+  final String hudHardwareHeader;
+  final String hudCpuUsageLabel;
+  final String hudCpuUsageDetail;
+  final String hudRamLabel;
+  final String hudDiskLabel;
+  final String hudUsedSuffix;
+  final String hudSubsystemsHeader;
+  final String hudSqliteLabel;
+  final String hudOnnxSessionLabel;
+  final String hudOnnxSessionDetail;
+  final String hudCronLabel;
+  final String hudCronDetail;
+  final String hudStatusActive;
+  final String hudStatusFailed;
+
+  // Multidimensional visualizations
+  final String vizWaitingAnalytics;
+  final String vizDonutHeader;
+  final String vizDonutSubtitle;
+  final String vizRadarHeader;
+  final String vizRadarSubtitle;
+  final String vizCorrelationHeader;
+  final String vizCorrelationSubtitle;
+  final String vizNoDonutData;
+  final String vizNoRadarData;
+  final String vizNoCorrelationData;
+
+  // Parcel selector bar
+  final String parcelActiveLabel;
+  final String parcelEditTooltip;
+  final String parcelDeleteTooltip;
+  final String parcelNewBtn;
+  final String parcelSelectHint;
+  final String parcelVarietalLabel;
+  final String parcelEcosystemLabel;
+  final String parcelAreaLabel;
+  final String parcelAgeLabel;
+  final String parcelCoordsLabel;
+  final String parcelDefaultName;
+  final String parcelCreateDialogTitle;
+  final String parcelNameFieldLabel;
+  final String parcelAreaFieldLabel;
+  final String parcelEcosystemFieldLabel;
+  final String parcelEcosystemIrrigated;
+  final String parcelEcosystemLowland;
+  final String parcelEcosystemUpland;
+  final String parcelVarietalFieldLabel;
+  final String parcelVarietyRd43;
+  final String parcelVarietyChaiNat1;
+  final String parcelVarietyKdml105;
+  final String parcelVarietyBrsPampa;
+  final String parcelVarietyIr64;
+  final String parcelLatitudeLabel;
+  final String parcelLongitudeLabel;
+  final String parcelSowingDateLabel;
+  final String parcelCreatedSuccess;
+  final String parcelSaveBtn;
+  final String parcelEditDialogTitle;
+  final String parcelUpdatedSuccess;
+  final String parcelUpdateBtn;
+  final String parcelDeleteDialogTitle;
+  final String parcelDeleteDialogBody;
+  final String parcelDeletedSuccess;
+  final String parcelConfirmDeleteBtn;
+
+  // Dashboard handler surfaced errors
+  final String errInitFailed;
+  final String errPredictionFailed;
+  final String errPopulateFailed;
+  final String errPopulateError;
+  final String errCleanFailed;
+  final String errCleanError;
+  final String errDeleteError;
+
+  // Misc technical labels still needing i18n
+  final String sidebarBrand;
+  final String settingsSqliteEngineValue;
+  final String simOnnxBadge;
+  final String simGddDayUnit;
+  final String statsNavAllBadge;
+  final String statsNavPhenoBadge;
+  final String statsNavRadarBadge;
+  final String chartWhatItAnalyzes;
+  final String chartWhatItMeans;
+  final String chartHowToUseInField;
+  final String chartGddTotalLabel;
+  final String chartLegendTMax;
+  final String chartLegendTMin;
+  final String chartLegendHumidity;
+  final String chartLegendWaterRadiation;
+  final String chartLegendDtrBand;
+  final String sensorColumnLabel;
+  final String sensorUnitLabel;
+  final String sensorScaleLabel;
+  final String sensorOfficialBadge;
+  final String manualRecordSourceLabel;
+  final String sensorIdHint;
+  final String sensorNameHint;
 
   const OryzaStrings({
     required this.navBrand,
@@ -1096,6 +1311,11 @@ class OryzaStrings {
     this.sensorBaudLabel = "Taxa de Transmissão (Baud Rate)",
     this.sensorCalibrationLabel = "Multiplicador de Calibração",
     this.sensorSaveBtn = "Salvar Configuração de Sensor",
+    this.sensorBaseLabel = "Iniciar a partir de",
+    this.sensorBaseCustomOption = "Outro / Custom (em branco)",
+    this.sensorDateColLabel = "Coluna de Data",
+    this.sensorDateFormatLabel = "Formato da Data",
+    this.sensorSavedSuccess = "Mapeamento de sensor salvo com sucesso.",
 
     this.settingsTitle = "Configurações da Estação & Preferências",
     this.settingsSubtitle = "Parâmetros de conectividade, banco de dados SQLite local e personalização da interface.",
@@ -1104,6 +1324,204 @@ class OryzaStrings {
     this.settingsThemeLabel = "Tema Visual da Interface",
     this.settingsLangLabel = "Idioma / Language / ภาษา",
     this.settingsGridLabel = "Estilo do Papel Milimetrado",
+
+    this.manualRecordDateLabel = "Data do Registro",
+    this.manualFieldTMax = "T_máx (°C)",
+    this.manualFieldTMin = "T_mín (°C)",
+    this.manualFieldRain = "Precipitação (mm)",
+    this.manualFieldRad = "Radiação Solar (MJ/m²)",
+    this.manualFieldRh = "Umidade Relativa (%)",
+    this.deleteConfirmBody = "Deseja excluir permanentemente {count} registro(s) meteorológico(s) do banco de dados local?",
+    this.deleteSuccessMsg = "{count} registro(s) excluído(s) com sucesso.",
+    this.manualRecordSavedMsg = "Registro manual gravado com sucesso.",
+    this.saveRecordBtn = "Gravar Registro",
+    this.dataManagementSubtitle = "Ingestão via CSV, inserção manual e administração do banco local SQLite",
+    this.noRecordsFoundTitle = "Nenhum Registro Meteorológico Encontrado",
+    this.noRecordsFoundBody = "A base deste talhão está vazia. Adicione registros manualmente, importe um arquivo CSV ou clique no botão 'Carregar Dados de Teste' acima para popular as séries de referência.",
+    this.deselectAllBtn = "Desselecionar Todos",
+
+    this.sensorActiveCount = "{count} ativos",
+    this.sensorNoCustomMappings = "Nenhum sensor customizado registrado no nó de borda.",
+
+    this.simCultivarOptionBrs = "BRS Querência (Brasil - 130d)",
+    this.simCultivarOptionIr64 = "IR64 (Tailândia/IRRI - 115d)",
+    this.simCultivarOptionJasmine = "KDML105 Jasmine (Tailândia - 120d)",
+    this.simCultivarOptionEpagri = "Epagri 109 (Brasil - 135d)",
+    this.simDasUnit = "dias",
+    this.simRunningLabel = "SIMULANDO CENÁRIO...",
+    this.simWaitingTitle = "Aguardando Execução da Simulação",
+    this.simWaitingBody = "Ajuste os parâmetros microclimáticos no painel ao lado e clique em 'Executar Simulação' para gerar o diagnóstico agronômico multidimensional.",
+    this.simGddAccumulatedLabel = "GDD Acumulado",
+
+    this.headerMenuTooltip = "Menu de Navegação",
+    this.headerRefreshTooltip = "Atualizar Telemetria",
+    this.headerOnlineStatus = "AIR-GAPPED OPERACIONAL",
+    this.headerOfflineStatus = "ENGINE OFFLINE",
+    this.headerSubtitle = "NÓ DE BORDA RURAL • PORTA 8005 • AIR-GAPPED",
+    this.errorBannerOfflineMsg = "Engine de borda offline (0.0.0.0:8005). Verifique se o binário oryzaelo_engine está em execução.",
+
+    this.settingsOnlineStatus = "Online ({ms} ms)",
+    this.settingsOfflineStatus = "Offline (tempo esgotado)",
+    this.settingsConnectedBadge = "CONECTADO",
+    this.settingsNoResponseBadge = "SEM RESPOSTA",
+    this.settingsTestConnectionBtn = "Testar Conexão",
+    this.settingsPersistenceEngineLabel = "Engine de Persistência",
+    this.settingsParcelsRegisteredLabel = "Talhões Cadastrados",
+    this.settingsParcelsUnit = "talhões",
+    this.settingsRecordsLoadedLabel = "Registros Climáticos Carregados",
+    this.settingsDaysUnit = "dias",
+    this.settingsSensorsMappedLabel = "Sensores Mapeados",
+    this.settingsPresetsUnit = "presets",
+    this.settingsCustomUnit = "personalizados",
+    this.settingsQuickActionsHeader = "AÇÕES RÁPIDAS DE DESENVOLVIMENTO & DEMONSTRAÇÃO",
+    this.settingsPopulateDemoBtn = "Popular Base Demo (75 Dias)",
+    this.settingsPopulateFailedMsg = "Falha ao popular base de dados.",
+    this.settingsRestoreFactoryBtn = "Restaurar Estado de Fábrica",
+    this.settingsCleanFailedMsg = "Falha ao limpar base de dados.",
+    this.settingsSystemArchHeader = "ARQUITETURA DO SISTEMA & TELEMETRIA",
+    this.settingsInfoAppLabel = "Aplicação Edge",
+    this.settingsInfoEngineLabel = "Engine Residente",
+    this.settingsInfoDesignLabel = "Design System",
+    this.settingsInfoModeLabel = "Modo de Operação",
+    this.settingsInfoModeValue = "Air-Gapped Local (Zero Dependência Cloud)",
+    this.settingsInfoPortLabel = "Porta TCP Padrão",
+    this.themeDarkMode = "Modo Escuro",
+    this.themeLightMode = "Modo Claro",
+
+    this.statsSectionPhenoTitle = "Monitor Fenológico BBCH e Prescrições Agronômicas",
+    this.statsSectionPhenoSubtitle = "Estágio fisiológico predito por IA residente (ONNX) e manejo operacional",
+    this.statsSectionPhenoTag = "Inferência Ativa",
+    this.statsSectionClimateTitle = "Dinâmica Climática e Soma Térmica (GDD Base 10°C)",
+    this.statsSectionClimateSubtitle = "Curvas de acúmulo térmico (°C·dia), amplitude DTR e balanço hídrico",
+    this.statsSectionClimateTag = "Séries Temporais",
+    this.statsSectionRadarTitle = "Índices Multidimensionais, Radar Biomet e Correlações",
+    this.statsSectionRadarSubtitle = "Radar de 5 dimensões fisiológicas, matriz de Pearson e alertas estatísticos",
+    this.statsSectionRadarTag = "Ciência de Dados",
+    this.statsSectionHardwareTitle = "Telemetria do Hardware de Borda e Benchmarks em Tempo Real",
+    this.statsSectionHardwareSubtitle = "Latência submilissegundo (< 22 µs), CPU/RAM e integridade do banco SQLite",
+    this.statsSectionHardwareTag = "Hardware HUD",
+
+    this.phenoEmptyTitle = "Nenhuma inferência fenológica registrada para este talhão.",
+    this.phenoEmptyBody = "Carregue dados meteorológicos ou execute a predição manual com o modelo CatBoost ONNX.",
+    this.phenoRunInferenceBtn = "Executar Inferência de Borda",
+    this.phenoPhaseLabel = "FASE",
+    this.phenoConfidenceLabel = "CONFIANÇA",
+    this.phenoTransitionImminent = "TRANSIÇÃO IMINENTE",
+    this.phenoInferringLabel = "Inferindo...",
+    this.phenoReevaluateBtn = "Reavaliar",
+    this.phenoMandatoryRestriction = "RESTRIÇÃO OPERACIONAL MANDATÓRIA",
+    this.phenoManagementTipsHeader = "RECOMENDAÇÕES PRÁTICAS DE MANEJO:",
+    this.phenoStageSeedling = "Plântula",
+    this.phenoStageTillering = "Perfilhamento",
+    this.phenoStageBooting = "Emborrachamento",
+    this.phenoStageHeading = "Espigamento",
+    this.phenoStageFlowering = "Floração",
+    this.phenoStagePreHarvest = "Maturação",
+    this.phenoStageHarvestReady = "Colheita",
+
+    this.hudLatencyHeader = "Latência de Inferência Submilissegundo (Benchmark Rust ONNX)",
+    this.hudCpuMeanLabel = "Média CPU Rust (ort)",
+    this.hudCpuMeanDetail = "0.021 ms • Meta: < 5.0 ms",
+    this.hudP95Label = "Percentil 95 (p95)",
+    this.hudP95Detail = "Consistência estrita em CPU",
+    this.hudThesisCeilingLabel = "Teto Orientador USP",
+    this.hudThesisCeilingDetail = "Limite tolerável da tese",
+    this.hudRelativeSpeedLabel = "Velocidade Relativa",
+    this.hudRelativeSpeedDetail = "Mais veloz que o teto da tese",
+    this.hudHardwareHeader = "Recursos de Hardware do Raspberry Pi",
+    this.hudCpuUsageLabel = "Uso de CPU",
+    this.hudCpuUsageDetail = "4 Cores ARM Cortex-A76",
+    this.hudRamLabel = "Memória RAM",
+    this.hudDiskLabel = "Disco / Cartão SD",
+    this.hudUsedSuffix = "utilizado",
+    this.hudSubsystemsHeader = "Subsistemas do Nó de Borda",
+    this.hudSqliteLabel = "Banco SQLite Local (WAL Confinado)",
+    this.hudOnnxSessionLabel = "Sessão ONNX Runtime Residente em Memória",
+    this.hudOnnxSessionDetail = "CatBoost 44-Features Multiclass Classifier",
+    this.hudCronLabel = "Agendador Noturno Cron (23:59)",
+    this.hudCronDetail = "Execução diária com recuperação no boot",
+    this.hudStatusActive = "ATIVO",
+    this.hudStatusFailed = "FALHA",
+
+    this.vizWaitingAnalytics = "Aguardando dados analíticos e predição fenológica.",
+    this.vizDonutHeader = "Probabilidade Fenológica (CatBoost ONNX)",
+    this.vizDonutSubtitle = "Distribuição bayesiana de pertinência por estágio BBCH",
+    this.vizRadarHeader = "Radar Agrometeorológico Multidimensional",
+    this.vizRadarSubtitle = "Índice de adequação biofísica da cultura do arroz (5 eixos)",
+    this.vizCorrelationHeader = "Matriz de Correlação Ambiental de Pearson",
+    this.vizCorrelationSubtitle = "Interações lineares entre condutores climáticos (-1.0 a +1.0), calculadas no nó de borda",
+    this.vizNoDonutData = "Sem distribuição probabilística disponível",
+    this.vizNoRadarData = "Aguardando cálculo das dimensões biofísicas",
+    this.vizNoCorrelationData = "Aguardando cálculo da matriz de correlação",
+
+    this.parcelActiveLabel = "Talhão Ativo da Fazenda",
+    this.parcelEditTooltip = "Editar Parâmetros do Talhão",
+    this.parcelDeleteTooltip = "Excluir Talhão",
+    this.parcelNewBtn = "Novo Talhão",
+    this.parcelSelectHint = "Selecione um talhão",
+    this.parcelVarietalLabel = "VARIETAL",
+    this.parcelEcosystemLabel = "ECOSSISTEMA",
+    this.parcelAreaLabel = "ÁREA",
+    this.parcelAgeLabel = "IDADE (DAE)",
+    this.parcelCoordsLabel = "COORDENADAS",
+    this.parcelDefaultName = "Talhão {n}",
+    this.parcelCreateDialogTitle = "Cadastrar Novo Talhão de Arroz",
+    this.parcelNameFieldLabel = "Identificação do Talhão",
+    this.parcelAreaFieldLabel = "Área (ha)",
+    this.parcelEcosystemFieldLabel = "Ecossistema",
+    this.parcelEcosystemIrrigated = "Irrigado",
+    this.parcelEcosystemLowland = "Várzea",
+    this.parcelEcosystemUpland = "Sequeiro",
+    this.parcelVarietalFieldLabel = "Varietal / Cultivar",
+    this.parcelVarietyRd43 = "RD43 (Baixo IG - Tailândia)",
+    this.parcelVarietyChaiNat1 = "Chai Nat 1 (Alto Potencial)",
+    this.parcelVarietyKdml105 = "KDML 105 (Jasmim)",
+    this.parcelVarietyBrsPampa = "BRS Pampa (Embrapa Clima Temperado)",
+    this.parcelVarietyIr64 = "IR64 (Referência IRRI)",
+    this.parcelLatitudeLabel = "Latitude (°)",
+    this.parcelLongitudeLabel = "Longitude (°)",
+    this.parcelSowingDateLabel = "Data de Semeadura: ",
+    this.parcelCreatedSuccess = "Talhão cadastrado e sincronizado com o nó de borda!",
+    this.parcelSaveBtn = "Salvar Talhão",
+    this.parcelEditDialogTitle = "Editar {name}",
+    this.parcelUpdatedSuccess = "Talhão atualizado no banco local!",
+    this.parcelUpdateBtn = "Atualizar",
+    this.parcelDeleteDialogTitle = "Excluir {name}?",
+    this.parcelDeleteDialogBody = "Esta operação removerá o talhão e todos os seus registros climáticos do nó local do Raspberry Pi.",
+    this.parcelDeletedSuccess = "Talhão excluído com sucesso.",
+    this.parcelConfirmDeleteBtn = "Confirmar Exclusão",
+
+    this.errInitFailed = "Falha ao inicializar o nó de borda: {error}",
+    this.errPredictionFailed = "Erro ao executar inferência de borda: {error}",
+    this.errPopulateFailed = "Falha ao popular dados sintéticos de teste no nó de borda.",
+    this.errPopulateError = "Erro ao popular dados de teste: {error}",
+    this.errCleanFailed = "Falha ao limpar base de dados no nó de borda.",
+    this.errCleanError = "Erro ao limpar base de dados: {error}",
+    this.errDeleteError = "Erro ao excluir registros: {error}",
+
+    this.sidebarBrand = "ASODYA ECOSYSTEM",
+    this.settingsSqliteEngineValue = "SQLite 3 (Modo WAL + FFI)",
+    this.simOnnxBadge = "RUST TRACT ONNX",
+    this.simGddDayUnit = "°C·dia",
+    this.statsNavAllBadge = "VISÃO COMPLETA",
+    this.statsNavPhenoBadge = "IA RESIDENTE",
+    this.statsNavRadarBadge = "5 DIMENSÕES",
+    this.chartWhatItAnalyzes = "O QUE ANALISA:",
+    this.chartWhatItMeans = "O QUE SIGNIFICA:",
+    this.chartHowToUseInField = "COMO USAR NO CAMPO:",
+    this.chartGddTotalLabel = "Total",
+    this.chartLegendTMax = "T_máx (°C)",
+    this.chartLegendTMin = "T_mín (°C)",
+    this.chartLegendHumidity = "Umidade (%)",
+    this.chartLegendWaterRadiation = "Barras: Chuva (mm) | Linha: Radiação Solar (MJ/m²)",
+    this.chartLegendDtrBand = "Faixa Sombreada: Amplitude DTR (T_máx - T_mín)",
+    this.sensorColumnLabel = "Coluna",
+    this.sensorUnitLabel = "Unidade",
+    this.sensorScaleLabel = "Escala",
+    this.sensorOfficialBadge = "OFICIAL",
+    this.manualRecordSourceLabel = "Registro_Manual_Terminal",
+    this.sensorIdHint = "ex: lora-node-station-01",
+    this.sensorNameHint = "ex: Davis Vantage Pro2 Várzea",
   });
 
 }
@@ -2209,6 +2627,209 @@ class OryzaI18n {
     sensorBaudLabel: "Transmission Baud Rate",
     sensorCalibrationLabel: "Calibration Multiplier",
     sensorSaveBtn: "Save Sensor Configuration",
+    sensorBaseLabel: "Start from",
+    sensorBaseCustomOption: "Other / Custom (blank)",
+    sensorDateColLabel: "Date Column",
+    sensorDateFormatLabel: "Date Format",
+    sensorSavedSuccess: "Sensor mapping saved successfully.",
+
+    manualRecordDateLabel: "Record Date",
+    manualFieldTMax: "T_max (°C)",
+    manualFieldTMin: "T_min (°C)",
+    manualFieldRain: "Precipitation (mm)",
+    manualFieldRad: "Solar Radiation (MJ/m²)",
+    manualFieldRh: "Relative Humidity (%)",
+    deleteConfirmBody: "Permanently delete {count} weather record(s) from the local database?",
+    deleteSuccessMsg: "{count} record(s) deleted successfully.",
+    manualRecordSavedMsg: "Manual record saved successfully.",
+    saveRecordBtn: "Save Record",
+    dataManagementSubtitle: "CSV ingestion, manual entry, and local SQLite database administration",
+    noRecordsFoundTitle: "No Weather Records Found",
+    noRecordsFoundBody: "This parcel's database is empty. Add records manually, import a CSV file, or click 'Load Test Data' above to populate reference series.",
+    deselectAllBtn: "Deselect All",
+
+    sensorActiveCount: "{count} active",
+    sensorNoCustomMappings: "No custom sensor registered on this edge node.",
+
+    simCultivarOptionBrs: "BRS Querência (Brazil - 130d)",
+    simCultivarOptionIr64: "IR64 (Thailand/IRRI - 115d)",
+    simCultivarOptionJasmine: "KDML105 Jasmine (Thailand - 120d)",
+    simCultivarOptionEpagri: "Epagri 109 (Brazil - 135d)",
+    simDasUnit: "days",
+    simRunningLabel: "RUNNING SCENARIO...",
+    simWaitingTitle: "Waiting for Simulation Run",
+    simWaitingBody: "Adjust the microclimatic parameters in the panel and click 'Run Simulation' to generate the multidimensional agronomic diagnosis.",
+    simGddAccumulatedLabel: "Accumulated GDD",
+
+    headerMenuTooltip: "Navigation Menu",
+    headerRefreshTooltip: "Refresh Telemetry",
+    headerOnlineStatus: "AIR-GAPPED OPERATIONAL",
+    headerOfflineStatus: "ENGINE OFFLINE",
+    headerSubtitle: "RURAL EDGE NODE • PORT 8005 • AIR-GAPPED",
+    errorBannerOfflineMsg: "Edge engine offline (0.0.0.0:8005). Check that the oryzaelo_engine binary is running.",
+
+    settingsOnlineStatus: "Online ({ms} ms)",
+    settingsOfflineStatus: "Offline (timeout)",
+    settingsConnectedBadge: "CONNECTED",
+    settingsNoResponseBadge: "NO RESPONSE",
+    settingsTestConnectionBtn: "Test Connection",
+    settingsPersistenceEngineLabel: "Persistence Engine",
+    settingsParcelsRegisteredLabel: "Registered Parcels",
+    settingsParcelsUnit: "parcels",
+    settingsRecordsLoadedLabel: "Weather Records Loaded",
+    settingsDaysUnit: "days",
+    settingsSensorsMappedLabel: "Mapped Sensors",
+    settingsPresetsUnit: "presets",
+    settingsCustomUnit: "custom",
+    settingsQuickActionsHeader: "DEVELOPMENT & DEMO QUICK ACTIONS",
+    settingsPopulateDemoBtn: "Populate Demo Data (75 Days)",
+    settingsPopulateFailedMsg: "Failed to populate database.",
+    settingsRestoreFactoryBtn: "Restore Factory State",
+    settingsCleanFailedMsg: "Failed to clean database.",
+    settingsSystemArchHeader: "SYSTEM ARCHITECTURE & TELEMETRY",
+    settingsInfoAppLabel: "Edge Application",
+    settingsInfoEngineLabel: "Resident Engine",
+    settingsInfoDesignLabel: "Design System",
+    settingsInfoModeLabel: "Operation Mode",
+    settingsInfoModeValue: "Local Air-Gapped (Zero Cloud Dependency)",
+    settingsInfoPortLabel: "Default TCP Port",
+    themeDarkMode: "Dark Mode",
+    themeLightMode: "Light Mode",
+
+    statsSectionPhenoTitle: "BBCH Phenological Monitor & Agronomic Prescriptions",
+    statsSectionPhenoSubtitle: "Physiological stage predicted by resident AI (ONNX) and operational management",
+    statsSectionPhenoTag: "Active Inference",
+    statsSectionClimateTitle: "Climate Dynamics & Thermal Sum (GDD Base 10°C)",
+    statsSectionClimateSubtitle: "Thermal accumulation curves (°C·day), DTR amplitude, and water balance",
+    statsSectionClimateTag: "Time Series",
+    statsSectionRadarTitle: "Multidimensional Indices, Biomet Radar & Correlations",
+    statsSectionRadarSubtitle: "5-dimension physiological radar, Pearson matrix, and statistical alerts",
+    statsSectionRadarTag: "Data Science",
+    statsSectionHardwareTitle: "Edge Hardware Telemetry & Real-Time Benchmarks",
+    statsSectionHardwareSubtitle: "Sub-millisecond latency (< 22 µs), CPU/RAM, and SQLite database integrity",
+    statsSectionHardwareTag: "Hardware HUD",
+
+    phenoEmptyTitle: "No phenological inference recorded for this parcel.",
+    phenoEmptyBody: "Load weather data or run manual prediction with the CatBoost ONNX model.",
+    phenoRunInferenceBtn: "Run Edge Inference",
+    phenoPhaseLabel: "PHASE",
+    phenoConfidenceLabel: "CONFIDENCE",
+    phenoTransitionImminent: "TRANSITION IMMINENT",
+    phenoInferringLabel: "Inferring...",
+    phenoReevaluateBtn: "Re-evaluate",
+    phenoMandatoryRestriction: "MANDATORY OPERATIONAL RESTRICTION",
+    phenoManagementTipsHeader: "PRACTICAL MANAGEMENT RECOMMENDATIONS:",
+    phenoStageSeedling: "Seedling",
+    phenoStageTillering: "Tillering",
+    phenoStageBooting: "Booting",
+    phenoStageHeading: "Heading",
+    phenoStageFlowering: "Flowering",
+    phenoStagePreHarvest: "Maturation",
+    phenoStageHarvestReady: "Harvest",
+
+    hudLatencyHeader: "Sub-Millisecond Inference Latency (Rust ONNX Benchmark)",
+    hudCpuMeanLabel: "Rust CPU Mean (ort)",
+    hudCpuMeanDetail: "0.021 ms • Target: < 5.0 ms",
+    hudP95Label: "95th Percentile (p95)",
+    hudP95Detail: "Strict CPU consistency",
+    hudThesisCeilingLabel: "USP Thesis Ceiling",
+    hudThesisCeilingDetail: "Thesis tolerable threshold",
+    hudRelativeSpeedLabel: "Relative Speed",
+    hudRelativeSpeedDetail: "Faster than the thesis ceiling",
+    hudHardwareHeader: "Raspberry Pi Hardware Resources",
+    hudCpuUsageLabel: "CPU Usage",
+    hudCpuUsageDetail: "4 ARM Cortex-A76 Cores",
+    hudRamLabel: "RAM Memory",
+    hudDiskLabel: "Disk / SD Card",
+    hudUsedSuffix: "used",
+    hudSubsystemsHeader: "Edge Node Subsystems",
+    hudSqliteLabel: "Local SQLite Database (Confined WAL)",
+    hudOnnxSessionLabel: "Resident In-Memory ONNX Runtime Session",
+    hudOnnxSessionDetail: "CatBoost 44-Feature Multiclass Classifier",
+    hudCronLabel: "Nightly Cron Scheduler (23:59)",
+    hudCronDetail: "Daily run with boot recovery",
+    hudStatusActive: "ACTIVE",
+    hudStatusFailed: "FAILED",
+
+    vizWaitingAnalytics: "Waiting for analytics data and phenological prediction.",
+    vizDonutHeader: "Phenological Probability (CatBoost ONNX)",
+    vizDonutSubtitle: "Bayesian membership distribution by BBCH stage",
+    vizRadarHeader: "Multidimensional Agrometeorological Radar",
+    vizRadarSubtitle: "Rice crop biophysical suitability index (5 axes)",
+    vizCorrelationHeader: "Pearson Environmental Correlation Matrix",
+    vizCorrelationSubtitle: "Linear interactions between climate drivers (-1.0 to +1.0), computed on the edge node",
+    vizNoDonutData: "No probability distribution available",
+    vizNoRadarData: "Waiting for biophysical dimension calculation",
+    vizNoCorrelationData: "Waiting for correlation matrix calculation",
+
+    parcelActiveLabel: "Active Farm Parcel",
+    parcelEditTooltip: "Edit Parcel Parameters",
+    parcelDeleteTooltip: "Delete Parcel",
+    parcelNewBtn: "New Parcel",
+    parcelSelectHint: "Select a parcel",
+    parcelVarietalLabel: "VARIETY",
+    parcelEcosystemLabel: "ECOSYSTEM",
+    parcelAreaLabel: "AREA",
+    parcelAgeLabel: "AGE (DAS)",
+    parcelCoordsLabel: "COORDINATES",
+    parcelDefaultName: "Parcel {n}",
+    parcelCreateDialogTitle: "Register New Rice Parcel",
+    parcelNameFieldLabel: "Parcel Identification",
+    parcelAreaFieldLabel: "Area (ha)",
+    parcelEcosystemFieldLabel: "Ecosystem",
+    parcelEcosystemIrrigated: "Irrigated",
+    parcelEcosystemLowland: "Lowland",
+    parcelEcosystemUpland: "Upland",
+    parcelVarietalFieldLabel: "Variety / Cultivar",
+    parcelVarietyRd43: "RD43 (Low GI - Thailand)",
+    parcelVarietyChaiNat1: "Chai Nat 1 (High Potential)",
+    parcelVarietyKdml105: "KDML 105 (Jasmine)",
+    parcelVarietyBrsPampa: "BRS Pampa (Embrapa Temperate)",
+    parcelVarietyIr64: "IR64 (IRRI Reference)",
+    parcelLatitudeLabel: "Latitude (°)",
+    parcelLongitudeLabel: "Longitude (°)",
+    parcelSowingDateLabel: "Sowing Date: ",
+    parcelCreatedSuccess: "Parcel registered and synced with the edge node!",
+    parcelSaveBtn: "Save Parcel",
+    parcelEditDialogTitle: "Edit {name}",
+    parcelUpdatedSuccess: "Parcel updated in the local database!",
+    parcelUpdateBtn: "Update",
+    parcelDeleteDialogTitle: "Delete {name}?",
+    parcelDeleteDialogBody: "This will remove the parcel and all its weather records from the local Raspberry Pi node.",
+    parcelDeletedSuccess: "Parcel deleted successfully.",
+    parcelConfirmDeleteBtn: "Confirm Deletion",
+
+    errInitFailed: "Failed to initialize edge node: {error}",
+    errPredictionFailed: "Error running edge inference: {error}",
+    errPopulateFailed: "Failed to populate synthetic test data on the edge node.",
+    errPopulateError: "Error populating test data: {error}",
+    errCleanFailed: "Failed to clean the edge node database.",
+    errCleanError: "Error cleaning database: {error}",
+    errDeleteError: "Error deleting records: {error}",
+
+    sidebarBrand: "ASODYA ECOSYSTEM",
+    settingsSqliteEngineValue: "SQLite 3 (WAL Mode + FFI)",
+    simOnnxBadge: "RUST TRACT ONNX",
+    simGddDayUnit: "°C·day",
+    statsNavAllBadge: "FULL OVERVIEW",
+    statsNavPhenoBadge: "RESIDENT AI",
+    statsNavRadarBadge: "5 DIMENSIONS",
+    chartWhatItAnalyzes: "WHAT IT ANALYZES:",
+    chartWhatItMeans: "WHAT IT MEANS:",
+    chartHowToUseInField: "HOW TO USE IN THE FIELD:",
+    chartGddTotalLabel: "Total",
+    chartLegendTMax: "T_max (°C)",
+    chartLegendTMin: "T_min (°C)",
+    chartLegendHumidity: "Humidity (%)",
+    chartLegendWaterRadiation: "Bars: Rain (mm) | Line: Solar Radiation (MJ/m²)",
+    chartLegendDtrBand: "Shaded Band: DTR Amplitude (T_max - T_min)",
+    sensorColumnLabel: "Column",
+    sensorUnitLabel: "Unit",
+    sensorScaleLabel: "Scale",
+    sensorOfficialBadge: "OFFICIAL",
+    manualRecordSourceLabel: "Manual_Terminal_Entry",
+    sensorIdHint: "e.g. lora-node-station-01",
+    sensorNameHint: "e.g. Davis Vantage Pro2 Lowland",
 
     settingsTitle: "Station Settings & Preferences",
     settingsSubtitle: "Edge network parameters, local SQLite database diagnostics, and interface visual preferences.",
@@ -2825,6 +3446,209 @@ class OryzaI18n {
     sensorBaudLabel: "อัตราการส่งข้อมูล (Baud Rate)",
     sensorCalibrationLabel: "ตัวคูณการปรับเทียบ",
     sensorSaveBtn: "บันทึกการกำหนดค่าเซ็นเซอร์",
+    sensorBaseLabel: "เริ่มต้นจาก",
+    sensorBaseCustomOption: "อื่นๆ / กำหนดเอง (ว่างเปล่า)",
+    sensorDateColLabel: "คอลัมน์วันที่",
+    sensorDateFormatLabel: "รูปแบบวันที่",
+    sensorSavedSuccess: "บันทึกการแมปเซ็นเซอร์สำเร็จแล้ว",
+
+    manualRecordDateLabel: "วันที่บันทึก",
+    manualFieldTMax: "T_max (°C)",
+    manualFieldTMin: "T_min (°C)",
+    manualFieldRain: "ปริมาณน้ำฝน (mm)",
+    manualFieldRad: "รังสีดวงอาทิตย์ (MJ/m²)",
+    manualFieldRh: "ความชื้นสัมพัทธ์ (%)",
+    deleteConfirmBody: "ต้องการลบข้อมูลสภาพอากาศ {count} รายการออกจากฐานข้อมูลในเครื่องอย่างถาวรหรือไม่?",
+    deleteSuccessMsg: "ลบข้อมูล {count} รายการสำเร็จแล้ว",
+    manualRecordSavedMsg: "บันทึกข้อมูลด้วยตนเองสำเร็จแล้ว",
+    saveRecordBtn: "บันทึกข้อมูล",
+    dataManagementSubtitle: "นำเข้าไฟล์ CSV, ป้อนข้อมูลด้วยตนเอง และจัดการฐานข้อมูล SQLite ในเครื่อง",
+    noRecordsFoundTitle: "ไม่พบข้อมูลสภาพอากาศ",
+    noRecordsFoundBody: "ฐานข้อมูลของแปลงนี้ว่างเปล่า เพิ่มข้อมูลด้วยตนเอง นำเข้าไฟล์ CSV หรือคลิก 'โหลดข้อมูลทดสอบ' ด้านบนเพื่อเติมชุดข้อมูลอ้างอิง",
+    deselectAllBtn: "ยกเลิกการเลือกทั้งหมด",
+
+    sensorActiveCount: "ใช้งานอยู่ {count} รายการ",
+    sensorNoCustomMappings: "ยังไม่มีเซ็นเซอร์กำหนดเองที่ลงทะเบียนบนโหนดขอบนี้",
+
+    simCultivarOptionBrs: "BRS Querência (บราซิล - 130 วัน)",
+    simCultivarOptionIr64: "IR64 (ไทย/IRRI - 115 วัน)",
+    simCultivarOptionJasmine: "ข้าวหอมมะลิ KDML105 (ไทย - 120 วัน)",
+    simCultivarOptionEpagri: "Epagri 109 (บราซิล - 135 วัน)",
+    simDasUnit: "วัน",
+    simRunningLabel: "กำลังจำลองสถานการณ์...",
+    simWaitingTitle: "รอการรันการจำลอง",
+    simWaitingBody: "ปรับพารามิเตอร์ภูมิอากาศจุลภาคในแผงด้านข้างแล้วคลิก 'รันการจำลอง' เพื่อสร้างการวินิจฉัยทางการเกษตรหลายมิติ",
+    simGddAccumulatedLabel: "GDD สะสม",
+
+    headerMenuTooltip: "เมนูนำทาง",
+    headerRefreshTooltip: "รีเฟรชข้อมูลโทรมาตร",
+    headerOnlineStatus: "ทำงานแบบแยกอิสระ (AIR-GAPPED)",
+    headerOfflineStatus: "เอนจินออฟไลน์",
+    headerSubtitle: "โหนดขอบชนบท • พอร์ต 8005 • AIR-GAPPED",
+    errorBannerOfflineMsg: "เอนจินขอบออฟไลน์ (0.0.0.0:8005) ตรวจสอบว่าโปรแกรม oryzaelo_engine กำลังทำงานอยู่",
+
+    settingsOnlineStatus: "ออนไลน์ ({ms} มิลลิวินาที)",
+    settingsOfflineStatus: "ออฟไลน์ (หมดเวลา)",
+    settingsConnectedBadge: "เชื่อมต่อแล้ว",
+    settingsNoResponseBadge: "ไม่มีการตอบสนอง",
+    settingsTestConnectionBtn: "ทดสอบการเชื่อมต่อ",
+    settingsPersistenceEngineLabel: "เอนจินจัดเก็บข้อมูล",
+    settingsParcelsRegisteredLabel: "แปลงที่ลงทะเบียน",
+    settingsParcelsUnit: "แปลง",
+    settingsRecordsLoadedLabel: "ข้อมูลสภาพอากาศที่โหลดแล้ว",
+    settingsDaysUnit: "วัน",
+    settingsSensorsMappedLabel: "เซ็นเซอร์ที่แมปแล้ว",
+    settingsPresetsUnit: "พรีเซ็ต",
+    settingsCustomUnit: "กำหนดเอง",
+    settingsQuickActionsHeader: "แอคชันด่วนสำหรับพัฒนา & สาธิต",
+    settingsPopulateDemoBtn: "เติมข้อมูลสาธิต (75 วัน)",
+    settingsPopulateFailedMsg: "เติมข้อมูลฐานข้อมูลล้มเหลว",
+    settingsRestoreFactoryBtn: "คืนค่าเริ่มต้นจากโรงงาน",
+    settingsCleanFailedMsg: "ล้างฐานข้อมูลล้มเหลว",
+    settingsSystemArchHeader: "สถาปัตยกรรมระบบ & โทรมาตร",
+    settingsInfoAppLabel: "แอปพลิเคชันขอบ",
+    settingsInfoEngineLabel: "เอนจินประจำเครื่อง",
+    settingsInfoDesignLabel: "ระบบการออกแบบ",
+    settingsInfoModeLabel: "โหมดการทำงาน",
+    settingsInfoModeValue: "แยกอิสระในเครื่อง (ไม่พึ่งพาคลาวด์)",
+    settingsInfoPortLabel: "พอร์ต TCP เริ่มต้น",
+    themeDarkMode: "โหมดมืด",
+    themeLightMode: "โหมดสว่าง",
+
+    statsSectionPhenoTitle: "ระบบติดตามระยะฟีโนโลยี BBCH และคำแนะนำทางการเกษตร",
+    statsSectionPhenoSubtitle: "ระยะการเจริญเติบโตที่ทำนายโดย AI ประจำเครื่อง (ONNX) และการจัดการเชิงปฏิบัติการ",
+    statsSectionPhenoTag: "การอนุมานที่ทำงานอยู่",
+    statsSectionClimateTitle: "พลวัตภูมิอากาศและผลรวมความร้อน (GDD ฐาน 10°C)",
+    statsSectionClimateSubtitle: "กราฟการสะสมความร้อน (°C·วัน), ช่วงอุณหภูมิ DTR และสมดุลน้ำ",
+    statsSectionClimateTag: "อนุกรมเวลา",
+    statsSectionRadarTitle: "ดัชนีหลายมิติ, เรดาร์ Biomet และความสัมพันธ์",
+    statsSectionRadarSubtitle: "เรดาร์ 5 มิติทางสรีรวิทยา, เมทริกซ์ Pearson และการแจ้งเตือนทางสถิติ",
+    statsSectionRadarTag: "วิทยาศาสตร์ข้อมูล",
+    statsSectionHardwareTitle: "โทรมาตรฮาร์ดแวร์ขอบและการวัดประสิทธิภาพแบบเรียลไทม์",
+    statsSectionHardwareSubtitle: "ความหน่วงต่ำกว่ามิลลิวินาที (< 22 µs), CPU/RAM และความสมบูรณ์ของฐานข้อมูล SQLite",
+    statsSectionHardwareTag: "ฮาร์ดแวร์ HUD",
+
+    phenoEmptyTitle: "ยังไม่มีการอนุมานทางฟีโนโลยีสำหรับแปลงนี้",
+    phenoEmptyBody: "โหลดข้อมูลสภาพอากาศ หรือรันการทำนายด้วยตนเองด้วยโมเดล CatBoost ONNX",
+    phenoRunInferenceBtn: "รันการอนุมานที่ขอบ",
+    phenoPhaseLabel: "ระยะ",
+    phenoConfidenceLabel: "ความเชื่อมั่น",
+    phenoTransitionImminent: "ใกล้เปลี่ยนระยะ",
+    phenoInferringLabel: "กำลังอนุมาน...",
+    phenoReevaluateBtn: "ประเมินใหม่",
+    phenoMandatoryRestriction: "ข้อจำกัดการปฏิบัติงานที่บังคับ",
+    phenoManagementTipsHeader: "คำแนะนำการจัดการเชิงปฏิบัติ:",
+    phenoStageSeedling: "ต้นกล้า",
+    phenoStageTillering: "แตกกอ",
+    phenoStageBooting: "ตั้งท้อง",
+    phenoStageHeading: "ออกรวง",
+    phenoStageFlowering: "ออกดอก",
+    phenoStagePreHarvest: "สุกแก่",
+    phenoStageHarvestReady: "เก็บเกี่ยว",
+
+    hudLatencyHeader: "ความหน่วงการอนุมานต่ำกว่ามิลลิวินาที (เกณฑ์มาตรฐาน Rust ONNX)",
+    hudCpuMeanLabel: "ค่าเฉลี่ย CPU Rust (ort)",
+    hudCpuMeanDetail: "0.021 ms • เป้าหมาย: < 5.0 ms",
+    hudP95Label: "เปอร์เซ็นไทล์ 95 (p95)",
+    hudP95Detail: "ความสม่ำเสมอที่เข้มงวดบน CPU",
+    hudThesisCeilingLabel: "เพดานตามอาจารย์ที่ปรึกษา USP",
+    hudThesisCeilingDetail: "ขีดจำกัดที่ยอมรับได้ของวิทยานิพนธ์",
+    hudRelativeSpeedLabel: "ความเร็วสัมพัทธ์",
+    hudRelativeSpeedDetail: "เร็วกว่าเพดานของวิทยานิพนธ์",
+    hudHardwareHeader: "ทรัพยากรฮาร์ดแวร์ของ Raspberry Pi",
+    hudCpuUsageLabel: "การใช้งาน CPU",
+    hudCpuUsageDetail: "4 คอร์ ARM Cortex-A76",
+    hudRamLabel: "หน่วยความจำ RAM",
+    hudDiskLabel: "ดิสก์ / การ์ด SD",
+    hudUsedSuffix: "ใช้ไปแล้ว",
+    hudSubsystemsHeader: "ระบบย่อยของโหนดขอบ",
+    hudSqliteLabel: "ฐานข้อมูล SQLite ในเครื่อง (WAL แบบจำกัด)",
+    hudOnnxSessionLabel: "เซสชัน ONNX Runtime ประจำเครื่องในหน่วยความจำ",
+    hudOnnxSessionDetail: "ตัวจำแนกหลายคลาส CatBoost 44 ฟีเจอร์",
+    hudCronLabel: "ตัวจัดตารางเวลากลางคืน (23:59)",
+    hudCronDetail: "ทำงานทุกวันพร้อมการกู้คืนเมื่อบูต",
+    hudStatusActive: "ทำงานอยู่",
+    hudStatusFailed: "ล้มเหลว",
+
+    vizWaitingAnalytics: "กำลังรอข้อมูลวิเคราะห์และการทำนายฟีโนโลยี",
+    vizDonutHeader: "ความน่าจะเป็นทางฟีโนโลยี (CatBoost ONNX)",
+    vizDonutSubtitle: "การกระจายความน่าจะเป็นแบบเบย์ตามระยะ BBCH",
+    vizRadarHeader: "เรดาร์เกษตรอุตุนิยมวิทยาหลายมิติ",
+    vizRadarSubtitle: "ดัชนีความเหมาะสมทางชีวฟิสิกส์ของข้าว (5 แกน)",
+    vizCorrelationHeader: "เมทริกซ์สหสัมพันธ์เพียร์สันด้านสิ่งแวดล้อม",
+    vizCorrelationSubtitle: "ปฏิสัมพันธ์เชิงเส้นระหว่างปัจจัยภูมิอากาศ (-1.0 ถึง +1.0) คำนวณที่โหนดขอบ",
+    vizNoDonutData: "ไม่มีข้อมูลการกระจายความน่าจะเป็น",
+    vizNoRadarData: "กำลังรอการคำนวณมิติชีวฟิสิกส์",
+    vizNoCorrelationData: "กำลังรอการคำนวณเมทริกซ์สหสัมพันธ์",
+
+    parcelActiveLabel: "แปลงที่ใช้งานอยู่",
+    parcelEditTooltip: "แก้ไขพารามิเตอร์แปลง",
+    parcelDeleteTooltip: "ลบแปลง",
+    parcelNewBtn: "แปลงใหม่",
+    parcelSelectHint: "เลือกแปลง",
+    parcelVarietalLabel: "พันธุ์ข้าว",
+    parcelEcosystemLabel: "ระบบนิเวศ",
+    parcelAreaLabel: "พื้นที่",
+    parcelAgeLabel: "อายุ (วันหลังหว่าน)",
+    parcelCoordsLabel: "พิกัด",
+    parcelDefaultName: "แปลง {n}",
+    parcelCreateDialogTitle: "ลงทะเบียนแปลงข้าวใหม่",
+    parcelNameFieldLabel: "ชื่อแปลง",
+    parcelAreaFieldLabel: "พื้นที่ (เฮกตาร์)",
+    parcelEcosystemFieldLabel: "ระบบนิเวศ",
+    parcelEcosystemIrrigated: "ชลประทาน",
+    parcelEcosystemLowland: "นาลุ่ม",
+    parcelEcosystemUpland: "นาดอน",
+    parcelVarietalFieldLabel: "พันธุ์ / สายพันธุ์",
+    parcelVarietyRd43: "RD43 (ดัชนีน้ำตาลต่ำ - ไทย)",
+    parcelVarietyChaiNat1: "ชัยนาท 1 (ศักยภาพสูง)",
+    parcelVarietyKdml105: "ขาวดอกมะลิ 105 (หอมมะลิ)",
+    parcelVarietyBrsPampa: "BRS Pampa (เขตอบอุ่น Embrapa)",
+    parcelVarietyIr64: "IR64 (มาตรฐานอ้างอิง IRRI)",
+    parcelLatitudeLabel: "ละติจูด (°)",
+    parcelLongitudeLabel: "ลองจิจูด (°)",
+    parcelSowingDateLabel: "วันที่หว่าน: ",
+    parcelCreatedSuccess: "ลงทะเบียนแปลงและซิงค์กับโหนดขอบสำเร็จแล้ว!",
+    parcelSaveBtn: "บันทึกแปลง",
+    parcelEditDialogTitle: "แก้ไข {name}",
+    parcelUpdatedSuccess: "อัปเดตแปลงในฐานข้อมูลในเครื่องแล้ว!",
+    parcelUpdateBtn: "อัปเดต",
+    parcelDeleteDialogTitle: "ลบ {name}?",
+    parcelDeleteDialogBody: "การดำเนินการนี้จะลบแปลงและข้อมูลสภาพอากาศทั้งหมดออกจากโหนด Raspberry Pi ในเครื่อง",
+    parcelDeletedSuccess: "ลบแปลงสำเร็จแล้ว",
+    parcelConfirmDeleteBtn: "ยืนยันการลบ",
+
+    errInitFailed: "ล้มเหลวในการเริ่มต้นโหนดขอบ: {error}",
+    errPredictionFailed: "เกิดข้อผิดพลาดในการอนุมานที่ขอบ: {error}",
+    errPopulateFailed: "ล้มเหลวในการเติมข้อมูลทดสอบสังเคราะห์บนโหนดขอบ",
+    errPopulateError: "เกิดข้อผิดพลาดในการเติมข้อมูลทดสอบ: {error}",
+    errCleanFailed: "ล้มเหลวในการล้างฐานข้อมูลของโหนดขอบ",
+    errCleanError: "เกิดข้อผิดพลาดในการล้างฐานข้อมูล: {error}",
+    errDeleteError: "เกิดข้อผิดพลาดในการลบข้อมูล: {error}",
+
+    sidebarBrand: "ASODYA ECOSYSTEM",
+    settingsSqliteEngineValue: "SQLite 3 (โหมด WAL + FFI)",
+    simOnnxBadge: "RUST TRACT ONNX",
+    simGddDayUnit: "°C·วัน",
+    statsNavAllBadge: "ภาพรวมทั้งหมด",
+    statsNavPhenoBadge: "AI ประจำเครื่อง",
+    statsNavRadarBadge: "5 มิติ",
+    chartWhatItAnalyzes: "สิ่งที่วิเคราะห์:",
+    chartWhatItMeans: "ความหมาย:",
+    chartHowToUseInField: "วิธีใช้ในภาคสนาม:",
+    chartGddTotalLabel: "รวม",
+    chartLegendTMax: "T_max (°C)",
+    chartLegendTMin: "T_min (°C)",
+    chartLegendHumidity: "ความชื้น (%)",
+    chartLegendWaterRadiation: "แท่ง: ปริมาณฝน (mm) | เส้น: รังสีดวงอาทิตย์ (MJ/m²)",
+    chartLegendDtrBand: "แถบแรเงา: ช่วง DTR (T_max - T_min)",
+    sensorColumnLabel: "คอลัมน์",
+    sensorUnitLabel: "หน่วย",
+    sensorScaleLabel: "อัตราส่วน",
+    sensorOfficialBadge: "ทางการ",
+    manualRecordSourceLabel: "ป้อนข้อมูลด้วยตนเอง",
+    sensorIdHint: "เช่น lora-node-station-01",
+    sensorNameHint: "เช่น Davis Vantage Pro2 นาลุ่ม",
 
     settingsTitle: "การตั้งค่าสถานีและค่ากำหนด",
     settingsSubtitle: "พารามิเตอร์เครือข่าย ฐานข้อมูล SQLite ในเครื่อง และการปรับแต่งอินเทอร์เฟซ",

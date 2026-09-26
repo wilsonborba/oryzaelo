@@ -83,48 +83,44 @@ class AgrometeorologicalCharts extends StatelessWidget {
           title: s.dashFilterClimate.toUpperCase(),
           subtitle: s.chartGddAnalysis,
           unitBadge: s.chartUnitGdd,
-          icon: Icons.trending_up,
           analysisText: s.chartGddAnalysis,
           meaningText: s.chartGddMeaning,
           actionText: s.chartGddAction,
           isDark: isDark,
-          child: GddAccumulationChart(records: records, isDark: isDark),
+          child: GddAccumulationChart(records: records, isDark: isDark, s: s),
         );
 
         final thermalCard = _AgroChartCard(
           title: '${s.tableColTmax} / ${s.tableColRh}'.toUpperCase(),
           subtitle: s.chartThermalAnalysis,
           unitBadge: '${s.chartUnitTemp} • ${s.chartUnitHumidity}',
-          icon: Icons.thermostat_outlined,
           analysisText: s.chartThermalAnalysis,
           meaningText: s.chartThermalMeaning,
           actionText: s.chartThermalAction,
           isDark: isDark,
-          child: ThermalHumidityChart(records: records, isDark: isDark),
+          child: ThermalHumidityChart(records: records, isDark: isDark, s: s),
         );
 
         final waterCard = _AgroChartCard(
           title: '${s.tableColRain} & ${s.tableColRad}'.toUpperCase(),
           subtitle: s.chartWaterAnalysis,
           unitBadge: '${s.chartUnitPrecipitation} • ${s.chartUnitRadiation}',
-          icon: Icons.water_drop,
           analysisText: s.chartWaterAnalysis,
           meaningText: s.chartWaterMeaning,
           actionText: s.chartWaterAction,
           isDark: isDark,
-          child: WaterRadiationChart(records: records, isDark: isDark),
+          child: WaterRadiationChart(records: records, isDark: isDark, s: s),
         );
 
         final dtrCard = _AgroChartCard(
           title: s.chartUnitDtr.toUpperCase(),
           subtitle: s.chartDtrAnalysis,
           unitBadge: s.chartUnitDtr,
-          icon: Icons.waves,
           analysisText: s.chartDtrAnalysis,
           meaningText: s.chartDtrMeaning,
           actionText: s.chartDtrAction,
           isDark: isDark,
-          child: DtrBandChart(records: records, isDark: isDark),
+          child: DtrBandChart(records: records, isDark: isDark, s: s),
         );
 
         return Column(
@@ -170,7 +166,6 @@ class _AgroChartCard extends StatefulWidget {
   final String title;
   final String subtitle;
   final String unitBadge;
-  final IconData icon;
   final String analysisText;
   final String meaningText;
   final String actionText;
@@ -181,7 +176,6 @@ class _AgroChartCard extends StatefulWidget {
     required this.title,
     required this.subtitle,
     required this.unitBadge,
-    required this.icon,
     required this.analysisText,
     required this.meaningText,
     required this.actionText,
@@ -225,16 +219,6 @@ class _AgroChartCardState extends State<_AgroChartCard> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: OryzaColors.burntOrange.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: OryzaColors.burntOrange.withValues(alpha: 0.3)),
-                ),
-                child: Icon(widget.icon, size: 16, color: OryzaColors.burntOrange),
-              ),
-              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,21 +308,21 @@ class _AgroChartCardState extends State<_AgroChartCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildExplanationBullet(
-                    label: "O QUE ANALISA:",
+                    label: s.chartWhatItAnalyzes,
                     content: widget.analysisText,
                     badgeColor: OryzaColors.burntOrange,
                     isDark: widget.isDark,
                   ),
                   const SizedBox(height: 8),
                   _buildExplanationBullet(
-                    label: "O QUE SIGNIFICA:",
+                    label: s.chartWhatItMeans,
                     content: widget.meaningText,
                     badgeColor: OryzaColors.mustardYellow,
                     isDark: widget.isDark,
                   ),
                   const SizedBox(height: 8),
                   _buildExplanationBullet(
-                    label: "COMO USAR NO CAMPO:",
+                    label: s.chartHowToUseInField,
                     content: widget.actionText,
                     badgeColor: OryzaColors.botanicalGreen,
                     isDark: widget.isDark,
@@ -408,11 +392,13 @@ class _AgroChartCardState extends State<_AgroChartCard> {
 class GddAccumulationChart extends StatelessWidget {
   final List<DailyWeatherRecord> records;
   final bool isDark;
+  final OryzaStrings s;
 
   const GddAccumulationChart({
     super.key,
     required this.records,
     required this.isDark,
+    required this.s,
   });
 
   @override
@@ -424,7 +410,7 @@ class GddAccumulationChart extends StatelessWidget {
     double cumGdd = 0.0;
     final List<double> cumSeries = [];
     for (final r in sorted) {
-      cumGdd += r.dailyGdd(10.0);
+      cumGdd += r.dailyGdd;
       cumSeries.add(cumGdd);
     }
 
@@ -436,6 +422,7 @@ class GddAccumulationChart extends StatelessWidget {
         cumSeries: cumSeries,
         maxVal: maxVal,
         isDark: isDark,
+        totalLabel: s.chartGddTotalLabel,
       ),
     );
   }
@@ -445,40 +432,56 @@ class _GddPainter extends CustomPainter {
   final List<double> cumSeries;
   final double maxVal;
   final bool isDark;
+  final String totalLabel;
 
   _GddPainter({
     required this.cumSeries,
     required this.maxVal,
     required this.isDark,
+    required this.totalLabel,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    const padL = 40.0;
+    canvas.clipRect(Offset.zero & size);
+
     const padB = 24.0;
-    final w = size.width - padL;
-    final h = size.height - padB;
-
-    final gridPaint = Paint()
-      ..color = isDark ? Colors.white10 : Colors.black12
-      ..strokeWidth = 1.0;
-
+    const padR = 12.0; // clearance so the right-edge marker/callout never clips
     final textStyle = TextStyle(
       fontSize: 9,
       fontFamily: 'Ubuntu Sans Mono',
       color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
     );
 
-    // Draw horizontal grid lines (4 levels)
+    // Size the left axis gutter from the widest label actually rendered,
+    // instead of a fixed 40px that clips whenever GDD totals exceed ~3 digits.
+    double padL = 32.0;
     for (int i = 0; i <= 4; i++) {
-      final y = h - (h * (i / 4.0));
-      canvas.drawLine(Offset(padL, y), Offset(size.width, y), gridPaint);
       final label = ((maxVal * (i / 4.0))).toStringAsFixed(0);
       final tp = TextPainter(
         text: TextSpan(text: label, style: textStyle),
         textDirection: TextDirection.ltr,
       )..layout();
-      tp.paint(canvas, Offset(padL - tp.width - 4, y - tp.height / 2));
+      padL = padL < tp.width + 12 ? tp.width + 12 : padL;
+    }
+
+    final w = size.width - padL - padR;
+    final h = size.height - padB;
+
+    final gridPaint = Paint()
+      ..color = isDark ? Colors.white10 : Colors.black12
+      ..strokeWidth = 1.0;
+
+    // Draw horizontal grid lines (4 levels)
+    for (int i = 0; i <= 4; i++) {
+      final y = h - (h * (i / 4.0));
+      canvas.drawLine(Offset(padL, y), Offset(size.width - padR, y), gridPaint);
+      final label = ((maxVal * (i / 4.0))).toStringAsFixed(0);
+      final tp = TextPainter(
+        text: TextSpan(text: label, style: textStyle),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      tp.paint(canvas, Offset((padL - tp.width - 6).clamp(0.0, double.infinity), y - tp.height / 2));
     }
 
     if (cumSeries.length < 2) return;
@@ -539,7 +542,7 @@ class _GddPainter extends CustomPainter {
 
     final totalTp = TextPainter(
       text: TextSpan(
-        text: 'Total: ${lastVal.toStringAsFixed(1)} °C-d',
+        text: '$totalLabel: ${lastVal.toStringAsFixed(1)} °C-d',
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w800,
@@ -549,7 +552,12 @@ class _GddPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    totalTp.paint(canvas, Offset(lastX - totalTp.width - 8, lastY - 14));
+    // Anchor to the left of the marker by default, but flip to the right
+    // when there isn't enough room on the left (short series near the axis).
+    final labelX = (lastX - totalTp.width - 8) < padL
+        ? (lastX + 8).clamp(0.0, size.width - totalTp.width)
+        : lastX - totalTp.width - 8;
+    totalTp.paint(canvas, Offset(labelX, lastY - 14));
   }
 
   @override
@@ -563,11 +571,13 @@ class _GddPainter extends CustomPainter {
 class ThermalHumidityChart extends StatelessWidget {
   final List<DailyWeatherRecord> records;
   final bool isDark;
+  final OryzaStrings s;
 
   const ThermalHumidityChart({
     super.key,
     required this.records,
     required this.isDark,
+    required this.s,
   });
 
   @override
@@ -579,6 +589,9 @@ class ThermalHumidityChart extends StatelessWidget {
       painter: _ThermalHumidityPainter(
         records: sorted,
         isDark: isDark,
+        legendTMax: s.chartLegendTMax,
+        legendTMin: s.chartLegendTMin,
+        legendHumidity: s.chartLegendHumidity,
       ),
     );
   }
@@ -587,8 +600,17 @@ class ThermalHumidityChart extends StatelessWidget {
 class _ThermalHumidityPainter extends CustomPainter {
   final List<DailyWeatherRecord> records;
   final bool isDark;
+  final String legendTMax;
+  final String legendTMin;
+  final String legendHumidity;
 
-  _ThermalHumidityPainter({required this.records, required this.isDark});
+  _ThermalHumidityPainter({
+    required this.records,
+    required this.isDark,
+    required this.legendTMax,
+    required this.legendTMin,
+    required this.legendHumidity,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -665,9 +687,9 @@ class _ThermalHumidityPainter extends CustomPainter {
     canvas.drawPath(pathTMax, tMaxPaint);
 
     // Legends at top
-    _drawLegend(canvas, padL, 4, 'T_max (°C)', Colors.deepOrangeAccent);
-    _drawLegend(canvas, padL + 80, 4, 'T_min (°C)', Colors.lightBlue);
-    _drawLegend(canvas, padL + 160, 4, 'Umidade (%)', Colors.cyan);
+    _drawLegend(canvas, padL, 4, legendTMax, Colors.deepOrangeAccent);
+    _drawLegend(canvas, padL + 80, 4, legendTMin, Colors.lightBlue);
+    _drawLegend(canvas, padL + 160, 4, legendHumidity, Colors.cyan);
   }
 
   void _drawLegend(Canvas canvas, double x, double y, String label, Color color) {
@@ -698,11 +720,13 @@ class _ThermalHumidityPainter extends CustomPainter {
 class WaterRadiationChart extends StatelessWidget {
   final List<DailyWeatherRecord> records;
   final bool isDark;
+  final OryzaStrings s;
 
   const WaterRadiationChart({
     super.key,
     required this.records,
     required this.isDark,
+    required this.s,
   });
 
   @override
@@ -711,7 +735,7 @@ class WaterRadiationChart extends StatelessWidget {
 
     return CustomPaint(
       size: Size.infinite,
-      painter: _WaterRadiationPainter(records: sorted, isDark: isDark),
+      painter: _WaterRadiationPainter(records: sorted, isDark: isDark, legend: s.chartLegendWaterRadiation),
     );
   }
 }
@@ -719,8 +743,9 @@ class WaterRadiationChart extends StatelessWidget {
 class _WaterRadiationPainter extends CustomPainter {
   final List<DailyWeatherRecord> records;
   final bool isDark;
+  final String legend;
 
-  _WaterRadiationPainter({required this.records, required this.isDark});
+  _WaterRadiationPainter({required this.records, required this.isDark, required this.legend});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -785,7 +810,7 @@ class _WaterRadiationPainter extends CustomPainter {
     // Legend
     final tp = TextPainter(
       text: TextSpan(
-        text: 'Barras: Chuva (mm) | Linha: Radiação Solar (MJ/m²)',
+        text: legend,
         style: TextStyle(
           fontSize: 9,
           fontWeight: FontWeight.w700,
@@ -809,11 +834,13 @@ class _WaterRadiationPainter extends CustomPainter {
 class DtrBandChart extends StatelessWidget {
   final List<DailyWeatherRecord> records;
   final bool isDark;
+  final OryzaStrings s;
 
   const DtrBandChart({
     super.key,
     required this.records,
     required this.isDark,
+    required this.s,
   });
 
   @override
@@ -822,7 +849,7 @@ class DtrBandChart extends StatelessWidget {
 
     return CustomPaint(
       size: Size.infinite,
-      painter: _DtrBandPainter(records: sorted, isDark: isDark),
+      painter: _DtrBandPainter(records: sorted, isDark: isDark, legend: s.chartLegendDtrBand),
     );
   }
 }
@@ -830,8 +857,9 @@ class DtrBandChart extends StatelessWidget {
 class _DtrBandPainter extends CustomPainter {
   final List<DailyWeatherRecord> records;
   final bool isDark;
+  final String legend;
 
-  _DtrBandPainter({required this.records, required this.isDark});
+  _DtrBandPainter({required this.records, required this.isDark, required this.legend});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -902,7 +930,7 @@ class _DtrBandPainter extends CustomPainter {
     // Legend
     final tp = TextPainter(
       text: TextSpan(
-        text: 'Faixa Sombreada: Amplitude DTR (T_max - T_min)',
+        text: legend,
         style: TextStyle(
           fontSize: 9,
           fontWeight: FontWeight.w700,
