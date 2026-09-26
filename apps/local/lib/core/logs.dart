@@ -19,6 +19,8 @@ void logWarning(String message, [Object? error]) {
   if (error != null) debugPrint('Error: $error');
 }
 
+void logWarn(String message, [Object? error]) => logWarning(message, error);
+
 void logError(String message, [Object? error, StackTrace? stackTrace]) {
   debugPrint('[ERROR] $message');
   if (error != null) debugPrint('Error: $error');

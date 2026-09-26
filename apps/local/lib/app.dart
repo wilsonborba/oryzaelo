@@ -1,64 +1,54 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:local/core/settings.dart';
+import 'package:local/presentation/screens/dashboard_screen.dart';
+import 'package:oryzaelo_ui/oryzaelo_ui.dart';
 
-class FarmerApp extends StatelessWidget {
+class OryzaScrollBehavior extends MaterialScrollBehavior {
+  const OryzaScrollBehavior();
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+      };
+}
+
+class FarmerApp extends StatefulWidget {
   const FarmerApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppSettings.appName,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        useMaterial3: true,
-      ),
-      home: const FarmerHomePage(title: AppSettings.appName),
-    );
-  }
+  State<FarmerApp> createState() => _FarmerAppState();
 }
 
-class FarmerHomePage extends StatefulWidget {
-  const FarmerHomePage({super.key, required this.title});
-
-  final String title;
+class _FarmerAppState extends State<FarmerApp> {
+  final OryzaController _controller = OryzaController();
 
   @override
-  State<FarmerHomePage> createState() => _FarmerHomePageState();
-}
-
-class _FarmerHomePageState extends State<FarmerHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Oryza-Elo Edge Farmer Portal'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    return OryzaScope(
+      controller: _controller,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          return MaterialApp(
+            title: '${AppSettings.appName} • Edge Terminal',
+            debugShowCheckedModeBanner: false,
+            scrollBehavior: const OryzaScrollBehavior(),
+            theme: OryzaTheme.lightTheme,
+            darkTheme: OryzaTheme.darkTheme,
+            themeMode: _controller.themeMode,
+            home: const DashboardScreen(),
+          );
+        },
       ),
     );
   }
