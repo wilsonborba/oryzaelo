@@ -17,6 +17,7 @@ class ParcelSelectorBar extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final selected = handler.selectedParcel;
+    final s = OryzaI18n.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
@@ -56,6 +57,37 @@ class ParcelSelectorBar extends StatelessWidget {
                     icon: const Icon(Icons.delete_outline, size: 18),
                     tooltip: 'Excluir Talhão',
                     onPressed: () => _confirmDeleteParcel(context, selected),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                if (handler.parcels.isEmpty) ...[
+                  OutlinedButton.icon(
+                    onPressed: handler.isOperatingMock
+                        ? null
+                        : () async {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(s.demoDataLoading)),
+                            );
+                            final ok = await handler.populateMockData();
+                            if (context.mounted && ok) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(s.demoDataLoadedSuccess),
+                                  backgroundColor: Colors.green.shade800,
+                                ),
+                              );
+                            }
+                          },
+                    icon: const Icon(Icons.cloud_download_outlined, size: 16),
+                    label: Text(s.loadDemoDataBtn),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: isDark ? Colors.amber.shade300 : Colors.amber.shade900,
+                      side: BorderSide(color: isDark ? Colors.amber.shade700 : Colors.amber.shade500),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 8),
                 ],

@@ -475,6 +475,28 @@ class OryzaStrings {
   final String howToUseBtnCopied;
   final String howToUseBtnCopy;
 
+  // Mock Data & Edge Simulation (UI Buttons & CLI Scripts)
+  final String loadDemoDataBtn;
+  final String cleanDemoDataBtn;
+  final String demoDataLoading;
+  final String demoDataCleaning;
+  final String demoDataLoadedSuccess;
+  final String demoDataCleanedSuccess;
+  final String confirmCleanTitle;
+  final String confirmCleanDesc;
+  final String cancelBtn;
+  final String confirmBtn;
+
+  // How To Use - Mock & Testing Section
+  final String howToUseMockTitle;
+  final String howToUseMockDesc;
+  final String howToUseMockOptionUiTitle;
+  final String howToUseMockOptionUiDesc;
+  final String howToUseMockOptionCliTitle;
+  final String howToUseMockOptionCliDesc;
+  final String howToUseMockPopulateSnippet;
+  final String howToUseMockCleanSnippet;
+
   const OryzaStrings({
     required this.navBrand,
     required this.navCoords,
@@ -866,6 +888,24 @@ class OryzaStrings {
     required this.howToUseCopiedFeedback,
     required this.howToUseBtnCopied,
     required this.howToUseBtnCopy,
+    this.loadDemoDataBtn = "Carregar Dados de Teste",
+    this.cleanDemoDataBtn = "Limpar Dados / Reset",
+    this.demoDataLoading = "Carregando dados demonstrativos no nó de borda...",
+    this.demoDataCleaning = "Limpando base de dados de teste...",
+    this.demoDataLoadedSuccess = "Dados demonstrativos carregados com sucesso! 4 talhões e séries históricas ativas.",
+    this.demoDataCleanedSuccess = "Base de dados limpa com sucesso. Presets de fábrica preservados.",
+    this.confirmCleanTitle = "Confirmar Limpeza de Dados?",
+    this.confirmCleanDesc = "Esta ação removerá todos os talhões, registros climáticos e predições de teste. Os presets oficiais de sensores serão mantidos.",
+    this.cancelBtn = "Cancelar",
+    this.confirmBtn = "Confirmar Limpeza",
+    this.howToUseMockTitle = "Modo de Demonstração & Testes (Sem Sensores Físicos)",
+    this.howToUseMockDesc = "Para professores da banca, pesquisadores ou agricultores avaliando o sistema sem estações meteorológicas físicas conectadas, o Oryza-Elo oferece geração sintética de alta fidelidade com 4 talhões de referência da Tailândia e mais de 200 registros climáticos realistas.",
+    this.howToUseMockOptionUiTitle = "Opção 1: Via Interface Web do Dashboard (1 Clique)",
+    this.howToUseMockOptionUiDesc = "Dentro do Dashboard Local, acesse a Central de Ingestão de Sensores e utilize os botões 'Carregar Dados de Teste' ou 'Limpar Dados' para alternar instantaneamente entre a base demonstrativa e o estado de fábrica limpo.",
+    this.howToUseMockOptionCliTitle = "Opção 2: Via Terminal (Linha de Comando)",
+    this.howToUseMockOptionCliDesc = "Para testes rápidos no computador pessoal sem instalar serviços permanentes no sistema operacional (systemd), inicie o nó de borda diretamente com ./run_local_edge.sh e manipule os dados:",
+    this.howToUseMockPopulateSnippet = "# 1. Iniciar o nó de borda em primeiro plano (sem instalar serviço systemd):\n./run_local_edge.sh\n\n# 2. Em outro terminal, popular base com 4 talhões e 75 dias de séries climáticas:\n./populate_test_data.sh\n\n# 3. Limpar base de dados e restaurar estado de fábrica:\n./clean_test_data.sh",
+    this.howToUseMockCleanSnippet = "# Limpar base de dados e restaurar estado de fábrica:\n./clean_test_data.sh",
   });
 }
 
@@ -1861,6 +1901,25 @@ class OryzaI18n {
     howToUseCopiedFeedback: "Repository link copied to clipboard!",
     howToUseBtnCopied: "COPIED!",
     howToUseBtnCopy: "COPY",
+
+    loadDemoDataBtn: "Load Demo Farm Data",
+    cleanDemoDataBtn: "Clean Test Data / Reset",
+    demoDataLoading: "Populating demo dataset on edge node...",
+    demoDataCleaning: "Cleaning test database...",
+    demoDataLoadedSuccess: "Demo dataset loaded successfully! 4 reference parcels and historical series active.",
+    demoDataCleanedSuccess: "Test database cleaned successfully. Official sensor presets preserved.",
+    confirmCleanTitle: "Confirm Data Cleanup?",
+    confirmCleanDesc: "This will remove all test parcels, weather records, and phenology predictions. Official sensor presets will be preserved.",
+    cancelBtn: "Cancel",
+    confirmBtn: "Confirm Cleanup",
+    howToUseMockTitle: "Evaluation & Testing Mode (No Physical Sensors)",
+    howToUseMockDesc: "For defense committee evaluators, researchers, or growers evaluating the edge system without physical IoT weather stations connected, Oryza-Elo provides high-fidelity synthetic generation featuring 4 Thai reference parcels and over 200 realistic daily biometric records.",
+    howToUseMockOptionUiTitle: "Option 1: Via Dashboard Web UI (1-Click)",
+    howToUseMockOptionUiDesc: "Inside the Local Dashboard, open the Sensor Ingestion Center and click 'Load Demo Farm Data' or 'Clean Test Data' to instantly toggle between realistic evaluation data and factory state.",
+    howToUseMockOptionCliTitle: "Option 2: Via Terminal (Command Line)",
+    howToUseMockOptionCliDesc: "For quick evaluation sessions on a personal computer without installing permanent OS background services (systemd), launch the edge node directly with ./run_local_edge.sh and manage test datasets:",
+    howToUseMockPopulateSnippet: "# 1. Launch edge node in foreground (no systemd service installation needed):\n./run_local_edge.sh\n\n# 2. In another terminal, populate database with 4 reference parcels and 75 days:\n./populate_test_data.sh\n\n# 3. Clean test database and restore factory defaults:\n./clean_test_data.sh",
+    howToUseMockCleanSnippet: "# Clean test database and restore factory defaults:\n./clean_test_data.sh",
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );
 
@@ -2358,6 +2417,25 @@ class OryzaI18n {
     howToUseCopiedFeedback: "คัดลอกลิงก์ที่เก็บไปยังคลิปบอร์ดแล้ว!",
     howToUseBtnCopied: "คัดลอกแล้ว!",
     howToUseBtnCopy: "คัดลอก",
+
+    loadDemoDataBtn: "โหลดข้อมูลทดสอบ (ESALQ)",
+    cleanDemoDataBtn: "ล้างข้อมูลทดสอบ / รีเซ็ต",
+    demoDataLoading: "กำลังโหลดข้อมูลสาธิตลงในสถานี...",
+    demoDataCleaning: "กำลังล้างฐานข้อมูลทดสอบ...",
+    demoDataLoadedSuccess: "โหลดชุดข้อมูลสาธิตสำเร็จ! 4 แปลงอ้างอิงและชุดข้อมูลประวัติพร้อมใช้งาน",
+    demoDataCleanedSuccess: "ล้างฐานข้อมูลทดสอบสำเร็จ โดยคงค่าพรีเซ็ตเซ็นเซอร์อย่างเป็นทางการไว้",
+    confirmCleanTitle: "ยืนยันการล้างข้อมูล?",
+    confirmCleanDesc: "การดำเนินการนี้จะลบแปลงทดสอบ บันทึกสภาพอากาศ และการทำนายระยะฟีโนโลยีทั้งหมด แต่จะคงค่าพรีเซ็ตเซ็นเซอร์ทางการไว้",
+    cancelBtn: "ยกเลิก",
+    confirmBtn: "ยืนยันการล้างข้อมูล",
+    howToUseMockTitle: "โหมดทดสอบและข้อมูลสาธิต (ไม่จำเป็นต้องมีเซ็นเซอร์จริง)",
+    howToUseMockDesc: "สำหรับคณะกรรมการประเมิน นักวิจัย หรือเกษตรกรที่ต้องการทดลองใช้งานระบบโดยไม่ต้องเชื่อมต่อสถานีตรวจวัดสภาพอากาศจริง Oryza-Elo มีระบบสร้างข้อมูลจำลองความแม่นยำสูงครอบคลุม 4 แปลงอ้างอิงในประเทศไทยและบันทึกสภาพอากาศย้อนหลังกว่า 200 รายการ",
+    howToUseMockOptionUiTitle: "วิธีที่ 1: ผ่านหน้าจอแดชบอร์ดเว็บ (คลิกเดียว)",
+    howToUseMockOptionUiDesc: "ในแดชบอร์ดท้องถิ่น เข้าไปที่ศูนย์รับข้อมูลเซ็นเซอร์ แล้วคลิก 'โหลดข้อมูลทดสอบ' หรือ 'ล้างข้อมูลทดสอบ' เพื่อสลับระหว่างข้อมูลสาธิตและสถานะเริ่มต้นได้อย่างรวดเร็ว",
+    howToUseMockOptionCliTitle: "วิธีที่ 2: ผ่านเทอร์มินัล (บรรทัดคำสั่ง)",
+    howToUseMockOptionCliDesc: "สำหรับการทดสอบด่วนบนคอมพิวเตอร์ส่วนบุคคลโดยไม่ต้องติดตั้งเซอร์วิสระบบถาวร (systemd) ให้เปิดโหนด edge โดยตรงด้วย ./run_local_edge.sh และจัดการชุดข้อมูลทดสอบ:",
+    howToUseMockPopulateSnippet: "# 1. เริ่มต้นโหนด edge บนเทอร์มินัล (ไม่ต้องติดตั้งเซอร์วิส systemd):\n./run_local_edge.sh\n\n# 2. ในอีกหน้าต่างเทอร์มินัล โหลดข้อมูลจำลอง 4 แปลงและสภาพอากาศ 75 วัน:\n./populate_test_data.sh\n\n# 3. ล้างฐานข้อมูลทดสอบและคืนค่าเริ่มต้นจากโรงงาน:\n./clean_test_data.sh",
+    howToUseMockCleanSnippet: "# ล้างฐานข้อมูลทดสอบและคืนค่าเริ่มต้นจากโรงงาน:\n./clean_test_data.sh",
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );
 
