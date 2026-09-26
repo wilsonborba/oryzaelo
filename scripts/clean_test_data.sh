@@ -1,0 +1,1 @@
+../../oryzaelo_engine/scripts/clean_test_data.sh
