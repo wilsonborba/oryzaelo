@@ -16,12 +16,20 @@ class AppSettings {
 
   /// Resolves the active base URL dynamically.
   /// When served from Axum ServeDir on the edge node, uses window origin.
-  /// Falls back to defaultEngineBaseUrl in development or headless mode.
+  /// When in dev mode on port 8110, automatically points to edge engine port 8005.
+  /// Falls back to defaultEngineBaseUrl in headless or custom modes.
   static String get activeBaseUrl {
+    const customEngineUrl = String.fromEnvironment('ENGINE_URL');
+    if (customEngineUrl.isNotEmpty) {
+      return customEngineUrl;
+    }
     if (kIsWeb) {
       final base = Uri.base;
       if (base.host.isNotEmpty && base.port != 0) {
-        // If served from port 8005 directly (ServeDir)
+        // If running in dev mode on port 8110, redirect to engine on port 8005
+        if (base.port == 8110) {
+          return '${base.scheme}://${base.host}:8005';
+        }
         return '${base.scheme}://${base.host}:${base.port}';
       }
     }
