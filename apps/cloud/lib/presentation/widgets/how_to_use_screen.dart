@@ -491,6 +491,77 @@ class _HowToUseScreenState extends State<HowToUseScreen> {
           textSecondary: textSecondary,
           isMobile: isMobile,
         ),
+        const SizedBox(height: 20),
+
+        // Step 6: Mock & Evaluation Mode (Testing Without Physical Sensors)
+        _buildStepCard(
+          stepNumber: "06",
+          title: s.howToUseMockTitle,
+          description: s.howToUseMockDesc,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Option 1: Web UI 1-Click
+              Text(
+                s.howToUseMockOptionUiTitle,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.fontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w700,
+                  color: textPrimary,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                s.howToUseMockOptionUiDesc,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.fontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 12.5,
+                  height: 1.5,
+                  color: textSecondary,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Option 2: CLI Terminal
+              Text(
+                s.howToUseMockOptionCliTitle,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.fontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w700,
+                  color: textPrimary,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                s.howToUseMockOptionCliDesc,
+                style: TextStyle(
+                  fontFamily: OryzaTypography.fontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 12.5,
+                  height: 1.5,
+                  color: textSecondary,
+                ),
+              ),
+              const SizedBox(height: 10),
+              _buildCodeBox(
+                code: s.howToUseMockPopulateSnippet,
+                snippetId: "mock_populate_script",
+                language: "bash",
+                s: s,
+              ),
+            ],
+          ),
+          borderColor: borderColor,
+          surfaceColor: surfaceColor,
+          textPrimary: textPrimary,
+          textSecondary: textSecondary,
+          isMobile: isMobile,
+        ),
       ],
     );
   }

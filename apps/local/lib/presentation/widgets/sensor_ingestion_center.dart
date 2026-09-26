@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:local/domain/models/device_mapping.dart';
 import 'package:local/domain/models/weather_record.dart';
 import 'package:local/presentation/handlers/dashboard_handler.dart';
+import 'package:oryzaelo_ui/oryzaelo_ui.dart';
 
 /// Sensor Configuration (CRUD) and Ingestion Center (CSV + Single Record).
 class SensorIngestionCenter extends StatefulWidget {
@@ -47,10 +48,14 @@ class _SensorIngestionCenterState extends State<SensorIngestionCenter> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final allDevices = widget.handler.allDeviceMappings;
+    final s = OryzaI18n.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // Demonstration & Evaluation Mode Banner (1-Click Populate / Clean)
+        _buildMockDataBanner(context, s, isDark),
+
         // Top Toolbar: Presets & Custom Mapping CRUD
         LayoutBuilder(
           builder: (context, constraints) {
@@ -602,6 +607,207 @@ class _SensorIngestionCenterState extends State<SensorIngestionCenter> {
               }
             },
             child: const Text('Salvar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Mock & Test Data Actions ─────────────────────────────────────────────
+
+  Widget _buildMockDataBanner(BuildContext context, OryzaStrings s, bool isDark) {
+    final isOperating = widget.handler.isOperatingMock;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E281F) : const Color(0xFFEBF5EE),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: isDark ? Colors.green.shade800 : Colors.green.shade300,
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.green.shade900 : Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.science_outlined,
+                  size: 20,
+                  color: isDark ? Colors.green.shade300 : Colors.green.shade800,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      s.howToUseMockTitle.toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.6,
+                        fontFamily: 'Ubuntu Sans Mono',
+                        color: isDark ? Colors.green.shade300 : Colors.green.shade900,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      s.howToUseMockDesc,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Ubuntu Sans',
+                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              // Populate Button
+              ElevatedButton.icon(
+                onPressed: isOperating ? null : () => _handlePopulateMockData(context, s),
+                icon: isOperating
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Icon(Icons.cloud_download_outlined, size: 18),
+                label: Text(
+                  isOperating ? s.demoDataLoading : s.loadDemoDataBtn,
+                  style: const TextStyle(fontWeight: FontWeight.w700, fontFamily: 'Ubuntu Sans'),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isDark ? Colors.green.shade700 : Colors.green.shade600,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+
+              // Clean / Factory Reset Button
+              OutlinedButton.icon(
+                onPressed: isOperating ? null : () => _confirmCleanMockData(context, s),
+                icon: const Icon(Icons.delete_sweep_outlined, size: 18),
+                label: Text(
+                  s.cleanDemoDataBtn,
+                  style: const TextStyle(fontWeight: FontWeight.w700, fontFamily: 'Ubuntu Sans'),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: isDark ? Colors.red.shade300 : Colors.red.shade700,
+                  side: BorderSide(
+                    color: isDark ? Colors.red.shade800 : Colors.red.shade300,
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handlePopulateMockData(BuildContext context, OryzaStrings s) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(s.demoDataLoading),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+
+    final ok = await widget.handler.populateMockData();
+    if (context.mounted) {
+      if (ok) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(s.demoDataLoadedSuccess),
+            backgroundColor: Colors.green.shade800,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(widget.handler.errorMessage ?? 'Falha ao popular dados.'),
+            backgroundColor: Colors.red.shade800,
+          ),
+        );
+      }
+    }
+  }
+
+  void _confirmCleanMockData(BuildContext context, OryzaStrings s) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: Colors.orange),
+            const SizedBox(width: 8),
+            Text(s.confirmCleanTitle),
+          ],
+        ),
+        content: Text(s.confirmCleanDesc),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(s.cancelBtn),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade700,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(s.demoDataCleaning),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+
+              final ok = await widget.handler.cleanMockData();
+              if (context.mounted) {
+                if (ok) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(s.demoDataCleanedSuccess),
+                      backgroundColor: Colors.blueGrey.shade800,
+                      duration: const Duration(seconds: 4),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(widget.handler.errorMessage ?? 'Falha ao limpar dados.'),
+                      backgroundColor: Colors.red.shade800,
+                    ),
+                  );
+                }
+              }
+            },
+            child: Text(s.confirmBtn),
           ),
         ],
       ),

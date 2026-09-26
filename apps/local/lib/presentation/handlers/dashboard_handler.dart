@@ -6,6 +6,7 @@ import 'package:local/domain/models/phenology_prediction.dart';
 import 'package:local/domain/models/system_telemetry.dart';
 import 'package:local/domain/models/weather_analytics.dart';
 import 'package:local/domain/models/weather_record.dart';
+import 'package:local/domain/services/admin_service.dart';
 import 'package:local/domain/services/device_service.dart';
 import 'package:local/domain/services/parcel_service.dart';
 import 'package:local/domain/services/phenology_service.dart';
@@ -19,6 +20,7 @@ class DashboardHandler extends ChangeNotifier {
   final WeatherService _weatherService;
   final PhenologyService _phenologyService;
   final TelemetryService _telemetryService;
+  final AdminService _adminService;
 
   DashboardHandler({
     ParcelService? parcelService,
@@ -26,16 +28,19 @@ class DashboardHandler extends ChangeNotifier {
     WeatherService? weatherService,
     PhenologyService? phenologyService,
     TelemetryService? telemetryService,
+    AdminService? adminService,
   })  : _parcelService = parcelService ?? ParcelService(),
         _deviceService = deviceService ?? DeviceService(),
         _weatherService = weatherService ?? WeatherService(),
         _phenologyService = phenologyService ?? PhenologyService(),
-        _telemetryService = telemetryService ?? TelemetryService();
+        _telemetryService = telemetryService ?? TelemetryService(),
+        _adminService = adminService ?? AdminService();
 
   // State flags
   bool _isLoading = false;
   bool _isAnalyzing = false;
   bool _isEngineOnline = false;
+  bool _isOperatingMock = false;
   String? _errorMessage;
 
   // Data state
@@ -55,6 +60,7 @@ class DashboardHandler extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isAnalyzing => _isAnalyzing;
   bool get isEngineOnline => _isEngineOnline;
+  bool get isOperatingMock => _isOperatingMock;
   String? get errorMessage => _errorMessage;
 
   List<FarmParcel> get parcels => _parcels;
@@ -313,5 +319,63 @@ class DashboardHandler extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
     return ok;
+  }
+
+  // ── Mock & Demo Data Administration ──────────────────────────────────────
+
+  Future<bool> populateMockData({int? days, int? parcels}) async {
+    _isLoading = true;
+    _isOperatingMock = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final ok = await _adminService.populateMockData(days: days, parcels: parcels);
+      if (ok) {
+        await initialize();
+        return true;
+      } else {
+        _errorMessage = 'Falha ao popular dados sintéticos de teste no nó de borda.';
+        return false;
+      }
+    } catch (e) {
+      logError('Populate mock data error: $e');
+      _errorMessage = 'Erro ao popular dados de teste: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      _isOperatingMock = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> cleanMockData({bool resetPresets = false}) async {
+    _isLoading = true;
+    _isOperatingMock = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final ok = await _adminService.cleanMockData(resetPresets: resetPresets);
+      if (ok) {
+        _selectedParcel = null;
+        _latestPrediction = null;
+        _weatherRecords = [];
+        _analyticsReport = null;
+        await initialize();
+        return true;
+      } else {
+        _errorMessage = 'Falha ao limpar base de dados no nó de borda.';
+        return false;
+      }
+    } catch (e) {
+      logError('Clean mock data error: $e');
+      _errorMessage = 'Erro ao limpar base de dados: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      _isOperatingMock = false;
+      notifyListeners();
+    }
   }
 }

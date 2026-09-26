@@ -367,4 +367,39 @@ class EngineClient {
     }
     return [];
   }
+
+  // ── Admin & Mock Data (Turnkey Testing) ──────────────────────────────────
+
+  Future<bool> populateMockData({int? days, int? parcels}) async {
+    try {
+      final query = <String, String>{};
+      if (days != null) query['days'] = days.toString();
+      if (parcels != null) query['parcels'] = parcels.toString();
+
+      final res = await _client
+          .post(_uri('/api/v1/admin/populate', query.isEmpty ? null : query), headers: _headers)
+          .timeout(const Duration(seconds: 30));
+
+      return res.statusCode == 200;
+    } catch (e) {
+      logError('Failed to populate mock data: $e');
+      return false;
+    }
+  }
+
+  Future<bool> cleanMockData({bool resetPresets = false}) async {
+    try {
+      final query = <String, String>{};
+      if (resetPresets) query['reset_presets'] = 'true';
+
+      final res = await _client
+          .post(_uri('/api/v1/admin/clean', query.isEmpty ? null : query), headers: _headers)
+          .timeout(const Duration(seconds: 30));
+
+      return res.statusCode == 200;
+    } catch (e) {
+      logError('Failed to clean mock data: $e');
+      return false;
+    }
+  }
 }
