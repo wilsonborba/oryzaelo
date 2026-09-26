@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
 
-/// Top operational header matching the landing page design system.
+/// Top operational header matching the Swiss minimalist design system.
+/// Contains system status, refresh action, and design system controls.
 class DashboardHeader extends StatelessWidget {
   final bool isOnline;
   final VoidCallback onRefresh;
   final bool isRefreshing;
+  final VoidCallback? onToggleSidebar;
 
   const DashboardHeader({
     super.key,
     required this.isOnline,
     required this.onRefresh,
     this.isRefreshing = false,
+    this.onToggleSidebar,
   });
 
   @override
@@ -23,94 +26,80 @@ class DashboardHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: ScrapbookCard(
         isDark: isDark,
-        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final isCompact = constraints.maxWidth < 768;
 
             return Row(
               children: [
-                // Brand Mark & Identity
-                Row(
+                // Optional Sidebar toggle button (useful on mobile or compact widths)
+                if (onToggleSidebar != null) ...[
+                  IconButton(
+                    onPressed: onToggleSidebar,
+                    icon: const Icon(Icons.menu, size: 20),
+                    tooltip: 'Menu de Navegação',
+                  ),
+                  const SizedBox(width: 8),
+                ],
+
+                // Brand Mark & Local Edge Title (No corner emoji/logo)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color: isDark ? Colors.green.shade800 : Colors.green.shade700,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.15),
-                            blurRadius: 4,
-                            offset: const Offset(1, 2),
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Text(
-                          '🌾',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              'ORYZA-ELO',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 1.1,
-                                fontFamily: 'Ubuntu Sans',
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: isDark
-                                    ? Colors.amber.shade900.withValues(alpha: 0.4)
-                                    : Colors.amber.shade100,
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: isDark ? Colors.amber.shade700 : Colors.amber.shade400,
-                                ),
-                              ),
-                              child: Text(
-                                'LOCAL EDGE',
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w800,
-                                  color: isDark ? Colors.amber.shade300 : Colors.amber.shade900,
-                                  fontFamily: 'Ubuntu Sans Mono',
-                                ),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          'ORYZA-ELO',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.1,
+                            fontFamily: 'Ubuntu Sans',
+                          ),
                         ),
-                        if (!isCompact) ...[
-                          Text(
-                            'NÓ DE BORDA RURAL • PORTA 8005 • 0.0.0.0',
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                              fontFamily: 'Ubuntu Sans Mono',
-                              letterSpacing: 0.5,
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? Colors.amber.shade900.withValues(alpha: 0.35)
+                                : Colors.amber.shade100,
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: isDark ? Colors.amber.shade700 : Colors.amber.shade400,
                             ),
                           ),
-                        ],
+                          child: Text(
+                            'LOCAL EDGE',
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
+                              color: isDark ? Colors.amber.shade300 : Colors.amber.shade900,
+                              fontFamily: 'Ubuntu Sans Mono',
+                            ),
+                          ),
+                        ),
                       ],
                     ),
+                    if (!isCompact) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        'NÓ DE BORDA RURAL • PORTA 8005 • AIR-GAPPED',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                          fontFamily: 'Ubuntu Sans Mono',
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
 
                 const Spacer(),
 
-                // Air-Gapped Status Indicator
+                // Air-Gapped Status Indicator Pill
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
@@ -137,7 +126,7 @@ class DashboardHeader extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        isOnline ? 'AIR-GAPPED ATIVO' : 'ENGINE OFFLINE',
+                        isOnline ? 'AIR-GAPPED OPERACIONAL' : 'ENGINE OFFLINE',
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,

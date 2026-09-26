@@ -39,4 +39,11 @@ class WeatherService {
     int days = 60,
   }) =>
       _client.getWeatherAnalytics(parcelId, days: days);
+
+  Future<int> deleteRecords(
+    String parcelId,
+    List<DateTime> dates,
+  ) =>
+      _client.deleteWeatherRecords(parcelId, dates);
 }
+

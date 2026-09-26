@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local/domain/models/weather_record.dart';
+import 'package:oryzaelo_ui/oryzaelo_ui.dart';
 
 /// Senior agrometeorological charts: GDD curve, dual thermal trend, water balance & DTR band.
 class AgrometeorologicalCharts extends StatelessWidget {
@@ -12,25 +13,61 @@ class AgrometeorologicalCharts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = OryzaI18n.of(context);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     if (records.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
+      return ScrapbookCard(
+        isDark: isDark,
+        padding: const EdgeInsets.all(28.0),
+        child: Center(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.show_chart, size: 48, color: isDark ? Colors.grey.shade600 : Colors.grey.shade400),
-              const SizedBox(height: 12),
-              const Text(
-                'Série meteorológica insuficiente para renderização gráfica.',
-                style: TextStyle(fontWeight: FontWeight.w600),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Opacity(
+                    opacity: 0.25,
+                    child: Image.asset(
+                      'assets/plants/Jungle_Plant_1.png',
+                      width: 140,
+                      height: 100,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  Image.asset(
+                    'assets/icons3d/sun-dynamic-color.png',
+                    width: 72,
+                    height: 72,
+                    fit: BoxFit.contain,
+                  ),
+                ],
               ),
-              const SizedBox(height: 6),
-              const Text(
-                'Importe um arquivo CSV ou conecte um sensor na seção de ingestão abaixo.',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+              const SizedBox(height: 16),
+              Text(
+                s.simEmptyTitle,
+                style: const TextStyle(
+                  fontFamily: OryzaTypography.fontFamily,
+                  package: 'oryzaelo_ui',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: Text(
+                  s.simEmptyDesc,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: OryzaTypography.fontFamily,
+                    package: 'oryzaelo_ui',
+                    fontSize: 12.5,
+                    color: isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary,
+                  ),
+                ),
               ),
             ],
           ),
@@ -40,164 +77,329 @@ class AgrometeorologicalCharts extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isWide = constraints.maxWidth >= 900;
+        final isWide = constraints.maxWidth >= 960;
+
+        final gddCard = _AgroChartCard(
+          title: s.dashFilterClimate.toUpperCase(),
+          subtitle: s.chartGddAnalysis,
+          unitBadge: s.chartUnitGdd,
+          icon: Icons.trending_up,
+          analysisText: s.chartGddAnalysis,
+          meaningText: s.chartGddMeaning,
+          actionText: s.chartGddAction,
+          isDark: isDark,
+          child: GddAccumulationChart(records: records, isDark: isDark),
+        );
+
+        final thermalCard = _AgroChartCard(
+          title: '${s.tableColTmax} / ${s.tableColRh}'.toUpperCase(),
+          subtitle: s.chartThermalAnalysis,
+          unitBadge: '${s.chartUnitTemp} • ${s.chartUnitHumidity}',
+          icon: Icons.thermostat_outlined,
+          analysisText: s.chartThermalAnalysis,
+          meaningText: s.chartThermalMeaning,
+          actionText: s.chartThermalAction,
+          isDark: isDark,
+          child: ThermalHumidityChart(records: records, isDark: isDark),
+        );
+
+        final waterCard = _AgroChartCard(
+          title: '${s.tableColRain} & ${s.tableColRad}'.toUpperCase(),
+          subtitle: s.chartWaterAnalysis,
+          unitBadge: '${s.chartUnitPrecipitation} • ${s.chartUnitRadiation}',
+          icon: Icons.water_drop,
+          analysisText: s.chartWaterAnalysis,
+          meaningText: s.chartWaterMeaning,
+          actionText: s.chartWaterAction,
+          isDark: isDark,
+          child: WaterRadiationChart(records: records, isDark: isDark),
+        );
+
+        final dtrCard = _AgroChartCard(
+          title: s.chartUnitDtr.toUpperCase(),
+          subtitle: s.chartDtrAnalysis,
+          unitBadge: s.chartUnitDtr,
+          icon: Icons.waves,
+          analysisText: s.chartDtrAnalysis,
+          meaningText: s.chartDtrMeaning,
+          actionText: s.chartDtrAction,
+          isDark: isDark,
+          child: DtrBandChart(records: records, isDark: isDark),
+        );
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Row 1: GDD Curve + Dual Thermal Trend
             if (isWide)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: _buildChartBox(
-                      context,
-                      title: 'CURVA DE GRAUS-DIA ACUMULADOS (GDD BASE 10°C)',
-                      subtitle: 'Soma térmica acumulada (°C-dia) e marcos fenológicos',
-                      icon: Icons.trending_up,
-                      child: GddAccumulationChart(records: records, isDark: isDark),
-                    ),
-                  ),
+                  Expanded(child: gddCard),
                   const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildChartBox(
-                      context,
-                      title: 'DINÂMICA TÉRMICA E UMIDADE RELATIVA',
-                      subtitle: 'T_max, T_min (°C) e Umidade Relativa do Ar (%)',
-                      icon: Icons.thermostat_outlined,
-                      child: ThermalHumidityChart(records: records, isDark: isDark),
-                    ),
-                  ),
+                  Expanded(child: thermalCard),
                 ],
               )
             else ...[
-              _buildChartBox(
-                context,
-                title: 'CURVA DE GRAUS-DIA ACUMULADOS (GDD BASE 10°C)',
-                subtitle: 'Soma térmica acumulada (°C-dia) e marcos fenológicos',
-                icon: Icons.trending_up,
-                child: GddAccumulationChart(records: records, isDark: isDark),
-              ),
+              gddCard,
               const SizedBox(height: 16),
-              _buildChartBox(
-                context,
-                title: 'DINÂMICA TÉRMICA E UMIDADE RELATIVA',
-                subtitle: 'T_max, T_min (°C) e Umidade Relativa do Ar (%)',
-                icon: Icons.thermostat_outlined,
-                child: ThermalHumidityChart(records: records, isDark: isDark),
-              ),
+              thermalCard,
             ],
-
             const SizedBox(height: 16),
-
-            // Row 2: Water Balance + DTR Thermal Amplitude Band
             if (isWide)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: _buildChartBox(
-                      context,
-                      title: 'BALANÇO HÍDRICO E RADIAÇÃO SOLAR',
-                      subtitle: 'Precipitação diária (barras mm) vs Radiação Global (linha MJ/m²)',
-                      icon: Icons.water_drop,
-                      child: WaterRadiationChart(records: records, isDark: isDark),
-                    ),
-                  ),
+                  Expanded(child: waterCard),
                   const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildChartBox(
-                      context,
-                      title: 'AMPLITUDE TÉRMICA DIURNA (FAIXA DTR)',
-                      subtitle: 'Gradiente diurno T_max - T_min e pulso térmico foliar',
-                      icon: Icons.waves,
-                      child: DtrBandChart(records: records, isDark: isDark),
-                    ),
-                  ),
+                  Expanded(child: dtrCard),
                 ],
               )
             else ...[
-              _buildChartBox(
-                context,
-                title: 'BALANÇO HÍDRICO E RADIAÇÃO SOLAR',
-                subtitle: 'Precipitação diária (barras mm) vs Radiação Global (linha MJ/m²)',
-                icon: Icons.water_drop,
-                child: WaterRadiationChart(records: records, isDark: isDark),
-              ),
+              waterCard,
               const SizedBox(height: 16),
-              _buildChartBox(
-                context,
-                title: 'AMPLITUDE TÉRMICA DIURNA (FAIXA DTR)',
-                subtitle: 'Gradiente diurno T_max - T_min e pulso térmico foliar',
-                icon: Icons.waves,
-                child: DtrBandChart(records: records, isDark: isDark),
-              ),
+              dtrCard,
             ],
           ],
         );
       },
     );
   }
+}
 
-  Widget _buildChartBox(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required Widget child,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+class _AgroChartCard extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final String unitBadge;
+  final IconData icon;
+  final String analysisText;
+  final String meaningText;
+  final String actionText;
+  final bool isDark;
+  final Widget child;
+
+  const _AgroChartCard({
+    required this.title,
+    required this.subtitle,
+    required this.unitBadge,
+    required this.icon,
+    required this.analysisText,
+    required this.meaningText,
+    required this.actionText,
+    required this.isDark,
+    required this.child,
+  });
+
+  @override
+  State<_AgroChartCard> createState() => _AgroChartCardState();
+}
+
+class _AgroChartCardState extends State<_AgroChartCard> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = OryzaI18n.of(context);
+    final borderColor = widget.isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
+    final surfaceColor = widget.isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
+    final textColor = widget.isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary;
+    final textSecondary = widget.isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? Colors.black26 : Colors.white,
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: isDark ? Colors.white12 : Colors.black12),
+        border: Border.all(color: borderColor, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: widget.isDark ? 0.3 : 0.08),
+            offset: const Offset(2, 3),
+            blurRadius: 0,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Header Row
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 16, color: isDark ? Colors.green.shade300 : Colors.green.shade800),
-              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: OryzaColors.burntOrange.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: OryzaColors.burntOrange.withValues(alpha: 0.3)),
+                ),
+                child: Icon(widget.icon, size: 16, color: OryzaColors.burntOrange),
+              ),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.title,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.6,
+                              fontFamily: OryzaTypography.monoFontFamily,
+                              package: 'oryzaelo_ui',
+                              color: textColor,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: widget.isDark ? OryzaColors.darkCanvas : OryzaColors.botanicalGreenLight,
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: widget.isDark ? OryzaColors.darkBorder : OryzaColors.botanicalGreenBorder,
+                            ),
+                          ),
+                          child: Text(
+                            widget.unitBadge,
+                            style: TextStyle(
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: OryzaTypography.monoFontFamily,
+                              package: 'oryzaelo_ui',
+                              color: widget.isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
                     Text(
-                      title,
+                      widget.subtitle,
                       style: TextStyle(
                         fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.6,
-                        fontFamily: 'Ubuntu Sans Mono',
-                        color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                        fontFamily: OryzaTypography.fontFamily,
+                        package: 'oryzaelo_ui',
+                        color: textSecondary,
                       ),
-                    ),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontFamily: 'Ubuntu Sans',
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
+              const SizedBox(width: 6),
+              // Expand / Info toggle button
+              IconButton(
+                onPressed: () => setState(() => _isExpanded = !_isExpanded),
+                icon: Icon(
+                  _isExpanded ? Icons.close : Icons.help_outline_rounded,
+                  size: 18,
+                  color: _isExpanded ? OryzaColors.burntOrange : textSecondary,
+                ),
+                tooltip: _isExpanded ? s.chartCollapseExpl : s.chartExpandExpl,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
             ],
           ),
+
+          // Expandable Explanations Card
+          if (_isExpanded) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: widget.isDark ? const Color(0xFF161C16) : const Color(0xFFF4F6F2),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: OryzaColors.botanicalGreen.withValues(alpha: 0.4),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildExplanationBullet(
+                    label: "O QUE ANALISA:",
+                    content: widget.analysisText,
+                    badgeColor: OryzaColors.burntOrange,
+                    isDark: widget.isDark,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildExplanationBullet(
+                    label: "O QUE SIGNIFICA:",
+                    content: widget.meaningText,
+                    badgeColor: OryzaColors.mustardYellow,
+                    isDark: widget.isDark,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildExplanationBullet(
+                    label: "COMO USAR NO CAMPO:",
+                    content: widget.actionText,
+                    badgeColor: OryzaColors.botanicalGreen,
+                    isDark: widget.isDark,
+                  ),
+                ],
+              ),
+            ),
+          ],
+
           const SizedBox(height: 16),
-          SizedBox(height: 220, child: child),
+          SizedBox(height: 220, child: widget.child),
         ],
       ),
     );
   }
+
+  Widget _buildExplanationBullet({
+    required String label,
+    required String content,
+    required Color badgeColor,
+    required bool isDark,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: BoxDecoration(
+            color: badgeColor.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(color: badgeColor.withValues(alpha: 0.5)),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w800,
+              fontFamily: OryzaTypography.monoFontFamily,
+              package: 'oryzaelo_ui',
+              color: badgeColor,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            content,
+            style: TextStyle(
+              fontSize: 11,
+              height: 1.35,
+              fontFamily: OryzaTypography.fontFamily,
+              package: 'oryzaelo_ui',
+              color: isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. GDD Accumulation Curve (Line + Gradient Area)

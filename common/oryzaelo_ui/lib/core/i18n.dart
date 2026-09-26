@@ -497,6 +497,105 @@ class OryzaStrings {
   final String howToUseMockPopulateSnippet;
   final String howToUseMockCleanSnippet;
 
+  // Dashboard & Local Edge
+  final String dashNavStats;
+  final String dashNavSim;
+  final String dashNavData;
+  final String dashNavSensors;
+  final String dashNavHud;
+  final String dashNavSettings;
+
+  final String dashFilterAll;
+  final String dashFilterPheno;
+  final String dashFilterClimate;
+  final String dashFilterBiomet;
+
+  final String chartUnitGdd;
+  final String chartUnitTemp;
+  final String chartUnitHumidity;
+  final String chartUnitPrecipitation;
+  final String chartUnitRadiation;
+  final String chartUnitDtr;
+  final String chartUnitWater;
+
+  final String chartGddAnalysis;
+  final String chartGddMeaning;
+  final String chartGddAction;
+
+  final String chartThermalAnalysis;
+  final String chartThermalMeaning;
+  final String chartThermalAction;
+
+  final String chartWaterAnalysis;
+  final String chartWaterMeaning;
+  final String chartWaterAction;
+
+  final String chartDtrAnalysis;
+  final String chartDtrMeaning;
+  final String chartDtrAction;
+
+  final String chartExpandExpl;
+  final String chartCollapseExpl;
+
+  final String tableColDate;
+  final String tableColTmax;
+  final String tableColTmin;
+  final String tableColRain;
+  final String tableColRad;
+  final String tableColRh;
+  final String tableColSource;
+  final String tableColActions;
+  final String tableSelectedCount;
+  final String tableDeleteSelectedBtn;
+  final String tableExportCsvBtn;
+  final String tableNewRecordBtn;
+  final String tableUploadCsvBtn;
+  final String tablePaginationRows;
+  final String tablePaginationOf;
+  final String tableConfirmDeleteTitle;
+  final String tableConfirmDeleteDesc;
+
+  final String simTitle;
+  final String simSubtitle;
+  final String simEmptyTitle;
+  final String simEmptyDesc;
+  final String simEmptyBtn;
+  final String simApplyBtn;
+  final String simBaselineHeader;
+  final String simCultivarLabel;
+  final String simDasLabel;
+  final String simTminLabel;
+  final String simTmaxLabel;
+  final String simWaterDepthLabel;
+  final String simHumidityLabel;
+  final String simRainLabel;
+  final String simRadLabel;
+  final String simResultTitle;
+  final String simAdvisoryTitle;
+  final String simInsightsTitle;
+  final String simThermalRiskLabel;
+  final String simWaterStatusLabel;
+
+  final String sensorConfigTitle;
+  final String sensorConfigSubtitle;
+  final String sensorPresetsTitle;
+  final String sensorMappingsTitle;
+  final String sensorNewMappingBtn;
+  final String sensorIdLabel;
+  final String sensorNameLabel;
+  final String sensorProtocolLabel;
+  final String sensorBaudLabel;
+  final String sensorCalibrationLabel;
+  final String sensorSaveBtn;
+
+  final String settingsTitle;
+  final String settingsSubtitle;
+  final String settingsEdgeEndpoint;
+  final String settingsStorageInfo;
+  final String settingsThemeLabel;
+  final String settingsLangLabel;
+  final String settingsGridLabel;
+
   const OryzaStrings({
     required this.navBrand,
     required this.navCoords,
@@ -906,7 +1005,107 @@ class OryzaStrings {
     this.howToUseMockOptionCliDesc = "Para testes rápidos no computador pessoal sem instalar serviços permanentes no sistema operacional (systemd), inicie o nó de borda diretamente com ./run_local_edge.sh e manipule os dados:",
     this.howToUseMockPopulateSnippet = "# 1. Iniciar o nó de borda em primeiro plano (sem instalar serviço systemd):\n./run_local_edge.sh\n\n# 2. Em outro terminal, popular base com 4 talhões e 75 dias de séries climáticas:\n./populate_test_data.sh\n\n# 3. Limpar base de dados e restaurar estado de fábrica:\n./clean_test_data.sh",
     this.howToUseMockCleanSnippet = "# Limpar base de dados e restaurar estado de fábrica:\n./clean_test_data.sh",
+
+    // Dashboard defaults (pt-BR)
+    this.dashNavStats = "Visão Geral",
+    this.dashNavSim = "Simulador & Previsão",
+    this.dashNavData = "Gestão de Dados",
+    this.dashNavSensors = "Sensores & Hardware",
+    this.dashNavHud = "Telemetria & HUD",
+    this.dashNavSettings = "Configurações",
+
+    this.dashFilterAll = "Todos os Indicadores",
+    this.dashFilterPheno = "Fenologia & Manejo",
+    this.dashFilterClimate = "Clima & Acúmulo GDD",
+    this.dashFilterBiomet = "Radar Biomet & Correlações",
+
+    this.chartUnitGdd = "°C·dia (Graus-dia acumulados)",
+    this.chartUnitTemp = "°C (Graus Celsius)",
+    this.chartUnitHumidity = "% (Umidade Relativa)",
+    this.chartUnitPrecipitation = "mm (Chuva Diária)",
+    this.chartUnitRadiation = "MJ/m² (Radiação Global)",
+    this.chartUnitDtr = "°C (Amplitude Térmica Diurna)",
+    this.chartUnitWater = "cm (Lâmina d'Água)",
+
+    this.chartGddAnalysis = "Mede a integral térmica acumulada desde o plantio descontando a temperatura base (10.0°C).",
+    this.chartGddMeaning = "O arroz responde fenologicamente ao calor absorvido e não apenas aos dias corridos no calendário.",
+    this.chartGddAction = "Compare com os marcos BBCH para saber o momento exato de aplicar adubação nitrogenada e preparar a colheita.",
+
+    this.chartThermalAnalysis = "Monitora as oscilações diárias de temperatura máxima, mínima e umidade relativa do ar.",
+    this.chartThermalMeaning = "Frio noturno (< 15°C) na antese induz aborto floral; calor excessivo (> 35°C) desidrata os grãos.",
+    this.chartThermalAction = "Ao detectar quedas noturnas, eleve a lâmina d'água para 10 cm à noite como isolante térmico.",
+
+    this.chartWaterAnalysis = "Contrapõe a precipitação acumulada diária com a radiação solar global incidente.",
+    this.chartWaterMeaning = "Alta radiação com baixa umidade acelera a evapotranspiração da cultura (ETc).",
+    this.chartWaterAction = "Programe a abertura e fechamento de comportas para manter a lâmina estável sem desperdício.",
+
+    this.chartDtrAnalysis = "Monitora o gradiente térmico diurno (T_máx - T_mín) e o estresse pulsátil no dossel foliar.",
+    this.chartDtrMeaning = "Amplitudes térmicas elevadas (> 12°C) aceleram o consumo respiratório noturno da planta.",
+    this.chartDtrAction = "Mantenha a circulação hídrica contínua para atenuar gradientes térmicos extremos no microclima.",
+
+    this.chartExpandExpl = "Entenda este gráfico",
+    this.chartCollapseExpl = "Ocultar explicação técnica",
+
+    this.tableColDate = "Data",
+    this.tableColTmax = "T_máx (°C)",
+    this.tableColTmin = "T_mín (°C)",
+    this.tableColRain = "Chuva (mm)",
+    this.tableColRad = "Radiação (MJ/m²)",
+    this.tableColRh = "Umidade (%)",
+    this.tableColSource = "Fonte / Sensor",
+    this.tableColActions = "Ações",
+    this.tableSelectedCount = "{count} selecionado(s)",
+    this.tableDeleteSelectedBtn = "Excluir Selecionados",
+    this.tableExportCsvBtn = "Exportar CSV",
+    this.tableNewRecordBtn = "Novo Registro Manual",
+    this.tableUploadCsvBtn = "Importar Arquivo CSV",
+    this.tablePaginationRows = "Linhas por página:",
+    this.tablePaginationOf = "de",
+    this.tableConfirmDeleteTitle = "Excluir Registros Selecionados?",
+    this.tableConfirmDeleteDesc = "Esta ação excluirá permanentemente os registros selecionados do banco SQLite local.",
+
+    this.simTitle = "Simulador Biofísico & Calculadora Agronômica",
+    this.simSubtitle = "Ajuste os parâmetros microclimáticos e explore respostas agronômicas em tempo real com o motor Rust de borda.",
+    this.simEmptyTitle = "Nenhum Dado de Base Disponível",
+    this.simEmptyDesc = "Para simular cenários com precisão para este talhão, importe registros de sensores ou clima.",
+    this.simEmptyBtn = "Ir para Gestão de Dados",
+    this.simApplyBtn = "Executar Simulação",
+    this.simBaselineHeader = "Parâmetros Dinâmicos de Simulação",
+    this.simCultivarLabel = "Cultivar de Arroz",
+    this.simDasLabel = "Dias Após Emergência (DAE)",
+    this.simTminLabel = "Temperatura Mínima (T_mín)",
+    this.simTmaxLabel = "Temperatura Máxima (T_máx)",
+    this.simWaterDepthLabel = "Lâmina d'Água (Sensor Hidrostático)",
+    this.simHumidityLabel = "Umidade Relativa do Ar",
+    this.simRainLabel = "Precipitação Diária",
+    this.simRadLabel = "Radiação Solar Incidente",
+    this.simResultTitle = "Diagnóstico & Prescrições Agronômicas",
+    this.simAdvisoryTitle = "Recomendação Operacional de Manejo",
+    this.simInsightsTitle = "Alertas & Insights Biofísicos",
+    this.simThermalRiskLabel = "Avaliação de Risco Térmico",
+    this.simWaterStatusLabel = "Balanço Hídrico da Lâmina",
+
+    this.sensorConfigTitle = "Configuração de Sensores & Hardware",
+    this.sensorConfigSubtitle = "Gerenciamento de interfaces físicas, calibração de multiplicadores e protocolos de borda.",
+    this.sensorPresetsTitle = "Perfis Pré-Configurados de Fabricantes",
+    this.sensorMappingsTitle = "Mapeamentos Ativos no Nó",
+    this.sensorNewMappingBtn = "Novo Mapeamento de Sensor",
+    this.sensorIdLabel = "Identificador do Dispositivo (Device ID)",
+    this.sensorNameLabel = "Nome Amigável",
+    this.sensorProtocolLabel = "Protocolo de Comunicação",
+    this.sensorBaudLabel = "Taxa de Transmissão (Baud Rate)",
+    this.sensorCalibrationLabel = "Multiplicador de Calibração",
+    this.sensorSaveBtn = "Salvar Configuração de Sensor",
+
+    this.settingsTitle = "Configurações da Estação & Preferências",
+    this.settingsSubtitle = "Parâmetros de conectividade, banco de dados SQLite local e personalização da interface.",
+    this.settingsEdgeEndpoint = "Endereço do Microserviço Rust de Borda",
+    this.settingsStorageInfo = "Banco de Dados SQLite & Armazenamento",
+    this.settingsThemeLabel = "Tema Visual da Interface",
+    this.settingsLangLabel = "Idioma / Language / ภาษา",
+    this.settingsGridLabel = "Estilo do Papel Milimetrado",
   });
+
 }
 
 class OryzaI18n {
@@ -1920,8 +2119,108 @@ class OryzaI18n {
     howToUseMockOptionCliDesc: "For quick evaluation sessions on a personal computer without installing permanent OS background services (systemd), launch the edge node directly with ./run_local_edge.sh and manage test datasets:",
     howToUseMockPopulateSnippet: "# 1. Launch edge node in foreground (no systemd service installation needed):\n./run_local_edge.sh\n\n# 2. In another terminal, populate database with 4 reference parcels and 75 days:\n./populate_test_data.sh\n\n# 3. Clean test database and restore factory defaults:\n./clean_test_data.sh",
     howToUseMockCleanSnippet: "# Clean test database and restore factory defaults:\n./clean_test_data.sh",
+
+    dashNavStats: "Overview",
+    dashNavSim: "Simulator & Predictions",
+    dashNavData: "Data Management",
+    dashNavSensors: "Sensors & Hardware",
+    dashNavHud: "Telemetry & HUD",
+    dashNavSettings: "Settings",
+
+    dashFilterAll: "All Indicators",
+    dashFilterPheno: "Phenology & Advisory",
+    dashFilterClimate: "Climate & GDD Accumulation",
+    dashFilterBiomet: "Biomet Radar & Correlations",
+
+    chartUnitGdd: "°C-day (Accumulated Growing Degree-Days)",
+    chartUnitTemp: "°C (Celsius)",
+    chartUnitHumidity: "% (Relative Humidity)",
+    chartUnitPrecipitation: "mm (Daily Rainfall)",
+    chartUnitRadiation: "MJ/m² (Global Solar Radiation)",
+    chartUnitDtr: "°C (Diurnal Thermal Range)",
+    chartUnitWater: "cm (Water Layer Depth)",
+
+    chartGddAnalysis: "Calculates the cumulative thermal time absorbed since planting above the base biological threshold (10.0°C).",
+    chartGddMeaning: "Rice phenology is strictly governed by thermal accumulation rather than nominal calendar elapsed days.",
+    chartGddAction: "Benchmark against BBCH physiological markers to determine the ideal window for topdress fertilization and harvest scheduling.",
+
+    chartThermalAnalysis: "Tracks diurnal maximum and minimum air temperature dynamics alongside atmospheric relative humidity.",
+    chartThermalMeaning: "Night cold spikes (< 15°C) during anthesis trigger spikelet sterility; excess heat (> 35°C) accelerates grain chalkiness.",
+    chartThermalAction: "Upon detecting nocturnal cold dips, increase paddy water depth to 10 cm before sunset for thermal buffering.",
+
+    chartWaterAnalysis: "Correlates cumulative daily precipitation with incoming global solar irradiance.",
+    chartWaterMeaning: "High radiation paired with depressed humidity intensifies crop evapotranspiration (ETc) demand.",
+    chartWaterAction: "Operate paddy floodgates proactively to stabilize water layer without runoff waste.",
+
+    chartDtrAnalysis: "Assesses daily thermal amplitude (T_max - T_min) and physiological pulse dynamics across canopy layers.",
+    chartDtrMeaning: "Wide thermal gradients (> 12°C) trigger nocturnal plant respiration and carbohydrate expenditure.",
+    chartDtrAction: "Maintain steady continuous water circulation to dampen extreme microclimate swings.",
+
+    chartExpandExpl: "Understand this chart",
+    chartCollapseExpl: "Hide technical explanation",
+
+    tableColDate: "Date",
+    tableColTmax: "T_max (°C)",
+    tableColTmin: "T_min (°C)",
+    tableColRain: "Rainfall (mm)",
+    tableColRad: "Radiation (MJ/m²)",
+    tableColRh: "Humidity (%)",
+    tableColSource: "Source / Sensor",
+    tableColActions: "Actions",
+    tableSelectedCount: "{count} selected",
+    tableDeleteSelectedBtn: "Delete Selected",
+    tableExportCsvBtn: "Export CSV",
+    tableNewRecordBtn: "New Manual Record",
+    tableUploadCsvBtn: "Import CSV File",
+    tablePaginationRows: "Rows per page:",
+    tablePaginationOf: "of",
+    tableConfirmDeleteTitle: "Delete Selected Records?",
+    tableConfirmDeleteDesc: "This action will permanently remove selected telemetry records from local SQLite storage.",
+
+    simTitle: "Biophysical Simulator & Agronomic Calculator",
+    simSubtitle: "Adjust microclimatic parameters and observe real-time agronomic responses driven by the native edge Rust engine.",
+    simEmptyTitle: "No Baseline Telemetry Available",
+    simEmptyDesc: "To run calibrated simulations for this parcel, import sensor telemetry or historical weather records.",
+    simEmptyBtn: "Go to Data Ingestion",
+    simApplyBtn: "Run Simulation",
+    simBaselineHeader: "Dynamic Simulation Parameters",
+    simCultivarLabel: "Rice Cultivar",
+    simDasLabel: "Days After Emergence (DAE)",
+    simTminLabel: "Minimum Night Temperature (T_min)",
+    simTmaxLabel: "Maximum Day Temperature (T_max)",
+    simWaterDepthLabel: "Water Depth (Hydrostatic Probe)",
+    simHumidityLabel: "Relative Air Humidity",
+    simRainLabel: "Daily Rainfall",
+    simRadLabel: "Solar Irradiance",
+    simResultTitle: "Agronomic Diagnosis & Actionable Insights",
+    simAdvisoryTitle: "Operational Field Advisory",
+    simInsightsTitle: "Biophysical Alerts & Thresholds",
+    simThermalRiskLabel: "Thermal Risk Assessment",
+    simWaterStatusLabel: "Water Layer Balance",
+
+    sensorConfigTitle: "Sensor & Hardware Configuration",
+    sensorConfigSubtitle: "Manage physical telemetry buses, multiplier calibration factors, and edge communication drivers.",
+    sensorPresetsTitle: "Pre-Configured Manufacturer Profiles",
+    sensorMappingsTitle: "Active Hardware Mappings",
+    sensorNewMappingBtn: "New Sensor Mapping",
+    sensorIdLabel: "Device Identifier (Hardware ID)",
+    sensorNameLabel: "Friendly Name",
+    sensorProtocolLabel: "Communication Protocol",
+    sensorBaudLabel: "Transmission Baud Rate",
+    sensorCalibrationLabel: "Calibration Multiplier",
+    sensorSaveBtn: "Save Sensor Configuration",
+
+    settingsTitle: "Station Settings & Preferences",
+    settingsSubtitle: "Edge network parameters, local SQLite database diagnostics, and interface visual preferences.",
+    settingsEdgeEndpoint: "Rust Edge Microservice Endpoint",
+    settingsStorageInfo: "SQLite Database & Local Storage",
+    settingsThemeLabel: "Interface Theme",
+    settingsLangLabel: "Language / Idioma / ภาษา",
+    settingsGridLabel: "Graph Paper Style",
+
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );
+
 
   static const OryzaStrings th = OryzaStrings(
     navBrand: "ORYZA-ELO",
@@ -2436,8 +2735,108 @@ class OryzaI18n {
     howToUseMockOptionCliDesc: "สำหรับการทดสอบด่วนบนคอมพิวเตอร์ส่วนบุคคลโดยไม่ต้องติดตั้งเซอร์วิสระบบถาวร (systemd) ให้เปิดโหนด edge โดยตรงด้วย ./run_local_edge.sh และจัดการชุดข้อมูลทดสอบ:",
     howToUseMockPopulateSnippet: "# 1. เริ่มต้นโหนด edge บนเทอร์มินัล (ไม่ต้องติดตั้งเซอร์วิส systemd):\n./run_local_edge.sh\n\n# 2. ในอีกหน้าต่างเทอร์มินัล โหลดข้อมูลจำลอง 4 แปลงและสภาพอากาศ 75 วัน:\n./populate_test_data.sh\n\n# 3. ล้างฐานข้อมูลทดสอบและคืนค่าเริ่มต้นจากโรงงาน:\n./clean_test_data.sh",
     howToUseMockCleanSnippet: "# ล้างฐานข้อมูลทดสอบและคืนค่าเริ่มต้นจากโรงงาน:\n./clean_test_data.sh",
+
+    dashNavStats: "ภาพรวม",
+    dashNavSim: "แบบจำลองและการทำนาย",
+    dashNavData: "การจัดการข้อมูล",
+    dashNavSensors: "เซ็นเซอร์และฮาร์ดแวร์",
+    dashNavHud: "การวัดและส่งข้อมูลทางไกลและ HUD",
+    dashNavSettings: "การตั้งค่า",
+
+    dashFilterAll: "ตัวบ่งชี้ทั้งหมด",
+    dashFilterPheno: "ระยะฟีโนโลยีและคำแนะนำ",
+    dashFilterClimate: "สภาพอากาศและการสะสม GDD",
+    dashFilterBiomet: "เรดาร์ไบโอเมตริกซ์และความสัมพันธ์",
+
+    chartUnitGdd: "°C-วัน (GDD สะสม)",
+    chartUnitTemp: "°C (องศาเซลเซียส)",
+    chartUnitHumidity: "% (ความชื้นสัมพัทธ์)",
+    chartUnitPrecipitation: "มม. (ปริมาณฝนรายวัน)",
+    chartUnitRadiation: "MJ/m² (รังสีดวงอาทิตย์)",
+    chartUnitDtr: "°C (ช่วงอุณหภูมิรายวัน)",
+    chartUnitWater: "ซม. (ระดับน้ำในแปลงนา)",
+
+    chartGddAnalysis: "คำนวณปริมาณความร้อนสะสมตั้งแต่วันปลูกเหนือเกณฑ์ชีวภาพพื้นฐาน (10.0°C)",
+    chartGddMeaning: "ระยะการเจริญเติบโตของข้าวถูกควบคุมโดยความร้อนสะสมมากกว่าจำนวนวันตามปฏิทิน",
+    chartGddAction: "เปรียบเทียบกับรหัส BBCH เพื่อกำหนดช่วงเวลาที่เหมาะสมที่สุดสำหรับการใส่ปุ๋ยและการเก็บเกี่ยว",
+
+    chartThermalAnalysis: "ติดตามการเปลี่ยนแปลงของอุณหภูมิสูงสุด-ต่ำสุดรายวันและความชื้นสัมพัทธ์ในอากาศ",
+    chartThermalMeaning: "ความเย็นฉับพลันในเวลากลางคืน (< 15°C) ในช่วงออกดอกทำให้เกิดการเป็นหมัน ความร้อนสูง (> 35°C) ทำให้เมล็ดลีบ",
+    chartThermalAction: "เมื่อตรวจพบอุณหภูมิต่ำในเวลากลางคืน ให้เพิ่มระดับน้ำในแปลงนาเป็น 10 ซม. ก่อนพลบค่ำเพื่อรักษาอุณหภูมิ",
+
+    chartWaterAnalysis: "เปรียบเทียบปริมาณน้ำฝนสะสมรายวันกับการแผ่รังสีดวงอาทิตย์ที่ตกกระทบ",
+    chartWaterMeaning: "รังสีสูงร่วมกับความชื้นต่ำจะเร่งการคายระเหยของพืช (ETc)",
+    chartWaterAction: "ควบคุมประตูระบายน้ำล่วงหน้าเพื่อรักษาระดับน้ำให้คงที่โดยไม่สูญเสียน้ำโดยเปล่าประโยชน์",
+
+    chartDtrAnalysis: "ประเมินแอมพลิจูดความร้อนรายวัน (T_max - T_min) และการตอบสนองทางสรีรวิทยาของเรือนยอดพืช",
+    chartDtrMeaning: "ช่วงอุณหภูมิที่กว้าง (> 12°C) กระตุ้นการหายใจของพืชในเวลากลางคืนและการใช้สารอาหารสะสม",
+    chartDtrAction: "หมุนเวียนน้ำอย่างต่อเนื่องเพื่อลดความผันผวนของสภาพอากาศขนาดเล็กที่รุนแรง",
+
+    chartExpandExpl: "ทำความเข้าใจกราฟนี้",
+    chartCollapseExpl: "ซ่อนคำอธิบายทางเทคนิค",
+
+    tableColDate: "วันที่",
+    tableColTmax: "T_max (°C)",
+    tableColTmin: "T_min (°C)",
+    tableColRain: "ฝน (มม.)",
+    tableColRad: "รังสี (MJ/m²)",
+    tableColRh: "ความชื้น (%)",
+    tableColSource: "แหล่งที่มา / เซ็นเซอร์",
+    tableColActions: "การกระทำ",
+    tableSelectedCount: "เลือกแล้ว {count} รายการ",
+    tableDeleteSelectedBtn: "ลบรายการที่เลือก",
+    tableExportCsvBtn: "ส่งออก CSV",
+    tableNewRecordBtn: "เพิ่มบันทึกด้วยตนเอง",
+    tableUploadCsvBtn: "นำเข้าไฟล์ CSV",
+    tablePaginationRows: "แถวต่อหน้า:",
+    tablePaginationOf: "จาก",
+    tableConfirmDeleteTitle: "ลบบันทึกที่เลือกหรือไม่?",
+    tableConfirmDeleteDesc: "การดำเนินการนี้จะลบบันทึกข้อมูลที่เลือกออกจากฐานข้อมูล SQLite ในเครื่องอย่างถาวร",
+
+    simTitle: "แบบจำลองทางชีวกายภาพและเครื่องคิดเลขทางการเกษตร",
+    simSubtitle: "ปรับพารามิเตอร์สภาพอากาศขนาดเล็กและสำรวจการตอบสนองทางการเกษตรแบบเรียลไทม์ด้วยเอนจิน Rust ในเครื่อง",
+    simEmptyTitle: "ไม่มีข้อมูลอ้างอิง",
+    simEmptyDesc: "หากต้องการจำลองสถานการณ์สำหรับแปลงนี้ จำเป็นต้องนำเข้าข้อมูลเซ็นเซอร์หรือสภาพอากาศย้อนหลัง",
+    simEmptyBtn: "ไปที่การจัดการข้อมูล",
+    simApplyBtn: "เรียกใช้แบบจำลอง",
+    simBaselineHeader: "พารามิเตอร์จำลองแบบไดนามิก",
+    simCultivarLabel: "พันธุ์ข้าว",
+    simDasLabel: "วันหลังงอก (DAE)",
+    simTminLabel: "อุณหภูมิต่ำสุดในเวลากลางคืน (T_min)",
+    simTmaxLabel: "อุณหภูมิสูงสุดในเวลากลางวัน (T_max)",
+    simWaterDepthLabel: "ระดับน้ำ (หัววัดไฮโดรสแตติก)",
+    simHumidityLabel: "ความชื้นสัมพัทธ์ในอากาศ",
+    simRainLabel: "ปริมาณน้ำฝนรายวัน",
+    simRadLabel: "รังสีดวงอาทิตย์",
+    simResultTitle: "การวินิจฉัยและใบสั่งยาทางการเกษตร",
+    simAdvisoryTitle: "คำแนะนำการปฏิบัติงานในแปลงนา",
+    simInsightsTitle: "การแจ้งเตือนทางชีวกายภาพ",
+    simThermalRiskLabel: "การประเมินความเสี่ยงจากอุณหภูมิ",
+    simWaterStatusLabel: "สมดุลระดับน้ำในแปลงนา",
+
+    sensorConfigTitle: "การกำหนดค่าเซ็นเซอร์และฮาร์ดแวร์",
+    sensorConfigSubtitle: "จัดการอินเทอร์เฟซทางกายภาพ การปรับเทียบตัวคูณ และโปรโตคอลการสื่อสารของ edge",
+    sensorPresetsTitle: "โปรไฟล์ผู้ผลิตที่กำหนดค่าไว้ล่วงหน้า",
+    sensorMappingsTitle: "การแมปฮาร์ดแวร์ที่ใช้งานอยู่",
+    sensorNewMappingBtn: "การแมปเซ็นเซอร์ใหม่",
+    sensorIdLabel: "ตัวระบุอุปกรณ์ (Device ID)",
+    sensorNameLabel: "ชื่อเรียก",
+    sensorProtocolLabel: "โปรโตคอลการสื่อสาร",
+    sensorBaudLabel: "อัตราการส่งข้อมูล (Baud Rate)",
+    sensorCalibrationLabel: "ตัวคูณการปรับเทียบ",
+    sensorSaveBtn: "บันทึกการกำหนดค่าเซ็นเซอร์",
+
+    settingsTitle: "การตั้งค่าสถานีและค่ากำหนด",
+    settingsSubtitle: "พารามิเตอร์เครือข่าย ฐานข้อมูล SQLite ในเครื่อง และการปรับแต่งอินเทอร์เฟซ",
+    settingsEdgeEndpoint: "ที่อยู่ไมโครเซอร์วิส Rust Edge",
+    settingsStorageInfo: "ฐานข้อมูล SQLite และพื้นที่จัดเก็บข้อมูลในเครื่อง",
+    settingsThemeLabel: "ธีมอินเทอร์เฟซ",
+    settingsLangLabel: "ภาษา / Language / Idioma",
+    settingsGridLabel: "รูปแบบกระดาษกราฟ",
+
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );
+
 
   static OryzaStrings of(BuildContext context) {
     final controller = OryzaScope.of(context);

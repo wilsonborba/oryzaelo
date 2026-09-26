@@ -5,6 +5,7 @@ import 'package:local/core/settings.dart';
 import 'package:local/domain/models/device_mapping.dart';
 import 'package:local/domain/models/parcel.dart';
 import 'package:local/domain/models/phenology_prediction.dart';
+import 'package:local/domain/models/simulation_result.dart';
 import 'package:local/domain/models/system_telemetry.dart';
 import 'package:local/domain/models/weather_analytics.dart';
 import 'package:local/domain/models/weather_record.dart';
@@ -275,6 +276,39 @@ class EngineClient {
     return [];
   }
 
+  Future<int> deleteWeatherRecords(
+    String parcelId,
+    List<DateTime> dates,
+  ) async {
+    try {
+      final dateStrings = dates.map((d) {
+        final year = d.year.toString().padLeft(4, '0');
+        final month = d.month.toString().padLeft(2, '0');
+        final day = d.day.toString().padLeft(2, '0');
+        return '$year-$month-$day';
+      }).toList();
+
+      final res = await _client
+          .delete(
+            _uri('/api/v1/weather/records'),
+            headers: _headers,
+            body: jsonEncode({
+              'parcel_id': parcelId,
+              'dates': dateStrings,
+            }),
+          )
+          .timeout(AppSettings.receiveTimeout);
+
+      if (res.statusCode == 200) {
+        final body = jsonDecode(res.body) as Map<String, dynamic>;
+        return (body['deleted_count'] as num?)?.toInt() ?? 0;
+      }
+    } catch (e) {
+      logError('Failed to delete weather records: $e');
+    }
+    return 0;
+  }
+
   // ── Agrometeorological Analytics & Correlation ───────────────────────────
 
   Future<WeatherAnalyticsReport?> getWeatherAnalytics(
@@ -367,6 +401,50 @@ class EngineClient {
     }
     return [];
   }
+
+  Future<SimulationResult?> simulateScenario({
+    required String parcelId,
+    String? cultivar,
+    required double das,
+    required double tMin,
+    required double tMax,
+    required double waterDepthCm,
+    double? relativeHumidityPct,
+    double? precipitationMm,
+    double? radiationMjM2,
+    String? locale,
+  }) async {
+    try {
+      final payload = <String, dynamic>{
+        'parcel_id': parcelId,
+        'das': das,
+        't_min': tMin,
+        't_max': tMax,
+        'water_depth_cm': waterDepthCm,
+      };
+      if (cultivar != null) payload['cultivar'] = cultivar;
+      if (relativeHumidityPct != null) payload['relative_humidity_pct'] = relativeHumidityPct;
+      if (precipitationMm != null) payload['precipitation_mm'] = precipitationMm;
+      if (radiationMjM2 != null) payload['radiation_mj_m2'] = radiationMjM2;
+      if (locale != null) payload['locale'] = locale;
+
+      final res = await _client
+          .post(
+            _uri('/api/v1/phenology/simulate'),
+            headers: _headers,
+            body: jsonEncode(payload),
+          )
+          .timeout(AppSettings.receiveTimeout);
+
+      if (res.statusCode == 200) {
+        return SimulationResult.fromJson(jsonDecode(res.body) as Map<String, dynamic>);
+      }
+    } catch (e) {
+      logError('Failed to execute simulation: $e');
+    }
+    return null;
+  }
+
 
   // ── Admin & Mock Data (Turnkey Testing) ──────────────────────────────────
 

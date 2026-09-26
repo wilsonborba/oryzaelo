@@ -3,6 +3,7 @@ import 'package:local/core/logs.dart';
 import 'package:local/domain/models/device_mapping.dart';
 import 'package:local/domain/models/parcel.dart';
 import 'package:local/domain/models/phenology_prediction.dart';
+import 'package:local/domain/models/simulation_result.dart';
 import 'package:local/domain/models/system_telemetry.dart';
 import 'package:local/domain/models/weather_analytics.dart';
 import 'package:local/domain/models/weather_record.dart';
@@ -378,4 +379,72 @@ class DashboardHandler extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // ── Record Batch Deletion ────────────────────────────────────────────────
+
+  Future<bool> deleteRecords(List<DateTime> dates) async {
+    if (_selectedParcel == null || dates.isEmpty) return false;
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final count = await _weatherService.deleteRecords(_selectedParcel!.id, dates);
+      if (count > 0) {
+        final dateSet = dates.map((d) => DateTime(d.year, d.month, d.day)).toSet();
+        _weatherRecords.removeWhere((r) => dateSet.contains(DateTime(r.date.year, r.date.month, r.date.day)));
+        // Refresh analytics in background
+        _analyticsReport = await _weatherService.fetchAnalytics(_selectedParcel!.id);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      logError('Delete records error: $e');
+      _errorMessage = 'Erro ao excluir registros: $e';
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // ── Scenario Simulation ──────────────────────────────────────────────────
+
+  Future<SimulationResult?> runSimulation({
+    String? cultivar,
+    required double das,
+    required double tMin,
+    required double tMax,
+    required double waterDepthCm,
+    double? relativeHumidityPct,
+    double? precipitationMm,
+    double? radiationMjM2,
+    String? locale,
+  }) async {
+    if (_selectedParcel == null) return null;
+    _isAnalyzing = true;
+    notifyListeners();
+
+    try {
+      final res = await _phenologyService.simulate(
+        parcelId: _selectedParcel!.id,
+        cultivar: cultivar,
+        das: das,
+        tMin: tMin,
+        tMax: tMax,
+        waterDepthCm: waterDepthCm,
+        relativeHumidityPct: relativeHumidityPct,
+        precipitationMm: precipitationMm,
+        radiationMjM2: radiationMjM2,
+        locale: locale,
+      );
+      return res;
+    } catch (e) {
+      logError('Run simulation error: $e');
+      return null;
+    } finally {
+      _isAnalyzing = false;
+      notifyListeners();
+    }
+  }
 }
+
