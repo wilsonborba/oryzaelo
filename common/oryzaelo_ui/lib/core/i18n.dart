@@ -605,6 +605,15 @@ class OryzaStrings {
   final String settingsThemeLabel;
   final String settingsLangLabel;
   final String settingsGridLabel;
+  final String settingsApiDocsHeader;
+  final String settingsApiDocsDesc;
+  final String settingsApiDocsBtn;
+  final String settingsApiDocsBadge;
+  final String filterTimeAllDay;
+  final String filterTimeMorning;
+  final String filterTimeAfternoon;
+  final String filterTimeNight;
+  final String filterTimeCustom;
 
   // Manual record dialog & data table (data_management_screen)
   final String manualRecordDateLabel;
@@ -1403,6 +1412,15 @@ class OryzaStrings {
     this.settingsThemeLabel = "Tema Visual da Interface",
     this.settingsLangLabel = "Idioma / Language / ภาษา",
     this.settingsGridLabel = "Estilo do Papel Milimetrado",
+    this.settingsApiDocsHeader = "Documentação da API (Scalar)",
+    this.settingsApiDocsDesc = "Referência interativa da API REST com esquemas OpenAPI 3.1, playground de testes e exemplos de código em tempo real.",
+    this.settingsApiDocsBtn = "Abrir Documentação (Scalar)",
+    this.settingsApiDocsBadge = "OPENAPI 3.1 + SCALAR",
+    this.filterTimeAllDay = "Dia Todo",
+    this.filterTimeMorning = "Manhã",
+    this.filterTimeAfternoon = "Tarde",
+    this.filterTimeNight = "Noite",
+    this.filterTimeCustom = "Personalizado",
 
     this.manualRecordDateLabel = "Data do Registro",
     this.manualFieldTMax = "T_máx (°C)",
@@ -3030,6 +3048,15 @@ class OryzaI18n {
     settingsThemeLabel: "Interface Theme",
     settingsLangLabel: "Language / Idioma / ภาษา",
     settingsGridLabel: "Graph Paper Style",
+    settingsApiDocsHeader: "API Documentation (Scalar)",
+    settingsApiDocsDesc: "Interactive modern REST API reference with OpenAPI 3.1 schemas, request playground, and live code examples.",
+    settingsApiDocsBtn: "Open API Documentation",
+    settingsApiDocsBadge: "OPENAPI 3.1 + SCALAR",
+    filterTimeAllDay: "All Day",
+    filterTimeMorning: "Morning",
+    filterTimeAfternoon: "Afternoon",
+    filterTimeNight: "Night",
+    filterTimeCustom: "Custom",
 
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );
@@ -3908,6 +3935,15 @@ class OryzaI18n {
     settingsThemeLabel: "ธีมอินเทอร์เฟซ",
     settingsLangLabel: "ภาษา / Language / Idioma",
     settingsGridLabel: "รูปแบบกระดาษกราฟ",
+    settingsApiDocsHeader: "เอกสาร API (Scalar)",
+    settingsApiDocsDesc: "เอกสารอ้างอิง REST API แบบโต้ตอบที่ทันสมัยพร้อมโครงร่าง OpenAPI 3.1 ตัวอย่างโค้ดสด และพื้นที่ทดสอบ",
+    settingsApiDocsBtn: "เปิดเอกสาร API (Scalar)",
+    settingsApiDocsBadge: "OPENAPI 3.1 + SCALAR",
+    filterTimeAllDay: "ทั้งวัน",
+    filterTimeMorning: "เช้า",
+    filterTimeAfternoon: "บ่าย",
+    filterTimeNight: "ค่ำ",
+    filterTimeCustom: "กำหนดเอง",
 
     footerEcosystem: "ASODYA ECOSYSTEM • PRECISION AGRI-TECH",
   );

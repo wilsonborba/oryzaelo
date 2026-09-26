@@ -1930,111 +1930,337 @@ class _DataManagementScreenState extends State<DataManagementScreen> {
   }
 
   Future<void> _showTimeRangeFilterDialog(BuildContext context, bool isDark, OryzaStrings s) async {
+    final borderColor = isDark ? OryzaColors.darkBorder : OryzaColors.lightBorder;
+    final surfaceColor = isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface;
+    final activeBg = isDark
+        ? OryzaColors.botanicalGreen.withValues(alpha: 0.25)
+        : OryzaColors.botanicalGreen.withValues(alpha: 0.12);
+    final activeColor = isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen;
+    final inactiveColor = isDark ? OryzaColors.darkTextSecondary : OryzaColors.lightTextSecondary;
+
     await showDialog(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
-          backgroundColor: isDark ? OryzaColors.darkSurface : OryzaColors.lightSurface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title: Text(s.filterTimeRange, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                dense: true,
-                title: const Text('00:00 - 23:59 (Dia Todo)', style: TextStyle(fontSize: 12)),
-                onTap: () {
-                  setState(() {
-                    _historyStartTime = null;
-                    _historyEndTime = null;
-                    _historyCurrentPage = 0;
-                  });
-                  Navigator.pop(ctx);
-                },
+        return StatefulBuilder(
+          builder: (ctx, setDlgState) {
+            final isAllDay = _historyStartTime == null && _historyEndTime == null;
+            final isMorning = _historyStartTime?.hour == 0 &&
+                _historyStartTime?.minute == 0 &&
+                _historyEndTime?.hour == 12 &&
+                _historyEndTime?.minute == 0;
+            final isAfternoon = _historyStartTime?.hour == 12 &&
+                _historyStartTime?.minute == 0 &&
+                _historyEndTime?.hour == 18 &&
+                _historyEndTime?.minute == 0;
+            final isNight = _historyStartTime?.hour == 18 &&
+                _historyStartTime?.minute == 0 &&
+                _historyEndTime?.hour == 23 &&
+                _historyEndTime?.minute == 59;
+
+            Widget buildPresetButton({
+              required String label,
+              required String sublabel,
+              required bool isSelected,
+              required VoidCallback onTap,
+            }) {
+              return InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(6),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected ? activeBg : Colors.transparent,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: isSelected ? activeColor : borderColor,
+                      width: isSelected ? 1.4 : 1.0,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                          color: isSelected
+                              ? activeColor
+                              : (isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        sublabel,
+                        style: TextStyle(
+                          fontSize: 9.5,
+                          fontFamily: OryzaTypography.monoFontFamily,
+                          package: 'oryzaelo_ui',
+                          color: inactiveColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            return Dialog(
+              backgroundColor: surfaceColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: borderColor, width: 1.2),
               ),
-              ListTile(
-                dense: true,
-                title: const Text('00:00 - 12:00 (Manhã)', style: TextStyle(fontSize: 12)),
-                onTap: () {
-                  setState(() {
-                    _historyStartTime = const TimeOfDay(hour: 0, minute: 0);
-                    _historyEndTime = const TimeOfDay(hour: 12, minute: 0);
-                    _historyCurrentPage = 0;
-                  });
-                  Navigator.pop(ctx);
-                },
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 340),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Header
+                      Row(
+                        children: [
+                          const Icon(Icons.access_time_rounded, size: 16, color: OryzaColors.burntOrange),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              s.filterTimeRange.toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: OryzaTypography.monoFontFamily,
+                                package: 'oryzaelo_ui',
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.6,
+                                color: isDark ? OryzaColors.darkTextPrimary : OryzaColors.lightTextPrimary,
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () => Navigator.pop(ctx),
+                            borderRadius: BorderRadius.circular(4),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Icon(Icons.close_rounded, size: 16, color: inactiveColor),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Presets Grid
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildPresetButton(
+                              label: s.filterTimeAllDay,
+                              sublabel: '00:00 - 23:59',
+                              isSelected: isAllDay,
+                              onTap: () {
+                                setState(() {
+                                  _historyStartTime = null;
+                                  _historyEndTime = null;
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: buildPresetButton(
+                              label: s.filterTimeMorning,
+                              sublabel: '00:00 - 12:00',
+                              isSelected: isMorning,
+                              onTap: () {
+                                setState(() {
+                                  _historyStartTime = const TimeOfDay(hour: 0, minute: 0);
+                                  _historyEndTime = const TimeOfDay(hour: 12, minute: 0);
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildPresetButton(
+                              label: s.filterTimeAfternoon,
+                              sublabel: '12:00 - 18:00',
+                              isSelected: isAfternoon,
+                              onTap: () {
+                                setState(() {
+                                  _historyStartTime = const TimeOfDay(hour: 12, minute: 0);
+                                  _historyEndTime = const TimeOfDay(hour: 18, minute: 0);
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: buildPresetButton(
+                              label: s.filterTimeNight,
+                              sublabel: '18:00 - 23:59',
+                              isSelected: isNight,
+                              onTap: () {
+                                setState(() {
+                                  _historyStartTime = const TimeOfDay(hour: 18, minute: 0);
+                                  _historyEndTime = const TimeOfDay(hour: 23, minute: 59);
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Custom Times Divider & Title
+                      Row(
+                        children: [
+                          Expanded(child: Divider(color: borderColor, height: 1)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              s.filterTimeCustom.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontFamily: OryzaTypography.monoFontFamily,
+                                package: 'oryzaelo_ui',
+                                fontWeight: FontWeight.w700,
+                                color: inactiveColor,
+                              ),
+                            ),
+                          ),
+                          Expanded(child: Divider(color: borderColor, height: 1)),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Custom Time Pickers Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                side: BorderSide(
+                                  color: _historyStartTime != null ? OryzaColors.burntOrange : borderColor,
+                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                              ),
+                              onPressed: () async {
+                                final t = await showTimePicker(
+                                  context: context,
+                                  initialTime: _historyStartTime ?? const TimeOfDay(hour: 6, minute: 0),
+                                );
+                                if (t != null) {
+                                  setState(() {
+                                    _historyStartTime = t;
+                                    _historyCurrentPage = 0;
+                                  });
+                                  setDlgState(() {});
+                                }
+                              },
+                              child: Text(
+                                _historyStartTime?.format(context) ?? '00:00',
+                                style: const TextStyle(
+                                  fontFamily: OryzaTypography.monoFontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text('→', style: TextStyle(color: inactiveColor, fontSize: 14)),
+                          ),
+                          Expanded(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                side: BorderSide(
+                                  color: _historyEndTime != null ? OryzaColors.burntOrange : borderColor,
+                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                              ),
+                              onPressed: () async {
+                                final t = await showTimePicker(
+                                  context: context,
+                                  initialTime: _historyEndTime ?? const TimeOfDay(hour: 18, minute: 0),
+                                );
+                                if (t != null) {
+                                  setState(() {
+                                    _historyEndTime = t;
+                                    _historyCurrentPage = 0;
+                                  });
+                                  setDlgState(() {});
+                                }
+                              },
+                              child: Text(
+                                _historyEndTime?.format(context) ?? '23:59',
+                                style: const TextStyle(
+                                  fontFamily: OryzaTypography.monoFontFamily,
+                                  package: 'oryzaelo_ui',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Actions
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (_historyStartTime != null || _historyEndTime != null)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _historyStartTime = null;
+                                  _historyEndTime = null;
+                                  _historyCurrentPage = 0;
+                                });
+                                Navigator.pop(ctx);
+                              },
+                              child: Text(
+                                s.filterClear,
+                                style: const TextStyle(color: OryzaColors.burntOrange, fontSize: 11),
+                              ),
+                            ),
+                          const Spacer(),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: OryzaColors.botanicalGreen,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                            ),
+                            onPressed: () => Navigator.pop(ctx),
+                            child: Text(s.csvUploadCloseBtn, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              ListTile(
-                dense: true,
-                title: const Text('12:00 - 18:00 (Tarde)', style: TextStyle(fontSize: 12)),
-                onTap: () {
-                  setState(() {
-                    _historyStartTime = const TimeOfDay(hour: 12, minute: 0);
-                    _historyEndTime = const TimeOfDay(hour: 18, minute: 0);
-                    _historyCurrentPage = 0;
-                  });
-                  Navigator.pop(ctx);
-                },
-              ),
-              ListTile(
-                dense: true,
-                title: const Text('18:00 - 23:59 (Noite)', style: TextStyle(fontSize: 12)),
-                onTap: () {
-                  setState(() {
-                    _historyStartTime = const TimeOfDay(hour: 18, minute: 0);
-                    _historyEndTime = const TimeOfDay(hour: 23, minute: 59);
-                    _historyCurrentPage = 0;
-                  });
-                  Navigator.pop(ctx);
-                },
-              ),
-              const Divider(),
-              ListTile(
-                dense: true,
-                leading: const Icon(Icons.tune_rounded, size: 16),
-                title: const Text('Horário Inicial Personalizado', style: TextStyle(fontSize: 12)),
-                subtitle: Text(_historyStartTime?.format(context) ?? '00:00', style: const TextStyle(fontSize: 11)),
-                onTap: () async {
-                  final t = await showTimePicker(
-                    context: context,
-                    initialTime: _historyStartTime ?? const TimeOfDay(hour: 6, minute: 0),
-                  );
-                  if (t != null) {
-                    setState(() {
-                      _historyStartTime = t;
-                      _historyCurrentPage = 0;
-                    });
-                  }
-                  if (ctx.mounted) Navigator.pop(ctx);
-                },
-              ),
-              ListTile(
-                dense: true,
-                leading: const Icon(Icons.tune_rounded, size: 16),
-                title: const Text('Horário Final Personalizado', style: TextStyle(fontSize: 12)),
-                subtitle: Text(_historyEndTime?.format(context) ?? '23:59', style: const TextStyle(fontSize: 11)),
-                onTap: () async {
-                  final t = await showTimePicker(
-                    context: context,
-                    initialTime: _historyEndTime ?? const TimeOfDay(hour: 18, minute: 0),
-                  );
-                  if (t != null) {
-                    setState(() {
-                      _historyEndTime = t;
-                      _historyCurrentPage = 0;
-                    });
-                  }
-                  if (ctx.mounted) Navigator.pop(ctx);
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Fechar'),
-            ),
-          ],
+            );
+          },
         );
       },
     );

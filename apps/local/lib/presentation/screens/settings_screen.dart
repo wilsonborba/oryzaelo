@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:local/core/settings.dart';
 import 'package:local/presentation/handlers/dashboard_handler.dart';
 import 'package:oryzaelo_ui/oryzaelo_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Settings screen for edge station parameters, SQLite database diagnostics, and visual preferences.
 class SettingsScreen extends StatefulWidget {
@@ -210,6 +211,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             children: [
                               _buildAppearanceCard(context, isDark, s, controller),
                               const SizedBox(height: 16),
+                              _buildApiDocsCard(context, isDark, s),
+                              const SizedBox(height: 16),
                               _buildSystemInfoCard(context, isDark, s),
                             ],
                           ),
@@ -228,6 +231,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       _buildCronCard(context, isDark, s),
                       const SizedBox(height: 16),
                       _buildAppearanceCard(context, isDark, s, controller),
+                      const SizedBox(height: 16),
+                      _buildApiDocsCard(context, isDark, s),
                       const SizedBox(height: 16),
                       _buildSystemInfoCard(context, isDark, s),
                     ],
@@ -347,7 +352,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          Row(
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               OutlinedButton.icon(
                 onPressed: _isTestingPing ? null : _testConnection,
@@ -360,8 +368,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     : const Icon(Icons.network_ping, size: 16),
                 label: Text(s.settingsTestConnectionBtn),
               ),
-              if (_pingResult != null) ...[
-                const SizedBox(width: 12),
+              if (_pingResult != null)
                 Text(
                   _pingResult!,
                   style: TextStyle(
@@ -370,7 +377,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: isOnline ? Colors.green.shade600 : Colors.red.shade600,
                   ),
                 ),
-              ],
             ],
           ),
         ],
@@ -513,31 +519,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: isDark ? Colors.white12 : Colors.black12),
             ),
-            child: Row(
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 10,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        s.settingsCronCurrentLabel,
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontFamily: 'Ubuntu Sans Mono',
-                          color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
-                        ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      s.settingsCronCurrentLabel,
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontFamily: 'Ubuntu Sans Mono',
+                        color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        currentTime ?? '—',
-                        style: const TextStyle(
-                          fontFamily: 'Ubuntu Sans Mono',
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      currentTime ?? '—',
+                      style: const TextStyle(
+                        fontFamily: 'Ubuntu Sans Mono',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 OutlinedButton.icon(
                   onPressed: _showCronTimeDialog,
@@ -618,6 +626,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
             initialValue: controller.locale.languageCode,
+            isExpanded: true,
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -638,6 +647,140 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   controller.setLocale(const Locale('en', 'US'));
                 }
               }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildApiDocsCard(BuildContext context, bool isDark, OryzaStrings s) {
+    final docsUrl = '${AppSettings.activeBaseUrl}/docs';
+    final specUrl = '${AppSettings.activeBaseUrl}/api/v1/openapi.json';
+
+    return ScrapbookCard(
+      isDark: isDark,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              Text(
+                s.settingsApiDocsHeader.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6,
+                  fontFamily: 'Ubuntu Sans Mono',
+                  color: isDark ? Colors.grey.shade200 : Colors.grey.shade900,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? OryzaColors.botanicalGreen.withValues(alpha: 0.25)
+                      : OryzaColors.botanicalGreenLight,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                    width: 0.8,
+                  ),
+                ),
+                child: Text(
+                  s.settingsApiDocsBadge,
+                  style: TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Ubuntu Sans Mono',
+                    color: isDark ? OryzaColors.mustardYellow : OryzaColors.botanicalGreen,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            s.settingsApiDocsDesc,
+            style: TextStyle(
+              fontSize: 12,
+              fontFamily: 'Ubuntu Sans',
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.black38 : Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: isDark ? Colors.white12 : Colors.black12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'ENDPOINT (SCALAR UI)',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Ubuntu Sans Mono',
+                    color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                SelectableText(
+                  docsUrl,
+                  style: const TextStyle(
+                    fontFamily: 'Ubuntu Sans Mono',
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'OPENAPI 3.1 SPEC JSON',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Ubuntu Sans Mono',
+                    color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                SelectableText(
+                  specUrl,
+                  style: TextStyle(
+                    fontFamily: 'Ubuntu Sans Mono',
+                    fontSize: 11,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            key: const Key('settings_open_api_docs_btn'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: OryzaColors.botanicalGreen,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            icon: const Icon(Icons.open_in_new_rounded, size: 16),
+            label: Text(
+              s.settingsApiDocsBtn,
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+            ),
+            onPressed: () async {
+              final uri = Uri.parse(docsUrl);
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
             },
           ),
         ],
