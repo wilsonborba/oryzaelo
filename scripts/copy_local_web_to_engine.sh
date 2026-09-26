@@ -60,7 +60,7 @@ for arg in "$@"; do
 done
 
 echo -e "${CYAN}================================================================${NC}"
-echo -e "${CYAN}🌾  Oryza-Elo • Local Frontend -> Edge Engine Synchronizer  🌾${NC}"
+echo -e "${CYAN}  Oryza-Elo - Local Frontend -> Edge Engine Synchronizer  ${NC}"
 echo -e "${CYAN}================================================================${NC}"
 echo -e "Frontend: ${YELLOW}$APP_LOCAL_DIR${NC}"
 echo -e "Engine:   ${YELLOW}$ENGINE_STATIC_DIR${NC}"
@@ -95,10 +95,10 @@ CRITICAL_FILES=("index.html" "main.dart.js" "flutter.js" "canvaskit" "assets")
 MISSING=0
 for item in "${CRITICAL_FILES[@]}"; do
     if [ ! -e "$ENGINE_STATIC_DIR/$item" ]; then
-        echo -e "${RED}  ❌ Missing: $item${NC}"
+        echo -e "${RED}  [MISSING] $item${NC}"
         MISSING=$((MISSING + 1))
     else
-        echo -e "${GREEN}  ✓ Verified: $item${NC}"
+        echo -e "${GREEN}  [OK] $item${NC}"
     fi
 done
 
@@ -122,7 +122,7 @@ if [ -f "$ENGINE_ENV_FILE" ]; then
 fi
 
 echo -e "\n${GREEN}================================================================${NC}"
-echo -e "${GREEN}✓ Synchronization completed successfully!${NC}"
+echo -e "${GREEN}Synchronization completed successfully.${NC}"
 echo -e "  Files copied:  ${YELLOW}$TOTAL_FILES${NC}"
 echo -e "  Total size:    ${YELLOW}$TOTAL_SIZE${NC}"
 echo -e "  Static target: ${YELLOW}$ENGINE_STATIC_DIR${NC}"

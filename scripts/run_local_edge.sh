@@ -122,7 +122,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 echo -e "${GREEN}================================================================${NC}"
-echo -e "${BOLD}${GREEN}🌾  ORYZA-ELO • LOCAL EDGE NODE & GROWER DASHBOARD  🌾${NC}"
+echo -e "${BOLD}${GREEN}  ORYZA-ELO - LOCAL EDGE NODE & GROWER DASHBOARD  ${NC}"
 echo -e "${GREEN}================================================================${NC}"
 
 # 2. Reset database if requested
@@ -130,7 +130,7 @@ DB_PATH="$ENGINE_DIR/src/dal/data/local/oryza_elo_edge.db"
 if [ "$RESET_DB" = true ]; then
     echo -e "${YELLOW}==> [Reset DB] Removing local SQLite database...${NC}"
     rm -f "${DB_PATH}"*
-    echo -e "${GREEN}✓ Database cleaned.${NC}"
+    echo -e "${GREEN}[OK] Database cleaned.${NC}"
 fi
 
 # 3. Compile and sync static assets
@@ -184,7 +184,7 @@ cleanup() {
     if [ -n "${DEV_PID:-}" ] && kill -0 "$DEV_PID" 2>/dev/null; then
         kill "$DEV_PID" 2>/dev/null || true
     fi
-    echo -e "${GREEN}✓ Services stopped successfully.${NC}"
+    echo -e "${GREEN}[OK] Services stopped successfully.${NC}"
 }
 trap cleanup SIGINT SIGTERM EXIT
 
@@ -216,9 +216,9 @@ if [ "$SKIP_SEED" = false ]; then
     if [ "$COUNT" -eq 0 ]; then
         echo -e "${CYAN}==> [Agronomic Seeder] Empty database detected. Populating high-fidelity test datasets via native Rust API...${NC}"
         curl -s -X POST "$BASE_API/admin/populate?days=75&parcels=4" > /dev/null
-        echo -e "${GREEN}✓ Demo farm and historical agrometeorological series initialized!${NC}"
+        echo -e "${GREEN}[OK] Demo farm and historical agrometeorological series initialized.${NC}"
     else
-        echo -e "${GREEN}✓ Database active with $COUNT configured parcel(s).${NC}"
+        echo -e "${GREEN}[OK] Database active with $COUNT configured parcel(s).${NC}"
     fi
 fi
 
@@ -241,24 +241,24 @@ fi
 # 11. Display system HUD
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║               🌾  ORYZA-ELO EDGE TERMINAL READY  🌾                  ║${NC}"
+echo -e "${GREEN}║                    ORYZA-ELO EDGE TERMINAL READY                     ║${NC}"
 echo -e "${GREEN}╠══════════════════════════════════════════════════════════════════════╣${NC}"
 echo -e "${GREEN}║                                                                      ║${NC}"
-echo -e "${GREEN}║${NC}  ${BOLD}🖥️  WEB DASHBOARD (GROWER / EVALUATOR):${NC}                             ${GREEN}║${NC}"
+echo -e "${GREEN}║${NC}  ${BOLD}WEB DASHBOARD (GROWER / EVALUATOR):${NC}                                 ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     Local:  ${CYAN}http://localhost:${PORT}${NC}                                       ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     LAN:    ${CYAN}http://${LAN_IP}:${PORT}${NC}                                   ${GREEN}║${NC}"
 if [ "$DEV_MODE" = true ]; then
 echo -e "${GREEN}║${NC}     Dev:    ${YELLOW}http://localhost:8110${NC} (Hot-Reload Active)                  ${GREEN}║${NC}"
 fi
 echo -e "${GREEN}║                                                                      ║${NC}"
-echo -e "${GREEN}║${NC}  ${BOLD}⚙️  REST API & TELEMETRY:${NC}                                          ${GREEN}║${NC}"
+echo -e "${GREEN}║${NC}  ${BOLD}REST API & TELEMETRY:${NC}                                               ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     Health Probe:  ${CYAN}http://localhost:${PORT}/api/v1/health${NC}                    ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     Parcels CRUD:  ${CYAN}http://localhost:${PORT}/api/v1/parcels${NC}                   ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     Analytics:     ${CYAN}http://localhost:${PORT}/api/v1/weather/analytics${NC}         ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     Admin Pop:     ${CYAN}http://localhost:${PORT}/api/v1/admin/populate${NC}            ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     Admin Clean:   ${CYAN}http://localhost:${PORT}/api/v1/admin/clean${NC}               ${GREEN}║${NC}"
 echo -e "${GREEN}║                                                                      ║${NC}"
-echo -e "${GREEN}║${NC}  ${BOLD}📊  SYSTEM STATUS:${NC}                                                  ${GREEN}║${NC}"
+echo -e "${GREEN}║${NC}  ${BOLD}SYSTEM STATUS:${NC}                                                       ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     Hardware:    Linux x86_64 / Arm64 (Raspberry Pi compatible)      ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     Network:     ${GREEN}100% Offline (Zero external calls/CDNs)${NC}           ${GREEN}║${NC}"
 echo -e "${GREEN}║${NC}     ML Latency:  ${GREEN}< 0.5 ms per inference (CatBoost ONNX resident)${NC}      ${GREEN}║${NC}"
